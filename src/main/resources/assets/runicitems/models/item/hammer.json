@@ -5,8 +5,8 @@
 		"credit": "Made with Blockbench",
 		"texture_size": [32, 32],
 		"textures": {
-			"0": "runicitems:models/stone_hammer_model",
-			"particle": "runicitems:models/stone_hammer_model"
+			"0": "runicitems:models/hammer_model",
+			"particle": "runicitems:models/hammer_model"
 		},
 		"elements": [
 			{
@@ -203,19 +203,19 @@
 		"gui": {
 			"parent": "item/handheld",
 			"textures": {
-				"layer0": "runicitems:items/stone_hammer"
+				"layer0": "runicitems:items/hammer"
 			}
 		},
 		"ground": {
 			"parent": "item/handheld",
 			"textures": {
-				"layer0": "runicitems:items/stone_hammer"
+				"layer0": "runicitems:items/hammer"
 			}
 		},
 		"fixed": {
 			"parent": "item/handheld",
 			"textures": {
-				"layer0": "runicitems:items/stone_hammer"
+				"layer0": "runicitems:items/hammer"
 			}
 		}
 	}
