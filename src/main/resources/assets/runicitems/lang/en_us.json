@@ -1,6 +1,7 @@
 {
-  "item.runicitems.hammer": "Hammer",
+  "item.runicitems.mallet": "Mallet",
 
+  "enchantment.runicitems.freezing": "Freezing",
   "enchantment.runicitems.static": "Static",
   "enchantment.runicitems.crush": "Crush"
 }
