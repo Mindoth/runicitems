@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.item.weapon;
+package net.mindoth.runicitems.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;

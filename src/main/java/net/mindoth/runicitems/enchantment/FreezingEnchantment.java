@@ -1,6 +1,6 @@
 package net.mindoth.runicitems.enchantment;
 
-import net.mindoth.runicitems.item.weapon.MalletItem;
+import net.mindoth.runicitems.item.MalletItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
