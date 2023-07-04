@@ -1,0 +1,10 @@
+{
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/buried_treasure"
+    }
+  ],
+  "item": "runicitems:archer_boots",
+  "type": "runicitems:archer_boots_from_buried_treasure"
+}

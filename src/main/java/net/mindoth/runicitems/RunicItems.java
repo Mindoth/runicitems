@@ -1,5 +1,6 @@
 package net.mindoth.runicitems;
 
+import net.mindoth.runicitems.loot.RunicItemsLootModifiers;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,5 +26,6 @@ public class RunicItems {
     private void addRegistries(final IEventBus modEventBus) {
         RunicItemsItems.ITEMS.register(modEventBus);
         RunicItemsEnchantments.ENCHANTMENTS.register(modEventBus);
+        RunicItemsLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(modEventBus);
     }
 }

@@ -1,0 +1,10 @@
+{
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:entities/vindicator"
+    }
+  ],
+  "item": "runicitems:fighter_boots",
+  "type": "runicitems:fighter_boots_from_vindicator"
+}

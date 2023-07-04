@@ -1,15 +1,22 @@
 package net.mindoth.runicitems.event;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -74,6 +81,19 @@ public class CommonEvents {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void addCustomTrades(VillagerTradesEvent event) {
+        if ( event.getType() == VillagerProfession.CLERIC ) {
+            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+            ItemStack stack = new ItemStack(RunicItemsItems.WIZARD_BOOTS.get(), 1);
+            int villagerLevel = 5;
+
+            trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 64),
+                    stack, 12, 30, 0.05F));
         }
     }
 }
