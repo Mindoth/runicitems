@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "runicitems:fighter_boots"
+    }
+  ],
+
+  "result": {
+    "item": "runicitems:warrior_boots",
+    "count": 1
+  }
+}

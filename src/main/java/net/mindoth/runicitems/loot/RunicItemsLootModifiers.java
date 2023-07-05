@@ -18,6 +18,9 @@ public class RunicItemsLootModifiers {
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> FIGHTER_BOOTS_FROM_VINDICATOR =
             LOOT_MODIFIER_SERIALIZERS.register("fighter_boots_from_vindicator", FighterbootsAdditionModifier.CODEC);
 
+    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> TABLET_FROM_EVOKER =
+            LOOT_MODIFIER_SERIALIZERS.register("tablet_from_evoker", StonetabletAdditionModifier.CODEC);
+
     public static void register(IEventBus bus) {
         LOOT_MODIFIER_SERIALIZERS.register(bus);
     }

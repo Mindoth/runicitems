@@ -15,7 +15,9 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> MALLET = ITEMS.register("mallet",
             () -> new MalletItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(500)));
 
-    //Boots
+    public static final RegistryObject<Item> STONE_TABLET = ITEMS.register("stone_tablet",
+            () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1)));
+
     public static final RegistryObject<Item> ARCHER_BOOTS = ITEMS.register("archer_boots",
             () -> new ArcherBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
@@ -28,17 +30,14 @@ public class RunicItemsItems {
             () -> new WizardBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 
-    //Boots
     public static final RegistryObject<Item> EAGLE_BOOTS = ITEMS.register("eagle_boots",
             () -> new EagleBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 
-    //Boots
     public static final RegistryObject<Item> WARRIOR_BOOTS = ITEMS.register("warrior_boots",
             () -> new WarriorBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 
-    //Boots
     public static final RegistryObject<Item> SORCERER_BOOTS = ITEMS.register("sorcerer_boots",
             () -> new SorcererBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));

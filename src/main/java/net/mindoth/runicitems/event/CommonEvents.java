@@ -4,9 +4,18 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
@@ -14,8 +23,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,18 +37,15 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
 public class CommonEvents {
 
-    //Enchantment Freezing
     @SubscribeEvent
-    public static void malletFreezingEvent(final AttackEntityEvent event) {
+    public static void malletTargetCracker(final LivingHurtEvent event) {
         if ( !event.getEntity().level.isClientSide ) {
-            Player source = event.getEntity();
-            if ( event.getTarget() instanceof LivingEntity ) {
-                LivingEntity target = (LivingEntity)event.getTarget();
+            if ( event.getSource().getEntity() instanceof LivingEntity ) {
+                LivingEntity source = (LivingEntity)event.getSource().getEntity();
                 Item item = source.getMainHandItem().getItem();
-                if ( item == RunicItemsItems.MALLET.get() && source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.FREEZING.get()) > 0 ) {
-                    if ( target.canFreeze() && !source.isAlliedTo(target) && (!(target instanceof ArmorStand) || !((ArmorStand)target).isMarker()) ) {
-                        target.setTicksFrozen(target.getTicksFrozen() + (Math.round(source.getAttackStrengthScale(0.5f) * 280)));
-                    }
+                if ( item == RunicItemsItems.MALLET.get() && source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) > 0 ) {
+                    event.getSource().bypassArmor();
+                    event.setAmount(event.getAmount() + (source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) * 2) );
                 }
             }
         }
@@ -103,6 +112,107 @@ public class CommonEvents {
             trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
                     new ItemStack(Items.EMERALD, 64),
                     stack, 12, 30, 0.05F));
+        }
+    }
+
+    @SubscribeEvent
+    public static void malletVindicator(EntityJoinLevelEvent event) {
+        if ( event.getEntity() instanceof Vindicator) {
+            LivingEntity vindicator = (LivingEntity)event.getEntity();
+            if ( vindicator.getRandom().nextFloat() >= 0.85f ) {
+                vindicator.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
+            }
+        }
+    }
+
+    private static final String TAG_UNDEAD = ("undead");
+
+    @SubscribeEvent
+    public static void stoneTabletEffect(LivingDamageEvent event) {
+        if ( event.getEntity() instanceof Player && !event.getEntity().level.isClientSide ) {
+            Player player = (Player)event.getEntity();
+            CompoundTag playerData = player.getPersistentData();
+            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
+            ServerLevel level = (ServerLevel)player.level;
+            ItemStack itemStack;
+            if ( player.getMainHandItem().getItem() == RunicItemsItems.STONE_TABLET.get() || player.getOffhandItem().getItem() == RunicItemsItems.STONE_TABLET.get() ) {
+                if ( event.getAmount() >= player.getHealth() ) {
+                    if ( player.getOffhandItem().getItem() == RunicItemsItems.STONE_TABLET.get() ) {
+                        itemStack = player.getOffhandItem();
+                    }
+                    else {
+                        itemStack = player.getMainHandItem();
+                    }
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1, 0.5f);
+                    itemStack.shrink(1);
+                    event.setAmount(0);
+                    player.setHealth(1.0F);
+                    player.removeAllEffects();
+                    player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+                    player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+                    if ( !data.getBoolean(TAG_UNDEAD) ) {
+                        data.putBoolean(TAG_UNDEAD, true);
+                        playerData.put(Player.PERSISTED_NBT_TAG, data);
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void undeadFriendly(LivingEvent.LivingVisibilityEvent event) {
+        if ( event.getEntity() instanceof Player ) {
+            Player player = (Player)event.getEntity();
+            CompoundTag playerData = player.getPersistentData();
+            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
+            if ( event.getLookingEntity() instanceof Mob ) {
+                if ( data.getBoolean(TAG_UNDEAD) && ((Mob)event.getLookingEntity()).getMobType() == MobType.UNDEAD ) {
+                    event.modifyVisibility(0);
+                }
+            }
+        }
+    }
+
+    //Undead attributes
+    @SubscribeEvent
+    public static void onPlayerUpdate(final LivingEvent.LivingTickEvent event) {
+        LivingEntity player = event.getEntity();
+        if ( !player.level.isClientSide ) {
+            CompoundTag playerData = player.getPersistentData();
+            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
+            if ( data.getBoolean(TAG_UNDEAD) ) {
+                //Burn in the sun
+                if ( !player.isInWaterOrRain() && !player.isOnFire() && player.level.canSeeSky(player.blockPosition()) && player.level.isDay() && !player.hasItemInSlot(EquipmentSlot.HEAD) ) {
+                    player.setSecondsOnFire(2);
+                }
+                //Breathe in water
+                if ( player.isEyeInFluid(FluidTags.WATER) && player.getAirSupply() < player.getMaxAirSupply() ) {
+                    player.setAirSupply(player.getMaxAirSupply());
+                }
+                //Immunity to poison and regeneration
+                if ( player.hasEffect(MobEffects.POISON) ) {
+                    player.removeEffect(MobEffects.POISON);
+                }
+                if ( player.hasEffect(MobEffects.REGENERATION) ) {
+                    player.removeEffect(MobEffects.REGENERATION);
+                }
+            }
+        }
+    }
+
+    //Curing Undead Curse
+    @SubscribeEvent
+    public static void onPlayerAte(final LivingEntityUseItemEvent.Finish event) {
+        LivingEntity player = event.getEntity();
+        if ( !player.level.isClientSide ) {
+            CompoundTag playerData = player.getPersistentData();
+            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
+            if ( event.getItem().getItem().equals(Items.GOLDEN_APPLE) && player.hasEffect(MobEffects.WEAKNESS) ) {
+                data.remove(TAG_UNDEAD);
+                player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.ZOMBIE_VILLAGER_CURE, SoundSource.PLAYERS, 1, 1);
+            }
         }
     }
 }
