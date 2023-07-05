@@ -27,4 +27,19 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> WIZARD_BOOTS = ITEMS.register("wizard_boots",
             () -> new WizardBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+
+    //Boots
+    public static final RegistryObject<Item> EAGLE_BOOTS = ITEMS.register("eagle_boots",
+            () -> new EagleBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
+                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+
+    //Boots
+    public static final RegistryObject<Item> WARRIOR_BOOTS = ITEMS.register("warrior_boots",
+            () -> new WarriorBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
+                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+
+    //Boots
+    public static final RegistryObject<Item> SORCERER_BOOTS = ITEMS.register("sorcerer_boots",
+            () -> new SorcererBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
+                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 }

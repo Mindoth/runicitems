@@ -49,7 +49,10 @@ public class CommonEvents {
                 LivingEntity source = (LivingEntity)event.getSource().getEntity();
                 if ( !event.getSource().isMagic() && event.getSource().isProjectile() ) {
                     if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.ARCHER_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 4);
+                        event.setAmount(event.getAmount() + 3);
+                    }
+                    else if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.EAGLE_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + 6);
                     }
                 }
             }
@@ -63,7 +66,10 @@ public class CommonEvents {
                 LivingEntity source = (LivingEntity)event.getSource().getEntity();
                 if ( !event.getSource().isMagic() && event.getSource().getDirectEntity() == source ) {
                     if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.FIGHTER_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 4);
+                        event.setAmount(event.getAmount() + 3);
+                    }
+                    else if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.WARRIOR_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + 6);
                     }
                 }
             }
@@ -77,7 +83,10 @@ public class CommonEvents {
                 LivingEntity source = (LivingEntity)event.getSource().getEntity();
                 if ( event.getSource().isMagic() ) {
                     if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.WIZARD_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 4);
+                        event.setAmount(event.getAmount() + 3);
+                    }
+                    else if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.SORCERER_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + 6);
                     }
                 }
             }
