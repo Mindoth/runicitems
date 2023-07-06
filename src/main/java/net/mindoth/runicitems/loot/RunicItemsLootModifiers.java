@@ -15,8 +15,8 @@ public class RunicItemsLootModifiers {
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> ARCHER_BOOTS_FROM_BURIED_TREASURE =
             LOOT_MODIFIER_SERIALIZERS.register("archer_boots_from_buried_treasure", ArcherbootsAdditionModifier.CODEC);
 
-    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> FIGHTER_BOOTS_FROM_VINDICATOR =
-            LOOT_MODIFIER_SERIALIZERS.register("fighter_boots_from_vindicator", FighterbootsAdditionModifier.CODEC);
+    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> FIGHTER_BOOTS_FROM_RAVAGER =
+            LOOT_MODIFIER_SERIALIZERS.register("fighter_boots_from_ravager", FighterbootsAdditionModifier.CODEC);
 
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> TABLET_FROM_EVOKER =
             LOOT_MODIFIER_SERIALIZERS.register("tablet_from_evoker", StonetabletAdditionModifier.CODEC);

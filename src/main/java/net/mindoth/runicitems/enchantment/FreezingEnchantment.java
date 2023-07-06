@@ -39,6 +39,11 @@ public class FreezingEnchantment extends Enchantment {
     }
 
     @Override
+    public boolean isDiscoverable() {
+        return true;
+    }
+
+    @Override
     public void doPostAttack(LivingEntity pAttacker, Entity pTarget, int pLevel) {
         if ( !pAttacker.level.isClientSide ) {
             if ( pTarget instanceof LivingEntity ) {
@@ -51,7 +56,7 @@ public class FreezingEnchantment extends Enchantment {
                             target.setTicksFrozen(target.getTicksFrozen() + (Math.round(source.getAttackStrengthScale(0.5f) * 280)));
                         }
                         else {
-                            target.setTicksFrozen(target.getTicksFrozen() + 280);
+                            target.setTicksFrozen(target.getTicksFrozen() + 300);
                         }
                     }
                 }

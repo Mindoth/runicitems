@@ -2,9 +2,9 @@
   "conditions": [
     {
       "condition": "forge:loot_table_id",
-      "loot_table_id": "minecraft:entities/vindicator"
+      "loot_table_id": "minecraft:entities/ravager"
     }
   ],
   "item": "runicitems:fighter_boots",
-  "type": "runicitems:fighter_boots_from_vindicator"
+  "type": "runicitems:fighter_boots_from_ravager"
 }

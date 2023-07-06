@@ -28,6 +28,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -42,10 +43,28 @@ public class CommonEvents {
         if ( !event.getEntity().level.isClientSide ) {
             if ( event.getSource().getEntity() instanceof LivingEntity ) {
                 LivingEntity source = (LivingEntity)event.getSource().getEntity();
+                LivingEntity target =  event.getEntity();
                 Item item = source.getMainHandItem().getItem();
                 if ( item == RunicItemsItems.MALLET.get() && source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) > 0 ) {
-                    event.getSource().bypassArmor();
-                    event.setAmount(event.getAmount() + (source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) * 2) );
+                    int tier = source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get());
+                    float coverage = target.getArmorCoverPercentage();
+                    boolean flag = false;
+                    if ( coverage <= 0.25f && tier >= 1 ) {
+                        flag = true;
+                    }
+                    else if ( coverage <= 0.50f && tier >= 2 ) {
+                        flag = true;
+                    }
+                    else if ( coverage <= 0.75f && tier >= 3 ) {
+                        flag = true;
+                    }
+                    else if ( coverage <= 1.00f && tier >= 4 ) {
+                        flag = true;
+                    }
+                    if ( flag ) {
+                        event.getSource().bypassArmor();
+                        event.setAmount(event.getAmount() + (source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) * 2) );
+                    }
                 }
             }
         }
@@ -145,6 +164,8 @@ public class CommonEvents {
                     }
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1, 0.5f);
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 1, 0.5f);
                     itemStack.shrink(1);
                     event.setAmount(0);
                     player.setHealth(1.0F);

@@ -26,7 +26,6 @@ public class MalletItem extends Item implements Vanishable {
         this.defaultModifiers = builder.build();
     }
 
-
     @Override
     public boolean canAttackBlock(BlockState p_43409_, Level p_43410_, BlockPos p_43411_, Player p_43412_) {
         return !p_43412_.isCreative();

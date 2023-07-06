@@ -23,11 +23,16 @@ public class TargetCrackerEnchantment extends Enchantment {
 
     @Override
     public int getMaxLevel() {
-        return 3;
+        return 4;
     }
 
     @Override
     public boolean canEnchant(ItemStack pStack) {
         return pStack.getItem() instanceof MalletItem;
+    }
+
+    @Override
+    public boolean isDiscoverable() {
+        return true;
     }
 }
