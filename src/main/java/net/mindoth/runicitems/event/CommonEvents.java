@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -37,6 +39,32 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
 public class CommonEvents {
+
+    @SubscribeEvent
+    public static void thawMobs(final LivingEvent.LivingTickEvent event) {
+        if ( event.getEntity() instanceof Mob mob ) {
+            if ( mob.isNoAi() ) {
+                if ( mob.getTicksFrozen() > 100 && mob.getTicksFrozen() % 10 == 0 ) {
+                    int height = (int) mob.getBoundingBox().getYsize();
+                    if ( !mob.level.isClientSide ) {
+                        ServerLevel level = (ServerLevel)mob.level;
+                        for ( int j = 0; j < 8 + (8 * height); ++j ) {
+                            level.sendParticles(ParticleTypes.SNOWFLAKE,
+                                    mob.getBoundingBox().getCenter().x,
+                                    mob.getBoundingBox().getCenter().y,
+                                    mob.getBoundingBox().getCenter().z, 1,
+                                    mob.getBoundingBox().getXsize() / 2,
+                                    mob.getBoundingBox().getYsize() / 4,
+                                    mob.getBoundingBox().getZsize() / 2, 0);
+                        }
+                    }
+                }
+                if ( mob.getTicksFrozen() <= 100 ) {
+                    mob.setNoAi(false);
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void malletTargetCracker(final LivingHurtEvent event) {
@@ -62,7 +90,6 @@ public class CommonEvents {
                         flag = true;
                     }
                     if ( flag ) {
-                        event.getSource().bypassArmor();
                         event.setAmount(event.getAmount() + (source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) * 2) );
                     }
                 }
