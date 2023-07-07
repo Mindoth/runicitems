@@ -210,8 +210,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void undeadFriendly(LivingEvent.LivingVisibilityEvent event) {
-        if ( event.getEntity() instanceof Player ) {
-            Player player = (Player)event.getEntity();
+        if ( event.getEntity() instanceof Player player ) {
             CompoundTag playerData = player.getPersistentData();
             CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
             if ( event.getLookingEntity() instanceof Mob ) {
@@ -232,7 +231,7 @@ public class CommonEvents {
             if ( data.getBoolean(TAG_UNDEAD) ) {
                 //Burn in the sun
                 if ( !player.isInWaterOrRain() && !player.isOnFire() && player.level.canSeeSky(player.blockPosition()) && player.level.isDay() && !player.hasItemInSlot(EquipmentSlot.HEAD) ) {
-                    player.setSecondsOnFire(2);
+                    player.setSecondsOnFire(8);
                 }
                 //Breathe in water
                 if ( player.isEyeInFluid(FluidTags.WATER) && player.getAirSupply() < player.getMaxAirSupply() ) {

@@ -15,20 +15,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class FighterbootsAdditionModifier extends LootModifier {
-    public static final Supplier<Codec<FighterbootsAdditionModifier>> CODEC = Suppliers.memoize(()
+public class AncientstaffAdditionModifier extends LootModifier {
+    public static final Supplier<Codec<AncientstaffAdditionModifier>> CODEC = Suppliers.memoize(()
             -> RecordCodecBuilder.create(inst -> codecStart(inst).and(ForgeRegistries.ITEMS.getCodec()
-            .fieldOf("item").forGetter(m -> m.item)).apply(inst, FighterbootsAdditionModifier::new)));
+            .fieldOf("item").forGetter(m -> m.item)).apply(inst, AncientstaffAdditionModifier::new)));
     private final Item item;
 
-    protected FighterbootsAdditionModifier(LootItemCondition[] conditionsIn, Item item) {
+    protected AncientstaffAdditionModifier(LootItemCondition[] conditionsIn, Item item) {
         super(conditionsIn);
         this.item = item;
     }
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if(context.getRandom().nextFloat() >= 0.90f) {
+        if(context.getRandom().nextFloat() >= 0.75f) {
             generatedLoot.add(new ItemStack(item));
         }
         return generatedLoot;

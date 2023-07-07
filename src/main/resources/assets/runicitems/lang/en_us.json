@@ -7,9 +7,13 @@
   "item.runicitems.eagle_boots": "Eagle Boots",
   "item.runicitems.warrior_boots": "Warrior Boots",
   "item.runicitems.sorcerer_boots": "Sorcerer Boots",
+  "item.runicitems.ancient_staff": "Ancient Staff",
 
   "enchantment.runicitems.freezing": "Freezing",
   "enchantment.runicitems.target_cracker": "Target Cracker",
+  "enchantment.runicitems.radius": "Radius",
+  "enchantment.runicitems.ice_barrage": "Ice Barrage",
+  "enchantment.runicitems.blood_barrage": "Blood Barrage",
 
   "tooltip.runicitems.archer_boots": "\u00A77Increases Projectile Damage\u00A7r",
   "tooltip.runicitems.fighter_boots": "\u00A77Increases Melee Damage\u00A7r",

@@ -19,6 +19,15 @@ public class StaffItem extends Item {
         return 72000;
     }
 
+    public static float getPower(int pCharge) {
+        float f = (float)pCharge / 20.0F;
+        f = (f * f + f * 2.0F) / 3.0F;
+        if (f >= 3.0F) {
+            f = 3.0F;
+        }
+        return f;
+    }
+
     @Override
     public UseAnim getUseAnimation(ItemStack pStack) {
         return UseAnim.BOW;

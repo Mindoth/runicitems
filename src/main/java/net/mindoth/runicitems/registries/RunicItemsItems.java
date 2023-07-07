@@ -41,4 +41,7 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> SORCERER_BOOTS = ITEMS.register("sorcerer_boots",
             () -> new SorcererBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+
+    public static final RegistryObject<Item> ANCIENT_STAFF = ITEMS.register("ancient_staff",
+            () -> new AncientStaffItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).durability(500)));
 }
