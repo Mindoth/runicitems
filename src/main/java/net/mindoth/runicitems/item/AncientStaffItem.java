@@ -98,7 +98,7 @@ public class AncientStaffItem extends StaffItem {
                     SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 2, 1);
         }
         for ( LivingEntity target : targets ) {
-            if ( target != player && !target.isAlliedTo(player) ) {
+            if ( target != player && !target.isAlliedTo(player) && player.hasLineOfSight(target) ) {
                 target.hurt(DamageSource.MAGIC, 4 + (power * 2));
                 player.heal(power);
                 ServerLevel level = (ServerLevel) pLevel;
@@ -130,13 +130,15 @@ public class AncientStaffItem extends StaffItem {
     public void iceBarrage( Player player, Level pLevel, ItemStack pStack, double x, double y, double z, double size, int power ) {
         ArrayList<LivingEntity> targets = (ArrayList<LivingEntity>) pLevel.getEntitiesOfClass(LivingEntity.class, new AABB(x - size, y - size, z - size, x + size, y + size, z + size));
         for ( LivingEntity target : targets ) {
-            if ( target != player && !target.isAlliedTo(player) ) {
+            if ( target != player && !target.isAlliedTo(player) && player.hasLineOfSight(target) ) {
                 int height = (int) target.getBoundingBox().getYsize();
                 target.hurt(DamageSource.MAGIC, 2 + (power * 2));
                 target.setTicksFrozen(280 * power);
-                if ( target instanceof Mob mob && !(mob instanceof EnderDragon || mob instanceof WitherBoss || mob instanceof ElderGuardian) ) {
-                    if (!mob.isNoAi()) {
-                        mob.setNoAi(true);
+                if ( RunicItemsCommonConfig.FREEZE_AI.get() ) {
+                    if ( target instanceof Mob mob && !(mob instanceof EnderDragon || mob instanceof WitherBoss || mob instanceof ElderGuardian) ) {
+                        if (!mob.isNoAi()) {
+                            mob.setNoAi(true);
+                        }
                     }
                 }
                 ServerLevel level = (ServerLevel)pLevel;

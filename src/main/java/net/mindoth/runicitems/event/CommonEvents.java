@@ -2,6 +2,7 @@ package net.mindoth.runicitems.event;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.mindoth.runicitems.RunicItems;
+import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.minecraft.core.particles.ParticleTypes;
@@ -43,7 +44,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void weaponsOnMobs(EntityJoinLevelEvent event) {
-        if ( event.getEntity() instanceof WitherSkeleton) {
+        if ( event.getEntity() instanceof WitherSkeleton ) {
             LivingEntity witherSkeleton = (LivingEntity)event.getEntity();
             if ( witherSkeleton.getRandom().nextFloat() <= 0.15f ) {
                 witherSkeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
@@ -53,9 +54,10 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void thawMobs(final LivingEvent.LivingTickEvent event) {
-        if ( event.getEntity() instanceof Mob mob ) {
-            if ( mob.isNoAi() ) {
-                if ( mob.getTicksFrozen() > 100 && mob.getTicksFrozen() % 10 == 0 ) {
+        if ( RunicItemsCommonConfig.FREEZE_AI.get() ) {
+            if ( event.getEntity() instanceof Mob mob ) {
+                if ( mob.isNoAi() ) {
+                /*if ( mob.getTicksFrozen() > 100 && mob.getTicksFrozen() % 10 == 0 ) {
                     int height = (int) mob.getBoundingBox().getYsize();
                     if ( !mob.level.isClientSide ) {
                         ServerLevel level = (ServerLevel)mob.level;
@@ -69,9 +71,10 @@ public class CommonEvents {
                                     mob.getBoundingBox().getZsize() / 2, 0);
                         }
                     }
-                }
-                if ( mob.getTicksFrozen() <= 100 ) {
-                    mob.setNoAi(false);
+                }*/
+                    if (mob.getTicksFrozen() <= 100) {
+                        mob.setNoAi(false);
+                    }
                 }
             }
         }
@@ -80,8 +83,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void malletTargetCracker(final LivingHurtEvent event) {
         if ( !event.getEntity().level.isClientSide ) {
-            if ( event.getSource().getEntity() instanceof LivingEntity ) {
-                LivingEntity source = (LivingEntity)event.getSource().getEntity();
+            if ( event.getSource().getEntity() instanceof LivingEntity source ) {
                 LivingEntity target =  event.getEntity();
                 Item item = source.getMainHandItem().getItem();
                 if ( item == RunicItemsItems.MALLET.get() && source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) > 0 ) {
@@ -101,7 +103,7 @@ public class CommonEvents {
                         flag = true;
                     }
                     if ( flag ) {
-                        event.setAmount(event.getAmount() + (source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) * 2) );
+                        event.setAmount(event.getAmount() + ((1.5f * (tier - 1)) + 1.5f));
                     }
                 }
             }
