@@ -29,7 +29,7 @@ public class ArcherbootsAdditionModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if(context.getRandom().nextFloat() >= 0.80f) {
+        if(context.getRandom().nextFloat() <= 0.20f) {
             generatedLoot.add(new ItemStack(item));
         }
         return generatedLoot;

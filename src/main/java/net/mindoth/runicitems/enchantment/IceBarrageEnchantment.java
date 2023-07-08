@@ -34,6 +34,11 @@ public class IceBarrageEnchantment extends Enchantment {
     }
 
     @Override
+    public boolean isDiscoverable() {
+        return false;
+    }
+
+    @Override
     public boolean isTradeable() {
         return false;
     }
@@ -41,11 +46,6 @@ public class IceBarrageEnchantment extends Enchantment {
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack) {
         return stack.canApplyAtEnchantingTable(this);
-    }
-
-    @Override
-    public boolean isDiscoverable() {
-        return true;
     }
 
     @Override

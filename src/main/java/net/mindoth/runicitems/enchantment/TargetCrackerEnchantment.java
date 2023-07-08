@@ -33,6 +33,11 @@ public class TargetCrackerEnchantment extends Enchantment {
 
     @Override
     public boolean isDiscoverable() {
-        return true;
+        return false;
+    }
+
+    @Override
+    public boolean isTradeable() {
+        return false;
     }
 }

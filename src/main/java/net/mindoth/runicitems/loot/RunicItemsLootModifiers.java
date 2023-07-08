@@ -21,8 +21,8 @@ public class RunicItemsLootModifiers {
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> TABLET_FROM_EVOKER =
             LOOT_MODIFIER_SERIALIZERS.register("tablet_from_evoker", StonetabletAdditionModifier.CODEC);
 
-    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> ANCIENT_STAFF_FROM_BASTION_AND_STRONGHOLD =
-            LOOT_MODIFIER_SERIALIZERS.register("ancient_staff_from_nether_bridge_and_stronghold", AncientstaffAdditionModifier.CODEC);
+    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> ANCIENT_STAFF_FROM_ANCIENT_CITY =
+            LOOT_MODIFIER_SERIALIZERS.register("ancient_staff_from_ancient_city", AncientstaffAdditionModifier.CODEC);
 
     public static void register(IEventBus bus) {
         LOOT_MODIFIER_SERIALIZERS.register(bus);

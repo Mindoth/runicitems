@@ -30,9 +30,4 @@ public class RadiusEnchantment extends Enchantment {
     public boolean canEnchant(ItemStack pStack) {
         return pStack.getItem() instanceof StaffItem;
     }
-
-    @Override
-    public boolean isDiscoverable() {
-        return true;
-    }
 }

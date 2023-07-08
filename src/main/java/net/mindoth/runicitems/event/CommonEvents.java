@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.monster.Vindicator;
+import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +40,16 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
 public class CommonEvents {
+
+    @SubscribeEvent
+    public static void weaponsOnMobs(EntityJoinLevelEvent event) {
+        if ( event.getEntity() instanceof WitherSkeleton) {
+            LivingEntity witherSkeleton = (LivingEntity)event.getEntity();
+            if ( witherSkeleton.getRandom().nextFloat() <= 0.15f ) {
+                witherSkeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void thawMobs(final LivingEvent.LivingTickEvent event) {
@@ -158,16 +169,6 @@ public class CommonEvents {
             trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
                     new ItemStack(Items.EMERALD, 64),
                     stack, 12, 30, 0.05F));
-        }
-    }
-
-    @SubscribeEvent
-    public static void malletVindicator(EntityJoinLevelEvent event) {
-        if ( event.getEntity() instanceof Vindicator) {
-            LivingEntity vindicator = (LivingEntity)event.getEntity();
-            if ( vindicator.getRandom().nextFloat() >= 0.85f ) {
-                vindicator.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
-            }
         }
     }
 

@@ -1,0 +1,10 @@
+{
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/ancient_city"
+    }
+  ],
+  "item": "runicitems:ancient_staff",
+  "type": "runicitems:ancient_staff_from_ancient_city"
+}
