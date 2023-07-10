@@ -29,7 +29,7 @@ public class StonetabletAdditionModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if ( generatedLoot.get(0).getItem() == Items.TOTEM_OF_UNDYING && context.getRandom().nextFloat() <= 0.25f ) {
+        if ( generatedLoot.get(0).getItem() == Items.TOTEM_OF_UNDYING && context.getRandom().nextFloat() <= 0.10f ) {
             generatedLoot.remove(0);
             generatedLoot.add(new ItemStack(item));
         }

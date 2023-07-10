@@ -28,7 +28,7 @@ public class FighterbootsAdditionModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if(context.getRandom().nextFloat() <= 0.10f) {
+        if(context.getRandom().nextFloat() <= 0.25f) {
             generatedLoot.add(new ItemStack(item));
         }
         return generatedLoot;
