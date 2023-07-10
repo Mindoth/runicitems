@@ -64,7 +64,7 @@ public class AncientStaffItem extends StaffItem {
             int powerScale = RunicItemsCommonConfig.BARRAGE_POWER_SCALE.get();
             double radiusScale = 2;
             if ( EnchantmentHelper.getItemEnchantmentLevel(RunicItemsEnchantments.RADIUS.get(), pStack) > 0 ) {
-                radiusScale = radiusScale + ((double)EnchantmentHelper.getItemEnchantmentLevel(RunicItemsEnchantments.RADIUS.get(), pStack) / 2);
+                radiusScale += EnchantmentHelper.getItemEnchantmentLevel(RunicItemsEnchantments.RADIUS.get(), pStack);
             }
             if ( f >= 3.0D ) {
                 if ( EnchantmentHelper.getItemEnchantmentLevel(RunicItemsEnchantments.BLOOD_BARRAGE.get(), pStack) > 0 ) {
@@ -98,7 +98,7 @@ public class AncientStaffItem extends StaffItem {
                     SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 2, 1);
         }
         for ( LivingEntity target : targets ) {
-            if ( target != player && !target.isAlliedTo(player) && player.hasLineOfSight(target) ) {
+            if ( target != player && !target.isAlliedTo(player) && player.hasLineOfSight(target) && player.canAttack(target) ) {
                 target.hurt(DamageSource.MAGIC, 4 + (power * 2));
                 player.heal(power);
                 ServerLevel level = (ServerLevel) pLevel;
@@ -130,7 +130,7 @@ public class AncientStaffItem extends StaffItem {
     public void iceBarrage( Player player, Level pLevel, ItemStack pStack, double x, double y, double z, double size, int power ) {
         ArrayList<LivingEntity> targets = (ArrayList<LivingEntity>) pLevel.getEntitiesOfClass(LivingEntity.class, new AABB(x - size, y - size, z - size, x + size, y + size, z + size));
         for ( LivingEntity target : targets ) {
-            if ( target != player && !target.isAlliedTo(player) && player.hasLineOfSight(target) ) {
+            if ( target != player && !target.isAlliedTo(player) && player.hasLineOfSight(target) && player.canAttack(target) ) {
                 int height = (int) target.getBoundingBox().getYsize();
                 target.hurt(DamageSource.MAGIC, 2 + (power * 2));
                 target.setTicksFrozen(280 * power);
