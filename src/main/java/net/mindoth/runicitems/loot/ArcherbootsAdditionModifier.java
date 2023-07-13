@@ -1,42 +1,55 @@
 package net.mindoth.runicitems.loot;
 
 
-import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
+import com.google.gson.JsonObject;
+import net.mindoth.runicitems.config.RunicItemsCommonConfig;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import java.util.List;
 
 public class ArcherbootsAdditionModifier extends LootModifier {
-    public static final Supplier<Codec<ArcherbootsAdditionModifier>> CODEC = Suppliers.memoize(()
-            -> RecordCodecBuilder.create(inst -> codecStart(inst).and(ForgeRegistries.ITEMS.getCodec()
-            .fieldOf("item").forGetter(m -> m.item)).apply(inst, ArcherbootsAdditionModifier::new)));
-    private final Item item;
+    private final Item addedItem;
 
-    protected ArcherbootsAdditionModifier(LootItemCondition[] conditionsIn, Item item) {
+    protected ArcherbootsAdditionModifier(ILootCondition[] conditionsIn, Item addeditemIn) {
         super(conditionsIn);
-        this.item = item;
+        this.addedItem = addeditemIn;
     }
 
+    @Nonnull
     @Override
-    protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if(context.getRandom().nextFloat() <= 0.20f) {
-            generatedLoot.add(new ItemStack(item));
+    public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+        if ( context.getRandom().nextDouble() <= RunicItemsCommonConfig.ARCHERBOOTS_CHANCE.get() ) {
+            generatedLoot.clear();
+            generatedLoot.add(new ItemStack(addedItem, 1));
         }
         return generatedLoot;
+
     }
 
-    @Override
-    public Codec<? extends IGlobalLootModifier> codec() {
-        return CODEC.get();
+    public static class Serializer extends GlobalLootModifierSerializer<ArcherbootsAdditionModifier> {
+
+        @Override
+        public ArcherbootsAdditionModifier read(ResourceLocation location, JsonObject object, ILootCondition[] conditionsIn) {
+            Item addedItem = ForgeRegistries.ITEMS.getValue(
+                    new ResourceLocation((JSONUtils.getAsString(object, "item"))));
+            return new ArcherbootsAdditionModifier(conditionsIn, addedItem);
+        }
+
+        @Override
+        public JsonObject write(ArcherbootsAdditionModifier instance) {
+            JsonObject json = makeConditions(instance.conditions);
+            json.addProperty("item", ForgeRegistries.ITEMS.getKey(instance.addedItem).toString());
+            return new JsonObject();
+        }
     }
 }

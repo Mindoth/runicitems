@@ -1,54 +1,49 @@
 package net.mindoth.runicitems.client.models.armor;
 
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
+import net.mindoth.shadowizardlib.client.models.ArmorModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.inventory.EquipmentSlotType;
 
 public class Boots2Model<T extends Entity> extends ArmorModel {
+    private ModelRenderer cube_r1;
+    private ModelRenderer cube_r2;
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "boots2_armor"), "main");
+    public Boots2Model(EquipmentSlotType slot) {
+        super(slot);
+        this.texWidth = 32;
+        this.texHeight = 32;
 
-    public Boots2Model(ModelPart part) {
-        super(part);
-    }
+        RightFoot = new ModelRenderer(this);
+        RightFoot.setPos(0.0F, 24.0F, 0.0F);
+        RightFoot.texOffs(0, 0).addBox(-3.0F, 13.0F, -3.0F, 6.0F, 0.0F, 6.0F, 0.0F, false);
+        RightFoot.texOffs(0, 6).addBox(-3.0F, 7.0F, -3.0F, 0.0F, 6.0F, 6.0F, 0.0F, false);
+        RightFoot.texOffs(18, 0).addBox(-3.0F, 7.0F, 3.0F, 6.0F, 6.0F, 0.0F, 0.0F, false);
+        RightFoot.texOffs(0, 12).addBox(3.0F, 7.0F, -3.0F, 0.0F, 6.0F, 6.0F, 0.0F, false);
+        RightFoot.texOffs(18, 6).addBox(-3.0F, 7.0F, -3.0F, 6.0F, 6.0F, 0.0F, 0.0F, false);
 
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0), 0);
-        PartDefinition root = createHumanoidAlias(mesh);
-        PartDefinition right_foot = root.getChild("RightBoot");
-        PartDefinition left_foot = root.getChild("LeftBoot");
+        cube_r1 = new ModelRenderer(this);
+        cube_r1.setPos(-2.0F, 11.0F, 0.0F);
+        RightFoot.addChild(cube_r1);
+        setRotation(cube_r1, 0.0F, -0.1309F, -0.1309F);
+        cube_r1.texOffs(0, 0).addBox(-0.8F, -5.0F, 1.0F, 0.0F, 2.0F, 2.0F, 0.0F, false);
+        cube_r1.texOffs(0, 2).addBox(-0.8F, -4.0F, 0.0F, 0.0F, 2.0F, 2.0F, 0.0F, false);
+        cube_r1.texOffs(0, 4).addBox(-0.8F, -6.0F, 2.0F, 0.0F, 2.0F, 2.0F, 0.0F, false);
 
-        PartDefinition right = right_foot.addOrReplaceChild("RightBoot", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -11.0F, -3.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 6).addBox(-3.0F, -17.0F, -3.0F, 0.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(18, 0).addBox(-3.0F, -17.0F, 3.0F, 6.0F, 6.0F, 0.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 12).addBox(3.0F, -17.0F, -3.0F, 0.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(18, 6).addBox(-3.0F, -17.0F, -3.0F, 6.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        LeftFoot = new ModelRenderer(this);
+        LeftFoot.setPos(0.0F, 24.0F, 0.0F);
+        LeftFoot.texOffs(12, 24).addBox(-3.0F, 7.0F, -3.0F, 6.0F, 6.0F, 0.0F, 0.0F, false);
+        LeftFoot.texOffs(12, 12).addBox(3.0F, 7.0F, -3.0F, 0.0F, 6.0F, 6.0F, 0.0F, false);
+        LeftFoot.texOffs(0, 24).addBox(-3.0F, 7.0F, 3.0F, 6.0F, 6.0F, 0.0F, 0.0F, false);
+        LeftFoot.texOffs(12, 6).addBox(-3.0F, 7.0F, -3.0F, 0.0F, 6.0F, 6.0F, 0.0F, false);
+        LeftFoot.texOffs(0, 6).addBox(-3.0F, 13.0F, -3.0F, 6.0F, 0.0F, 6.0F, 0.0F, false);
 
-        PartDefinition cube_r1 = right_foot.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-0.4F, 7.0F, 1.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 2).addBox(-0.4F, 8.0F, 0.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 4).addBox(-0.4F, 6.0F, 2.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.0F, 0.0F, 0.0F, -0.1309F, -0.1309F));
-
-        PartDefinition left = left_foot.addOrReplaceChild("LeftBoot", CubeListBuilder.create().texOffs(12, 24).addBox(-3.0F, -17.0F, -3.0F, 6.0F, 6.0F, 0.0F, new CubeDeformation(0.0F))
-                .texOffs(12, 12).addBox(3.0F, -17.0F, -3.0F, 0.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 24).addBox(-3.0F, -17.0F, 3.0F, 6.0F, 6.0F, 0.0F, new CubeDeformation(0.0F))
-                .texOffs(12, 6).addBox(-3.0F, -17.0F, -3.0F, 0.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 6).addBox(-3.0F, -11.0F, -3.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
-
-        PartDefinition cube_r4 = left_foot.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(24, 18).addBox(4.4F, 6.0F, 2.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(24, 20).addBox(4.4F, 7.0F, 1.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(24, 22).addBox(4.4F, 8.0F, 0.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.1309F, 0.1309F));
-
-        return LayerDefinition.create(mesh, 32, 32);
-    }
-
-
-    public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
-        modelRenderer.xRot = x;
-        modelRenderer.yRot = y;
-        modelRenderer.zRot = z;
+        cube_r2 = new ModelRenderer(this);
+        cube_r2.setPos(-2.0F, 11.0F, 0.0F);
+        LeftFoot.addChild(cube_r2);
+        setRotation(cube_r2, 0.0F, 0.1309F, 0.1309F);
+        cube_r2.texOffs(24, 18).addBox(4.8F, -6.0F, 2.0F, 0.0F, 2.0F, 2.0F, 0.0F, false);
+        cube_r2.texOffs(24, 20).addBox(4.8F, -5.0F, 1.0F, 0.0F, 2.0F, 2.0F, 0.0F, false);
+        cube_r2.texOffs(24, 22).addBox(4.8F, -4.0F, 0.0F, 0.0F, 2.0F, 2.0F, 0.0F, false);
     }
 }

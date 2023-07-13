@@ -5,34 +5,32 @@ import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.merchant.villager.VillagerProfession;
+import net.minecraft.entity.merchant.villager.VillagerTrades;
+import net.minecraft.entity.monster.WitherSkeletonEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.MerchantOffer;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.monster.Vindicator;
-import net.minecraft.world.entity.monster.WitherSkeleton;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,39 +41,11 @@ import java.util.List;
 public class CommonEvents {
 
     @SubscribeEvent
-    public static void weaponsOnMobs(EntityJoinLevelEvent event) {
-        if ( event.getEntity() instanceof WitherSkeleton ) {
+    public static void weaponsOnMobs(EntityJoinWorldEvent event) {
+        if ( event.getEntity() instanceof WitherSkeletonEntity ) {
             LivingEntity witherSkeleton = (LivingEntity)event.getEntity();
-            if ( witherSkeleton.getRandom().nextFloat() <= 0.15f ) {
-                witherSkeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void thawMobs(final LivingEvent.LivingTickEvent event) {
-        if ( RunicItemsCommonConfig.FREEZE_AI.get() ) {
-            if ( event.getEntity() instanceof Mob mob ) {
-                if ( mob.isNoAi() ) {
-                /*if ( mob.getTicksFrozen() > 100 && mob.getTicksFrozen() % 10 == 0 ) {
-                    int height = (int) mob.getBoundingBox().getYsize();
-                    if ( !mob.level.isClientSide ) {
-                        ServerLevel level = (ServerLevel)mob.level;
-                        for ( int j = 0; j < 8 + (8 * height); ++j ) {
-                            level.sendParticles(ParticleTypes.SNOWFLAKE,
-                                    mob.getBoundingBox().getCenter().x,
-                                    mob.getBoundingBox().getCenter().y,
-                                    mob.getBoundingBox().getCenter().z, 1,
-                                    mob.getBoundingBox().getXsize() / 2,
-                                    mob.getBoundingBox().getYsize() / 4,
-                                    mob.getBoundingBox().getZsize() / 2, 0);
-                        }
-                    }
-                }*/
-                    if (mob.getTicksFrozen() <= 100) {
-                        mob.setNoAi(false);
-                    }
-                }
+            if ( witherSkeleton.getRandom().nextFloat() <= RunicItemsCommonConfig.MALLET_CHANCE.get() ) {
+                witherSkeleton.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
             }
         }
     }
@@ -83,11 +53,13 @@ public class CommonEvents {
     @SubscribeEvent
     public static void malletTargetCracker(final LivingHurtEvent event) {
         if ( !event.getEntity().level.isClientSide ) {
-            if ( event.getSource().getEntity() instanceof LivingEntity source ) {
-                LivingEntity target =  event.getEntity();
+            if ( event.getSource().getEntity() instanceof LivingEntity ) {
+                LivingEntity source = (LivingEntity)event.getSource().getEntity();
+                LivingEntity target =  event.getEntityLiving();
                 Item item = source.getMainHandItem().getItem();
-                if ( item == RunicItemsItems.MALLET.get() && source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get()) > 0 ) {
-                    int tier = source.getMainHandItem().getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get());
+
+                if ( item == RunicItemsItems.MALLET.get() && EnchantmentHelper.getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get(), source) > 0 ) {
+                    int tier = EnchantmentHelper.getEnchantmentLevel(RunicItemsEnchantments.TARGET_CRACKER.get(), source);
                     float coverage = target.getArmorCoverPercentage();
                     boolean flag = false;
                     if ( coverage <= 0.25f && tier >= 1 ) {
@@ -116,11 +88,11 @@ public class CommonEvents {
             if ( event.getSource().getEntity() instanceof LivingEntity  ) {
                 LivingEntity source = (LivingEntity)event.getSource().getEntity();
                 if ( !event.getSource().isMagic() && event.getSource().isProjectile() ) {
-                    if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.ARCHER_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 3);
+                    if ( source.getItemBySlot(EquipmentSlotType.FEET).getItem() == RunicItemsItems.ARCHER_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + RunicItemsCommonConfig.ARCHERBOOTS_BONUS.get());
                     }
-                    else if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.EAGLE_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 6);
+                    else if ( source.getItemBySlot(EquipmentSlotType.FEET).getItem() == RunicItemsItems.EAGLE_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + RunicItemsCommonConfig.EAGLEBOOTS_BONUS.get());
                     }
                 }
             }
@@ -133,11 +105,11 @@ public class CommonEvents {
             if ( event.getSource().getEntity() instanceof LivingEntity  ) {
                 LivingEntity source = (LivingEntity)event.getSource().getEntity();
                 if ( !event.getSource().isMagic() && event.getSource().getDirectEntity() == source ) {
-                    if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.FIGHTER_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 3);
+                    if ( source.getItemBySlot(EquipmentSlotType.FEET).getItem() == RunicItemsItems.FIGHTER_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + RunicItemsCommonConfig.FIGHTERBOOTS_BONUS.get());
                     }
-                    else if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.WARRIOR_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 6);
+                    else if ( source.getItemBySlot(EquipmentSlotType.FEET).getItem() == RunicItemsItems.WARRIOR_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + RunicItemsCommonConfig.WARRIORBOOTS_BONUS.get());
                     }
                 }
             }
@@ -150,11 +122,11 @@ public class CommonEvents {
             if ( event.getSource().getEntity() instanceof LivingEntity  ) {
                 LivingEntity source = (LivingEntity)event.getSource().getEntity();
                 if ( event.getSource().isMagic() ) {
-                    if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.WIZARD_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 3);
+                    if ( source.getItemBySlot(EquipmentSlotType.FEET).getItem() == RunicItemsItems.WIZARD_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + RunicItemsCommonConfig.WIZARDBOOTS_BONUS.get());
                     }
-                    else if ( source.getItemBySlot(EquipmentSlot.FEET).getItem() == RunicItemsItems.SORCERER_BOOTS.get() ) {
-                        event.setAmount(event.getAmount() + 6);
+                    else if ( source.getItemBySlot(EquipmentSlotType.FEET).getItem() == RunicItemsItems.SORCERER_BOOTS.get() ) {
+                        event.setAmount(event.getAmount() + RunicItemsCommonConfig.SORCERERBOOTS_BONUS.get());
                     }
                 }
             }
@@ -163,14 +135,16 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void addCustomTrades(VillagerTradesEvent event) {
-        if ( event.getType() == VillagerProfession.CLERIC ) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-            ItemStack stack = new ItemStack(RunicItemsItems.WIZARD_BOOTS.get(), 1);
-            int villagerLevel = 5;
+        if ( RunicItemsCommonConfig.WIZARDBOOTS_TRADE.get() ) {
+            if ( event.getType() == VillagerProfession.CLERIC ) {
+                Int2ObjectMap<List<VillagerTrades.ITrade>> trades = event.getTrades();
+                ItemStack stack = new ItemStack(RunicItemsItems.WIZARD_BOOTS.get(), 1);
+                int villagerLevel = 5;
 
-            trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-                    new ItemStack(Items.EMERALD, 64),
-                    stack, 12, 30, 0.05F));
+                trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
+                        new ItemStack(Items.EMERALD, 64),
+                        stack, 12, 30, 0.05F));
+            }
         }
     }
 
@@ -178,11 +152,11 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void stoneTabletEffect(LivingDamageEvent event) {
-        if ( event.getEntity() instanceof Player && !event.getEntity().level.isClientSide ) {
-            Player player = (Player)event.getEntity();
-            CompoundTag playerData = player.getPersistentData();
-            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
-            ServerLevel level = (ServerLevel)player.level;
+        if ( event.getEntity() instanceof PlayerEntity && !event.getEntity().level.isClientSide ) {
+            PlayerEntity player = (PlayerEntity)event.getEntity();
+            CompoundNBT playerData = player.getPersistentData();
+            CompoundNBT data = playerData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+            ServerWorld level = (ServerWorld)player.level;
             ItemStack itemStack;
             if ( player.getMainHandItem().getItem() == RunicItemsItems.STONE_TABLET.get() || player.getOffhandItem().getItem() == RunicItemsItems.STONE_TABLET.get() ) {
                 if ( event.getAmount() >= player.getHealth() ) {
@@ -193,18 +167,18 @@ public class CommonEvents {
                         itemStack = player.getMainHandItem();
                     }
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1, 0.5f);
+                            SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 1, 0.5f);
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 1, 0.5f);
+                            SoundEvents.WITHER_SPAWN, SoundCategory.PLAYERS, 1, 0.5f);
                     itemStack.shrink(1);
                     event.setAmount(0);
                     player.setHealth(1.0F);
                     player.removeAllEffects();
-                    player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
-                    player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+                    player.addEffect(new EffectInstance(Effects.ABSORPTION, 100, 1));
+                    player.addEffect(new EffectInstance(Effects.FIRE_RESISTANCE, 800, 0));
                     if ( !data.getBoolean(TAG_UNDEAD) ) {
                         data.putBoolean(TAG_UNDEAD, true);
-                        playerData.put(Player.PERSISTED_NBT_TAG, data);
+                        playerData.put(PlayerEntity.PERSISTED_NBT_TAG, data);
                     }
                 }
             }
@@ -213,11 +187,12 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void undeadFriendly(LivingEvent.LivingVisibilityEvent event) {
-        if ( event.getEntity() instanceof Player player ) {
-            CompoundTag playerData = player.getPersistentData();
-            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
-            if ( event.getLookingEntity() instanceof Mob ) {
-                if ( data.getBoolean(TAG_UNDEAD) && ((Mob)event.getLookingEntity()).getMobType() == MobType.UNDEAD ) {
+        if ( event.getEntity() instanceof PlayerEntity ) {
+            PlayerEntity player = (PlayerEntity)event.getEntity();
+            CompoundNBT playerData = player.getPersistentData();
+            CompoundNBT data = playerData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+            if ( event.getLookingEntity() instanceof MobEntity) {
+                if ( data.getBoolean(TAG_UNDEAD) && ((MobEntity)event.getLookingEntity()).getMobType() == CreatureAttribute.UNDEAD ) {
                     event.modifyVisibility(0);
                 }
             }
@@ -226,14 +201,14 @@ public class CommonEvents {
 
     //Undead attributes
     @SubscribeEvent
-    public static void onPlayerUpdate(final LivingEvent.LivingTickEvent event) {
-        LivingEntity player = event.getEntity();
+    public static void onPlayerUpdate(final TickEvent.PlayerTickEvent event) {
+        PlayerEntity player = event.player;
         if ( !player.level.isClientSide ) {
-            CompoundTag playerData = player.getPersistentData();
-            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
+            CompoundNBT playerData = player.getPersistentData();
+            CompoundNBT data = playerData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
             if ( data.getBoolean(TAG_UNDEAD) ) {
                 //Burn in the sun
-                if ( !player.isInWaterOrRain() && !player.isOnFire() && player.level.canSeeSky(player.blockPosition()) && player.level.isDay() && !player.hasItemInSlot(EquipmentSlot.HEAD) ) {
+                if ( !player.isInWaterOrRain() && !player.isOnFire() && player.level.canSeeSky(player.blockPosition()) && player.level.isDay() && !player.hasItemInSlot(EquipmentSlotType.HEAD) ) {
                     player.setSecondsOnFire(8);
                 }
                 //Breathe in water
@@ -241,11 +216,11 @@ public class CommonEvents {
                     player.setAirSupply(player.getMaxAirSupply());
                 }
                 //Immunity to poison and regeneration
-                if ( player.hasEffect(MobEffects.POISON) ) {
-                    player.removeEffect(MobEffects.POISON);
+                if ( player.hasEffect(Effects.POISON) ) {
+                    player.removeEffect(Effects.POISON);
                 }
-                if ( player.hasEffect(MobEffects.REGENERATION) ) {
-                    player.removeEffect(MobEffects.REGENERATION);
+                if ( player.hasEffect(Effects.REGENERATION) ) {
+                    player.removeEffect(Effects.REGENERATION);
                 }
             }
         }
@@ -254,14 +229,14 @@ public class CommonEvents {
     //Curing Undead Curse
     @SubscribeEvent
     public static void onPlayerAte(final LivingEntityUseItemEvent.Finish event) {
-        LivingEntity player = event.getEntity();
+        LivingEntity player = event.getEntityLiving();
         if ( !player.level.isClientSide ) {
-            CompoundTag playerData = player.getPersistentData();
-            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
-            if ( event.getItem().getItem().equals(Items.GOLDEN_APPLE) && player.hasEffect(MobEffects.WEAKNESS) ) {
+            CompoundNBT playerData = player.getPersistentData();
+            CompoundNBT data = playerData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+            if ( event.getItem().getItem().equals(Items.GOLDEN_APPLE) && player.hasEffect(Effects.WEAKNESS) ) {
                 data.remove(TAG_UNDEAD);
                 player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.ZOMBIE_VILLAGER_CURE, SoundSource.PLAYERS, 1, 1);
+                        SoundEvents.ZOMBIE_VILLAGER_CURE, SoundCategory.PLAYERS, 1, 1);
             }
         }
     }

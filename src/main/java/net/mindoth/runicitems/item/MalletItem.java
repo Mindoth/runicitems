@@ -2,20 +2,20 @@ package net.mindoth.runicitems.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Vanishable;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.IVanishable;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-public class MalletItem extends Item implements Vanishable {
+public class MalletItem extends Item implements IVanishable {
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
     public MalletItem(Properties properties) {
@@ -27,23 +27,23 @@ public class MalletItem extends Item implements Vanishable {
     }
 
     @Override
-    public boolean canAttackBlock(BlockState p_43409_, Level p_43410_, BlockPos p_43411_, Player p_43412_) {
+    public boolean canAttackBlock(BlockState p_43409_, World p_43410_, BlockPos p_43411_, PlayerEntity p_43412_) {
         return !p_43412_.isCreative();
     }
 
     @Override
     public boolean hurtEnemy(ItemStack p_43390_, LivingEntity p_43391_, LivingEntity p_43392_) {
         p_43390_.hurtAndBreak(1, p_43392_, (p_43414_) -> {
-            p_43414_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
+            p_43414_.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
         });
         return true;
     }
 
     @Override
-    public boolean mineBlock(ItemStack p_43399_, Level p_43400_, BlockState p_43401_, BlockPos p_43402_, LivingEntity p_43403_) {
+    public boolean mineBlock(ItemStack p_43399_, World p_43400_, BlockState p_43401_, BlockPos p_43402_, LivingEntity p_43403_) {
         if ((double)p_43401_.getDestroySpeed(p_43400_, p_43402_) != 0.0D) {
             p_43399_.hurtAndBreak(2, p_43403_, (p_43385_) -> {
-                p_43385_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
+                p_43385_.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
             });
         }
 
@@ -51,8 +51,8 @@ public class MalletItem extends Item implements Vanishable {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot p_43383_) {
-        return p_43383_ == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(p_43383_);
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlotType p_43383_) {
+        return p_43383_ == EquipmentSlotType.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(p_43383_);
     }
 
     @Override

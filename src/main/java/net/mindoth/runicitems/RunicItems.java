@@ -28,6 +28,5 @@ public class RunicItems {
     private void addRegistries(final IEventBus modEventBus) {
         RunicItemsItems.ITEMS.register(modEventBus);
         RunicItemsEnchantments.ENCHANTMENTS.register(modEventBus);
-        RunicItemsLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(modEventBus);
     }
 }
