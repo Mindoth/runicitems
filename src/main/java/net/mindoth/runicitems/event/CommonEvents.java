@@ -45,7 +45,7 @@ public class CommonEvents {
         if ( event.getEntity() instanceof WitherSkeletonEntity ) {
             LivingEntity witherSkeleton = (LivingEntity)event.getEntity();
             double r = witherSkeleton.getRandom().nextFloat();
-            if ( r <= RunicItemsCommonConfig.MALLET_CHANCE.get() && r > 0 ) {
+            if ( r <= RunicItemsCommonConfig.MALLET_CHANCE.get() && RunicItemsCommonConfig.MALLET_CHANCE.get() > 0 ) {
                 witherSkeleton.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
             }
         }

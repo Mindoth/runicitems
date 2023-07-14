@@ -29,7 +29,7 @@ public class ArcherbootsAdditionModifier extends LootModifier {
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
         double r = context.getRandom().nextFloat();
-        if ( r <= RunicItemsCommonConfig.ARCHERBOOTS_CHANCE.get() && r > 0 ) {
+        if ( r <= RunicItemsCommonConfig.ARCHERBOOTS_CHANCE.get() && RunicItemsCommonConfig.ARCHERBOOTS_CHANCE.get() > 0 ) {
             generatedLoot.clear();
             generatedLoot.add(new ItemStack(addedItem, 1));
         }

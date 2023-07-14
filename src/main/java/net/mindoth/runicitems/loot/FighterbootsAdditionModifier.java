@@ -28,7 +28,7 @@ public class FighterbootsAdditionModifier extends LootModifier {
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
         double r = context.getRandom().nextFloat();
-        if ( r <= RunicItemsCommonConfig.FIGHTERBOOTS_CHANCE.get() && r > 0 ) {
+        if ( r <= RunicItemsCommonConfig.FIGHTERBOOTS_CHANCE.get() && RunicItemsCommonConfig.FIGHTERBOOTS_CHANCE.get() > 0 ) {
             generatedLoot.clear();
             generatedLoot.add(new ItemStack(addedItem, 1));
         }
