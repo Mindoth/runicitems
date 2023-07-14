@@ -28,7 +28,8 @@ public class StonetabletAdditionModifier extends LootModifier {
     @Nonnull
     @Override
     public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-        if ( generatedLoot.get(0).getItem() == Items.TOTEM_OF_UNDYING && context.getRandom().nextDouble() <= RunicItemsCommonConfig.TABLET_CHANCE.get() ) {
+        double r = context.getRandom().nextFloat();
+        if ( generatedLoot.get(0).getItem() == Items.TOTEM_OF_UNDYING && r <= RunicItemsCommonConfig.TABLET_CHANCE.get() && r > 0 ) {
             generatedLoot.clear();
             generatedLoot.add(new ItemStack(addedItem, 1));
         }

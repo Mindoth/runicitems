@@ -44,7 +44,8 @@ public class CommonEvents {
     public static void weaponsOnMobs(EntityJoinWorldEvent event) {
         if ( event.getEntity() instanceof WitherSkeletonEntity ) {
             LivingEntity witherSkeleton = (LivingEntity)event.getEntity();
-            if ( witherSkeleton.getRandom().nextFloat() <= RunicItemsCommonConfig.MALLET_CHANCE.get() ) {
+            double r = witherSkeleton.getRandom().nextFloat();
+            if ( r <= RunicItemsCommonConfig.MALLET_CHANCE.get() && r > 0 ) {
                 witherSkeleton.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
             }
         }
@@ -75,7 +76,7 @@ public class CommonEvents {
                         flag = true;
                     }
                     if ( flag ) {
-                        event.setAmount(event.getAmount() + ((1.5f * (tier - 1)) + 1.5f));
+                        event.setAmount(event.getAmount() + (((1 + coverage) * (tier - 1)) + (1 + coverage)));
                     }
                 }
             }
