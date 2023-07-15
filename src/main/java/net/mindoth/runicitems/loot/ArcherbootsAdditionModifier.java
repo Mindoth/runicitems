@@ -5,6 +5,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -29,7 +30,8 @@ public class ArcherbootsAdditionModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if(context.getRandom().nextFloat() <= 0.20f) {
+        double r = context.getRandom().nextFloat();
+        if ( r <= RunicItemsCommonConfig.ARCHERBOOTS_CHANCE.get() && RunicItemsCommonConfig.ARCHERBOOTS_CHANCE.get() > 0 ) {
             generatedLoot.add(new ItemStack(item));
         }
         return generatedLoot;

@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -29,7 +30,8 @@ public class StonetabletAdditionModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if ( generatedLoot.get(0).getItem() == Items.TOTEM_OF_UNDYING && context.getRandom().nextFloat() <= 0.10f ) {
+        double r = context.getRandom().nextFloat();
+        if ( generatedLoot.get(0).getItem() == Items.TOTEM_OF_UNDYING && r <= RunicItemsCommonConfig.TABLET_CHANCE.get() && RunicItemsCommonConfig.TABLET_CHANCE.get() > 0 ) {
             generatedLoot.remove(0);
             generatedLoot.add(new ItemStack(item));
         }

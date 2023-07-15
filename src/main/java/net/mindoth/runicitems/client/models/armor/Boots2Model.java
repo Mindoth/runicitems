@@ -28,9 +28,9 @@ public class Boots2Model<T extends Entity> extends ArmorModel {
                 .texOffs(0, 12).addBox(3.0F, -17.0F, -3.0F, 0.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
                 .texOffs(18, 6).addBox(-3.0F, -17.0F, -3.0F, 6.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        PartDefinition cube_r1 = right_foot.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-0.4F, 7.0F, 1.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 2).addBox(-0.4F, 8.0F, 0.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 4).addBox(-0.4F, 6.0F, 2.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.0F, 0.0F, 0.0F, -0.1309F, -0.1309F));
+        PartDefinition cube_r1 = right_foot.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-0.45F, 7.5F, 0.5F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 2).addBox(-0.45F, 8.5F, -0.5F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 4).addBox(-0.45F, 6.5F, 1.5F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.0F, 0.0F, 0.0F, -0.1309F, -0.1309F));
 
         PartDefinition left = left_foot.addOrReplaceChild("LeftBoot", CubeListBuilder.create().texOffs(12, 24).addBox(-3.0F, -17.0F, -3.0F, 6.0F, 6.0F, 0.0F, new CubeDeformation(0.0F))
                 .texOffs(12, 12).addBox(3.0F, -17.0F, -3.0F, 0.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
