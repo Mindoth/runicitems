@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:item/handheld",
 	"textures": {
-		"layer0": "runicitems:items/ancient_staff"
+		"layer0": "runicitems:items/wand"
 	}
 }

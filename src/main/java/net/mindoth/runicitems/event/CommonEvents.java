@@ -5,7 +5,6 @@ import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -17,7 +16,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -26,13 +24,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -49,34 +45,6 @@ public class CommonEvents {
             double r = witherSkeleton.getRandom().nextFloat();
             if ( r <= RunicItemsCommonConfig.MALLET_CHANCE.get() && RunicItemsCommonConfig.MALLET_CHANCE.get() > 0 ) {
                 witherSkeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(RunicItemsItems.MALLET.get()));
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void thawMobs(final LivingEvent.LivingTickEvent event) {
-        if ( RunicItemsCommonConfig.FREEZE_AI.get() ) {
-            if ( event.getEntity() instanceof Mob mob ) {
-                if ( mob.isNoAi() ) {
-                /*if ( mob.getTicksFrozen() > 100 && mob.getTicksFrozen() % 10 == 0 ) {
-                    int height = (int) mob.getBoundingBox().getYsize();
-                    if ( !mob.level.isClientSide ) {
-                        ServerLevel level = (ServerLevel)mob.level;
-                        for ( int j = 0; j < 8 + (8 * height); ++j ) {
-                            level.sendParticles(ParticleTypes.SNOWFLAKE,
-                                    mob.getBoundingBox().getCenter().x,
-                                    mob.getBoundingBox().getCenter().y,
-                                    mob.getBoundingBox().getCenter().z, 1,
-                                    mob.getBoundingBox().getXsize() / 2,
-                                    mob.getBoundingBox().getYsize() / 4,
-                                    mob.getBoundingBox().getZsize() / 2, 0);
-                        }
-                    }
-                }*/
-                    if (mob.getTicksFrozen() <= 100) {
-                        mob.setNoAi(false);
-                    }
-                }
             }
         }
     }

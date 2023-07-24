@@ -1,10 +1,10 @@
 package net.mindoth.runicitems.item;
 
+import net.mindoth.runicitems.RunicItemsClient;
 import net.mindoth.runicitems.client.models.armor.Boots2Model;
-import net.mindoth.runicitems.util.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.util.Mth;
+import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.fml.DistExecutor;
 
 import java.util.function.Consumer;
 
@@ -21,27 +22,24 @@ public class Boots2Item extends ArmorItem {
 
     public Boots2Item(ArmorMaterial pMaterial, EquipmentSlot pSlot, Item.Properties pProperties) {
         super(pMaterial, pSlot, pProperties);
+        this.model = DistExecutor.unsafeRunForDist(() -> () -> new LazyLoadedValue<>(() -> this.provideArmorModelForSlot(slot)),
+                () -> () -> null);
     }
 
+    private final LazyLoadedValue<HumanoidModel<?>> model;
+
     @OnlyIn(Dist.CLIENT)
+    public HumanoidModel<?> provideArmorModelForSlot(EquipmentSlot slot) {
+        return new Boots2Model<>(Minecraft.getInstance().getEntityModels().bakeLayer(RunicItemsClient.BOOTS2_LAYER), slot);
+    }
+
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-
         consumer.accept(new IClientItemExtensions() {
-            static Boots2Model model;
 
             @Override
-            public Boots2Model getHumanoidArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
-                if (model == null) model = new Boots2Model(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.BOOTS2_ARMOR_LAYER));
-                float pticks = Minecraft.getInstance().getFrameTime();
-                float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
-                float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
-                float netHeadYaw = f1 - f;
-                float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
-                model.slot = slot;
-                model.copyFromDefault(_default);
-                model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
-                return model;
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
+                return model.get();
             }
         });
     }
