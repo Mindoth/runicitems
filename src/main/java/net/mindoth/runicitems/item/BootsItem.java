@@ -26,12 +26,16 @@ public class BootsItem extends ArmorItem {
 
     public enum MaterialBoots implements ArmorMaterial {
 
-        BOOTS("boots", 0, new int[]{2, 5, 6, 2}, 15, SoundEvents.ARMOR_EQUIP_LEATHER,
+        BOOTS("boots", 15, new int[]{2, 5, 6, 2}, 15, SoundEvents.ARMOR_EQUIP_LEATHER,
                 0.0F, 0.0F, () -> {
-            return Ingredient.of(Items.STRING);
+            return Ingredient.of(Items.LEATHER);
+        }),
+        BOOTS2("boots2", 33, new int[]{3, 6, 8, 3}, 25, SoundEvents.ARMOR_EQUIP_CHAIN,
+                2.0F, 0.0F, () -> {
+            return Ingredient.of(Items.LEATHER);
         });
 
-        private static final int[] MAX_DAMAGE_ARRAY = new int[] { 0, 0, 0, 0 };
+        private static final int[] MAX_DAMAGE_ARRAY = new int[] { 13, 15, 16, 11 };
         private final String name;
         private final int maxDamageFactor;
         private final int[] damageReductionAmountArray;

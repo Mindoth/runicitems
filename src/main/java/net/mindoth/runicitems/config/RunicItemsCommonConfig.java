@@ -47,13 +47,13 @@ public class RunicItemsCommonConfig {
                 .define("Wizard Boots Bonus", 3);
 
         EAGLEBOOTS_BONUS = BUILDER.comment("Bonus Damage given by Eagle Boots (Default = 6)")
-                .define("Archer Boots Bonus", 6);
+                .define("Eagle Boots Bonus", 6);
 
         WARRIORBOOTS_BONUS = BUILDER.comment("Bonus Damage given by Warrior Boots (Default = 6)")
-                .define("Fighter Boots Bonus", 6);
+                .define("Warrior Boots Bonus", 6);
 
         SORCERERBOOTS_BONUS = BUILDER.comment("Bonus Damage given by Sorcerer Boots (Default = 6)")
-                .define("Wizard Boots Bonus", 6);
+                .define("Sorcerer Boots Bonus", 6);
 
         TABLET_CHANCE = BUILDER.comment("Chance of getting the Secrets of Life and Death as a drop from an Evoker instead of a Totem of Undying (Default = 0.1 = 10%)")
                 .define("Tablet Chance", 0.1f);

@@ -31,15 +31,15 @@ public class RunicItemsItems {
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 
     public static final RegistryObject<Item> EAGLE_BOOTS = ITEMS.register("eagle_boots",
-            () -> new EagleBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
+            () -> new EagleBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 
     public static final RegistryObject<Item> WARRIOR_BOOTS = ITEMS.register("warrior_boots",
-            () -> new WarriorBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
+            () -> new WarriorBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 
     public static final RegistryObject<Item> SORCERER_BOOTS = ITEMS.register("sorcerer_boots",
-            () -> new SorcererBoots(Boots2Item.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
+            () -> new SorcererBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
                     new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
 
     public static final RegistryObject<Item> ANCIENT_STAFF = ITEMS.register("ancient_staff",
