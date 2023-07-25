@@ -10,10 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -26,15 +23,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class WandItem extends Item {
-    public WandItem(WandType tier) {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).tab(CreativeModeTab.TAB_TOOLS).fireResistant());
+public class ModWand extends Item {
+    public ModWand(WandType tier) {
+        super(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).fireResistant());
         this.tier = tier;
     }
     final WandType tier;
 
     public static WandData getData(ItemStack stack) {
-        if ( !(stack.getItem() instanceof WandItem ))
+        if ( !(stack.getItem() instanceof ModWand))
             return null;
         UUID uuid;
         CompoundTag tag = stack.getOrCreateTag();
@@ -43,7 +40,7 @@ public class WandItem extends Item {
             tag.putUUID("UUID", uuid);
         }
         else uuid = tag.getUUID("UUID");
-        return WandManager.get().getOrCreateWand(uuid, ((WandItem) stack.getItem()).tier);
+        return WandManager.get().getOrCreateWand(uuid, ((ModWand) stack.getItem()).tier);
     }
 
     @Override
@@ -55,23 +52,6 @@ public class WandItem extends Item {
     @Override
     public boolean isEnchantable(@Nonnull ItemStack stack) {
         return false;
-    }
-
-    @Override
-    @Nonnull
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
-        ItemStack wand = playerIn.getItemInHand(handIn);
-        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof WandItem ) {
-            WandData data = WandItem.getData(wand);
-            UUID uuid = data.getUuid();
-
-            data.updateAccessRecords(playerIn.getName().getString(), System.currentTimeMillis());
-            if ( playerIn.isShiftKeyDown() ) {
-                //open
-                NetworkHooks.openScreen(((ServerPlayer) playerIn), new SimpleMenuProvider( (windowId, playerInventory, playerEntity) -> new WandContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), wand.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
-            }
-        }
-        return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
     }
 
     @Nullable
@@ -100,5 +80,25 @@ public class WandItem extends Item {
             else
                 return LazyOptional.empty();
         }
+    }
+
+    @Override
+    @Nonnull
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
+        ItemStack wand = playerIn.getItemInHand(handIn);
+        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof ModWand) {
+            WandData data = ModWand.getData(wand);
+            UUID uuid = data.getUuid();
+
+            data.updateAccessRecords(playerIn.getName().getString(), System.currentTimeMillis());
+            if ( playerIn.isShiftKeyDown() ) {
+                //open
+                NetworkHooks.openScreen(((ServerPlayer) playerIn), new SimpleMenuProvider( (windowId, playerInventory, playerEntity) -> new WandContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), wand.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
+            }
+            else {
+                return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
+            }
+        }
+        return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
     }
 }

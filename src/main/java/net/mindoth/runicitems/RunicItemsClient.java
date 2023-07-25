@@ -2,9 +2,12 @@ package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.client.gui.WandGui;
 import net.mindoth.runicitems.client.models.armor.Boots2Model;
+import net.mindoth.runicitems.entity.renderer.ProjectileBaseRenderer;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
+import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -18,6 +21,7 @@ public class RunicItemsClient {
     public static void registerHandlers() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(RunicItemsClient::clientSetup);
+        modBus.addListener(RunicItemsClient::registerEntityRenderers);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             modBus.addListener(RunicItemsClient::registerLayerDefinitions);
         });
@@ -32,5 +36,9 @@ public class RunicItemsClient {
 
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(BOOTS2_LAYER, Boots2Model::createBodyLayer);
+    }
+
+    private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(RunicItemsEntities.SPARK_BOLT.get(), ProjectileBaseRenderer::new);
     }
 }

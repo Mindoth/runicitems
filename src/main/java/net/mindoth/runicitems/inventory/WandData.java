@@ -49,7 +49,7 @@ public class WandData {
 
     public WandData(UUID uuid, CompoundTag incomingNBT) {
         this.uuid = uuid;
-        this.tier = WandType.values()[Math.min(incomingNBT.getInt("Tier"), WandType.COMMON.ordinal())];
+        this.tier = WandType.values()[Math.min(incomingNBT.getInt("Tier"), WandType.BASIC.ordinal())];
 
         this.inventory = new ItemHandler(this.tier.slots);
 
