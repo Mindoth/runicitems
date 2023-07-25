@@ -96,30 +96,6 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         }
     }
 
-    protected void hurtTarget(Mob target, Entity caster) {
-        if ( getDamage() > 0 ) {
-            target.hurt(DamageSource.indirectMagic(this, caster), getDamage());
-        }
-        if ( getFire() ) {
-            target.setSecondsOnFire((int)getDamage());
-        }
-        if ( getExplosion() ) {
-            WandItem.causeExplosion(level, (Player)caster, target.getBoundingBox().getCenter());
-        }
-    }
-
-    protected void doBlockEffects(BlockPos blockPos, Entity caster) {
-        if ( getFire() ) {
-            if ( level.isEmptyBlock(blockPos) ) {
-                level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(level, blockPos));
-            }
-        }
-        if ( getExplosion() ) {
-            Vec3 onBlock = new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            WandItem.causeExplosion(level, (Player)caster, onBlock);
-        }
-    }
-
     @Override
     protected void onHitEntity(EntityHitResult result) {
         Entity caster = getOwner();
@@ -143,6 +119,33 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
         this.discard();
     }
+
+
+
+    protected void hurtTarget(Mob target, Entity caster) {
+        if ( getDamage() > 0 ) {
+            target.hurt(DamageSource.indirectMagic(this, caster), getDamage());
+        }
+        if ( getFire() ) {
+            target.setSecondsOnFire((int)getDamage());
+        }
+        if ( getExplosion() ) {
+            WandItem.causeExplosion(level, (Player)caster, target.getBoundingBox().getCenter());
+        }
+    }
+    protected void doBlockEffects(BlockPos blockPos, Entity caster) {
+        if ( getFire() ) {
+            if ( level.isEmptyBlock(blockPos) ) {
+                level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(level, blockPos));
+            }
+        }
+        if ( getExplosion() ) {
+            Vec3 onBlock = new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            WandItem.causeExplosion(level, (Player)caster, onBlock);
+        }
+    }
+
+
 
     @Override
     public Packet<?> getAddEntityPacket() {

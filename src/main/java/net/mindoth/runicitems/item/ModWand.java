@@ -3,6 +3,7 @@ package net.mindoth.runicitems.item;
 import net.mindoth.runicitems.client.gui.WandContainer;
 import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.inventory.WandManager;
+import net.mindoth.runicitems.item.wand.WandItem;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -86,17 +87,19 @@ public class ModWand extends Item {
     @Nonnull
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
         ItemStack wand = playerIn.getItemInHand(handIn);
-        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof ModWand) {
+        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof ModWand ) {
             WandData data = ModWand.getData(wand);
             UUID uuid = data.getUuid();
 
             data.updateAccessRecords(playerIn.getName().getString(), System.currentTimeMillis());
             if ( playerIn.isShiftKeyDown() ) {
-                //open
                 NetworkHooks.openScreen(((ServerPlayer) playerIn), new SimpleMenuProvider( (windowId, playerInventory, playerEntity) -> new WandContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), wand.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
             }
             else {
-                return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
+                if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
+                    WandItem.cast(worldIn, playerIn, wand);
+                    return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
+                }
             }
         }
         return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));

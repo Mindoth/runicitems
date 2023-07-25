@@ -12,6 +12,7 @@ import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.rune.UtilityRuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -36,17 +37,20 @@ public class WandItem extends ModWand {
         super(tier);
     }
 
-    private static boolean isSpell(Item rune) {
-        return rune instanceof SpellRuneItem;
+    private static Item getRune(IItemHandler itemHandler, ItemStack wand) {
+        CompoundTag tag = wand.getTag();
+        return itemHandler.getStackInSlot(tag.getInt("SLOT")).getItem();
     }
 
-    private static Item getRune(int i, IItemHandler itemHandler) {
-        return itemHandler.getStackInSlot(i).getItem();
+    private static int getSlot(ItemStack wand) {
+        CompoundTag tag = wand.getTag();
+        return tag.getInt("SLOT");
     }
+
 
     private static Item getNextSpell(int i, IItemHandler itemHandler) {
         Item nextRune = null;
-        for ( int j = i; j < itemHandler.getSlots(); j++ ) {
+        for ( int j = i + 1; j < itemHandler.getSlots(); j++ ) {
             if ( itemHandler.getStackInSlot(j).getItem() instanceof SpellRuneItem ) {
                 nextRune = itemHandler.getStackInSlot(j).getItem();
             }
@@ -54,25 +58,18 @@ public class WandItem extends ModWand {
         return nextRune;
     }
 
-    private static Item getLastUtility(int i, IItemHandler itemHandler) {
-        Item lastRune = null;
-        for ( int j = i - 1; j > 0; j-- ) {
-            if ( isSpell(itemHandler.getStackInSlot(j).getItem()) ) {
-                break;
-            }
-            if ( itemHandler.getStackInSlot(j).getItem() instanceof RuneItem ) {
-                lastRune = itemHandler.getStackInSlot(j).getItem();
+    private static int skipNextSpell(int i, IItemHandler itemHandler) {
+        int nextRune = -1;
+        for ( int j = i + 1; j < itemHandler.getSlots(); j++ ) {
+            if ( itemHandler.getStackInSlot(j).getItem() instanceof SpellRuneItem ) {
+                nextRune = j;
             }
         }
-        return lastRune;
-    }
-
-    private static int getCooldown() {
-        return 20;
+        return nextRune;
     }
 
     private static float getPower() {
-        return 1.0f * amplifier;
+        return 1.0f + amplifier;
     }
 
     private static boolean hasFire() {
@@ -83,98 +80,96 @@ public class WandItem extends ModWand {
         return effect.contains("explosion");
     }
 
-    private void resetModifiers() {
-        amplifier = 1;
-        speed = 1;
+    private static boolean hasTrigger() {
+        return effect.contains("trigger");
+    }
+
+    private static void resetModifiers() {
+        amplifier = 0;
         effect = "";
-        sb = new StringBuilder();
+        sb.delete(0, sb.length());
     }
 
-    private static int amplifier;
-    private static int speed;
-    private static String effect;
-    private static StringBuilder sb;
+    private static int amplifier = 0;
+    private static String effect = "";
+    private static StringBuilder sb = new StringBuilder();
 
-    @Override
-    @Nonnull
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
-        ItemStack wand = playerIn.getItemInHand(handIn);
-        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof ModWand) {
-            WandData data = ModWand.getData(wand);
-            UUID uuid = data.getUuid();
-
-            data.updateAccessRecords(playerIn.getName().getString(), System.currentTimeMillis());
-            if ( playerIn.isShiftKeyDown() ) {
-                NetworkHooks.openScreen(((ServerPlayer) playerIn), new SimpleMenuProvider( (windowId, playerInventory, playerEntity) -> new WandContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), wand.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
-            }
-            else {
-                if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
-                    cast(worldIn, playerIn, wand);
-                }
-                return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
-            }
-        }
-        return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
-    }
-
-    private void cast(Level level, Player player, ItemStack wand) {
+    public static void cast(Level level, Player player, ItemStack wand) {
         if ( WandManager.get().getCapability(wand).isPresent() ) {
             IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
-            resetModifiers();
-            for ( int i = 0; i < itemHandler.getSlots(); i++ ) {
-                Item rune = itemHandler.getStackInSlot(i).getItem();
-                if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
+            CompoundTag tag = wand.getOrCreateTag();
+            if ( !tag.contains("SLOT") ) {
+                tag.putInt("SLOT", 0);
+            }
+            for ( int i = getSlot(wand); i < itemHandler.getSlots(); i++ ) {
+                Item rune = getRune(itemHandler, wand);
+                if ( !itemHandler.getStackInSlot(getSlot(wand)).isEmpty() ) {
                     if ( rune instanceof EffectRuneItem ) {
                         doEffect(rune);
                     }
+                    if ( rune instanceof UtilityRuneItem ) {
+                        doUtility(rune);
+                    }
                     if ( rune instanceof SpellRuneItem ) {
-                        doSpell(player, level, i, itemHandler);
+                        doSpell(tag, player, level, wand, itemHandler);
+                        player.getCooldowns().addCooldown(wand.getItem(), 20);
+                        break;
                     }
                 }
+                advance(tag, wand, player, itemHandler);
             }
-            player.getCooldowns().addCooldown(wand.getItem(), getCooldown());
+            advance(tag, wand, player, itemHandler);
         }
     }
 
-    public void doSpell(Player player, Level level, int i, IItemHandler itemHandler) {
-        Vec3 look = player.getLookAngle();
+    private static void advance(CompoundTag tag, ItemStack wand, Player player, IItemHandler itemHandler) {
+        if ( getNextSpell(getSlot(wand), itemHandler) == null ) {
+            tag.putInt("SLOT", 0);
+            player.getCooldowns().addCooldown(wand.getItem(), 60);
+            resetModifiers();
+        }
+        else tag.putInt("SLOT", getSlot(wand) + 1);
+    }
 
-        System.out.println("last utility spell: " + getLastUtility(i, itemHandler));
-        if ( getLastUtility(i, itemHandler) == RunicItemsItems.TRIGGER_RUNE.get() ) {
-            if ( getNextSpell(i, itemHandler) == RunicItemsItems.FIRE_RUNE.get() ) {
-                System.out.println("SET FIRE TAG");
-                effect = sb.append("fire;").toString();
-            }
-            if ( getNextSpell(i, itemHandler) == RunicItemsItems.EXPLOSION_RUNE.get() ) {
-                System.out.println("SET EXPLOSION TAG");
+    private static void doSpell(CompoundTag tag, Player player, Level level, ItemStack wand, IItemHandler itemHandler) {
+        Vec3 look = player.getLookAngle();
+        Item rune = getRune(itemHandler, wand);
+        if ( hasTrigger() ) {
+            if ( getNextSpell(getSlot(wand), itemHandler) == RunicItemsItems.EXPLOSION_RUNE.get() ) {
                 effect = sb.append("explosion;").toString();
             }
+            tag.putInt("SLOT", skipNextSpell(getSlot(wand), itemHandler));
         }
 
-        if ( getRune(i, itemHandler) == RunicItemsItems.FIRE_RUNE.get() ) {
-            System.out.println("SET PLAYER ON FIRE");
+        if ( rune == RunicItemsItems.FIRE_RUNE.get() ) {
             player.setSecondsOnFire((int)getPower());
         }
-        if ( getRune(i, itemHandler) == RunicItemsItems.EXPLOSION_RUNE.get() ) {
-            System.out.println("EXPLODED PLAYER");
+        if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
             causeExplosion(level, player, CommonEvents.getEntityCenter(player));
         }
-        if ( getRune(i, itemHandler) == RunicItemsItems.SPARK_BOLT_RUNE.get() ) {
-            System.out.println("SHOT SPARK");
-            System.out.println("has fire: " + hasFire() + " has explosion: " + hasExplosion());
+        if ( rune == RunicItemsItems.SPARK_BOLT_RUNE.get() ) {
             shootSparkBolt(player, look, getPower(), hasFire(), hasExplosion());
         }
 
-        System.out.println("RESETTING MODIFIERS");
+
         resetModifiers();
     }
 
-    public void doEffect(Item rune) {
+    private static void doEffect(Item rune) {
         if ( rune == RunicItemsItems.AMPLIFICATION_RUNE.get() ) {
-            amplifier = 2;
+            amplifier += 1;
         }
         if ( rune == RunicItemsItems.NULLIFICATION_RUNE.get() ) {
-            amplifier = 0;
+            amplifier -= 1;
+        }
+        if ( rune == RunicItemsItems.FIRE_RUNE.get() ) {
+            effect = sb.append("fire;").toString();
+        }
+    }
+
+    private static void doUtility(Item rune) {
+        if ( rune == RunicItemsItems.TRIGGER_RUNE.get() ) {
+            effect = sb.append("trigger;").toString();
         }
     }
 
@@ -182,7 +177,7 @@ public class WandItem extends ModWand {
         level.explode(null, DamageSource.playerAttack(player), null, pos.x, pos.y, pos.z, getPower(), hasFire(), Explosion.BlockInteraction.NONE);
     }
 
-    public void shootSparkBolt(Player player, Vec3 look, float power, boolean hasFire, boolean hasExplosion) {
+    public static void shootSparkBolt(Player player, Vec3 look, float power, boolean hasFire, boolean hasExplosion) {
         Vec3 center = CommonEvents.getEntityCenter(player);
         player.level.playSound(null, center.x, center.y, center.z,
                 SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.5f, 1);

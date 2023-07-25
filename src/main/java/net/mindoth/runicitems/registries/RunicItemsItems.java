@@ -29,7 +29,7 @@ public class RunicItemsItems {
             () -> new SpellRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
-            () -> new SpellRuneItem(new Item.Properties()));
+            () -> new EffectRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> AMPLIFICATION_RUNE = ITEMS.register("amplification_rune",
             () -> new EffectRuneItem(new Item.Properties()));
