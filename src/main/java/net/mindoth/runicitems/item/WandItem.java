@@ -99,7 +99,7 @@ public class WandItem extends Item {
             }
             else {
                 if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
-                    SpellBuilder.cast(worldIn, playerIn, wand);
+                    SpellBuilder.cast(playerIn, wand);
                     return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
                 }
             }

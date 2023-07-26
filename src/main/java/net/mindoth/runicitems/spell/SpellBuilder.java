@@ -27,7 +27,8 @@ import static net.mindoth.runicitems.spell.SpawnEffect.causeExplosion;
 
 public class SpellBuilder {
 
-    public static void cast(Level level, Player owner, ItemStack wand) {
+    //TODO Perhaps get effects in "cast" method and just go through the stack 1 by 1 upon spell cast
+    public static void cast(Player owner, ItemStack wand) {
         if ( WandManager.get().getCapability(wand).isPresent() ) {
             IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
             CompoundTag tag = wand.getOrCreateTag();
@@ -37,8 +38,11 @@ public class SpellBuilder {
             for ( int i = getSlot(wand); i < itemHandler.getSlots(); i++ ) {
                 Item rune = getRune(itemHandler, wand);
                 if ( !itemHandler.getStackInSlot(getSlot(wand)).isEmpty() ) {
+                    if ( rune instanceof EffectRuneItem || rune instanceof UtilityRuneItem ) {
+
+                    }
                     if ( rune instanceof SpellRuneItem ) {
-                        doSpell(tag, owner, owner, wand, itemHandler);
+                        doSpell(owner, owner, wand, itemHandler);
                         break;
                     }
                 }
@@ -49,7 +53,7 @@ public class SpellBuilder {
     }
 
     //TODO After trigger has triggered on spell skip the next spell that was used in the trigger
-    private static void doSpell(CompoundTag tag, Player owner, Entity caster, ItemStack wand, IItemHandler itemHandler) {
+    private static void doSpell(Player owner, Entity caster, ItemStack wand, IItemHandler itemHandler) {
         Item rune = getRune(itemHandler, wand);
         HashMap<String, Integer> effects = getEffects(getSlot(wand), itemHandler);
 
@@ -80,7 +84,7 @@ public class SpellBuilder {
         effects.put("trigger", 0);
         effects.put("explosion", 0);
         effects.put("sparkbolt", 0);
-        for ( int j = max(getLastSpell(i, itemHandler) + 1, 0); j < i; j++ ) {
+        for ( int j = max(getLastSpell(i, itemHandler), 0); j < i; j++ ) {
             if ( itemHandler.getStackInSlot(j).getItem() instanceof EffectRuneItem || itemHandler.getStackInSlot(j).getItem() instanceof UtilityRuneItem ) {
                 Item rune = itemHandler.getStackInSlot(j).getItem();
                 if ( rune == RunicItemsItems.AMPLIFICATION_RUNE.get() ) {
@@ -90,13 +94,15 @@ public class SpellBuilder {
                     effects.put("power", effects.get("power") - 1);
                 }
                 if ( rune == RunicItemsItems.TRIGGER_RUNE.get() ) {
-                    effects.put("trigger", 1);
                     Item nextRune = getNextSpell(i, itemHandler);
-                    if ( nextRune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
-                        effects.put("explosion", 1);
-                    }
-                    if ( nextRune == RunicItemsItems.SPARK_BOLT_RUNE.get() ) {
-                        effects.put("sparkbolt", 1);
+                    if ( nextRune != null ) {
+                        effects.put("trigger", 1);
+                        if ( nextRune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
+                            effects.put("explosion", 1);
+                        }
+                        if ( nextRune == RunicItemsItems.SPARK_BOLT_RUNE.get() ) {
+                            effects.put("sparkbolt", 1);
+                        }
                     }
                 }
             }
@@ -136,8 +142,7 @@ public class SpellBuilder {
 
     private static void advance(CompoundTag tag, ItemStack wand, Player player, IItemHandler itemHandler) {
         if ( getNextSpell(getSlot(wand), itemHandler) == null ) {
-            tag.putInt("SLOT", 0);
-            player.getCooldowns().addCooldown(wand.getItem(), getCooldown(wand.getItem()));
+            WandItem.reload(wand, player);
         }
         else tag.putInt("SLOT", getSlot(wand) + 1);
     }
