@@ -3,13 +3,15 @@ package net.mindoth.runicitems.item;
 import net.mindoth.runicitems.client.gui.WandContainer;
 import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.inventory.WandManager;
-import net.mindoth.runicitems.item.wand.WandItem;
+import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.runicitems.spell.SpellBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -24,15 +26,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class ModWand extends Item {
-    public ModWand(WandType tier) {
+public class WandItem extends Item {
+    public WandItem(WandType tier) {
         super(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).fireResistant());
         this.tier = tier;
     }
     final WandType tier;
 
     public static WandData getData(ItemStack stack) {
-        if ( !(stack.getItem() instanceof ModWand))
+        if ( !(stack.getItem() instanceof WandItem))
             return null;
         UUID uuid;
         CompoundTag tag = stack.getOrCreateTag();
@@ -41,7 +43,7 @@ public class ModWand extends Item {
             tag.putUUID("UUID", uuid);
         }
         else uuid = tag.getUUID("UUID");
-        return WandManager.get().getOrCreateWand(uuid, ((ModWand) stack.getItem()).tier);
+        return WandManager.get().getOrCreateWand(uuid, ((WandItem) stack.getItem()).tier);
     }
 
     @Override
@@ -87,8 +89,8 @@ public class ModWand extends Item {
     @Nonnull
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
         ItemStack wand = playerIn.getItemInHand(handIn);
-        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof ModWand ) {
-            WandData data = ModWand.getData(wand);
+        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof WandItem) {
+            WandData data = WandItem.getData(wand);
             UUID uuid = data.getUuid();
 
             data.updateAccessRecords(playerIn.getName().getString(), System.currentTimeMillis());
@@ -97,11 +99,41 @@ public class ModWand extends Item {
             }
             else {
                 if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
-                    WandItem.cast(worldIn, playerIn, wand);
+                    SpellBuilder.cast(worldIn, playerIn, wand);
                     return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
                 }
             }
         }
         return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
+    }
+
+    @Override
+    public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
+        if ( pIsSelected && pEntity.isShiftKeyDown() ) {
+            CompoundTag tag = pStack.getOrCreateTag();
+            if ( pEntity instanceof Player player && !player.getCooldowns().isOnCooldown(pStack.getItem()) && tag.getInt("SLOT") > 0 ) {
+                reload(pStack, (Player)pEntity);
+            }
+        }
+    }
+
+    public static int getdelay(Item wand) {
+        if ( wand == RunicItemsItems.BASIC_WAND.get() ) {
+            return 5;
+        }
+        else return 0;
+    }
+
+    public static int getCooldown(Item wand) {
+        if ( wand == RunicItemsItems.BASIC_WAND.get() ) {
+            return 20;
+        }
+        else return 0;
+    }
+
+    public static void reload(ItemStack wand, Player player) {
+        CompoundTag tag = wand.getOrCreateTag();
+        tag.putInt("SLOT", 0);
+        player.getCooldowns().addCooldown(wand.getItem(), getCooldown(wand.getItem()));
     }
 }

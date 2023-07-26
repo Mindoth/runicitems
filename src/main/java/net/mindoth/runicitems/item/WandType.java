@@ -8,7 +8,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.RegistryObject;
 
 public enum WandType {
-    BASIC("Basic", Rarity.COMMON, 9, 1, 9, "basic_gui.png", 176, 132, 7, 49, RunicItemsItems.WAND);
+    BASIC("Basic", Rarity.COMMON, 9, 1, 9, "basic_gui.png", 176, 132, 7, 49, RunicItemsItems.BASIC_WAND);
 
     public final Rarity rarity;
     public final int slots;

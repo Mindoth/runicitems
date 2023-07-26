@@ -1,7 +1,6 @@
 package net.mindoth.runicitems.entity.projectile;
 
-import net.mindoth.runicitems.item.wand.WandItem;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.runicitems.spell.SpawnEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -12,73 +11,73 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.HashMap;
+
+import static java.lang.Math.abs;
+
 public class ProjectileBaseEntity extends ThrowableItemProjectile {
-    private float baseDamage = 0.0f;
-    private boolean hasFire = false;
-    private boolean hasExplosion = false;
 
     protected ProjectileBaseEntity(EntityType<? extends ProjectileBaseEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    protected ProjectileBaseEntity(EntityType<? extends ProjectileBaseEntity> pEntityType, Level pLevel, LivingEntity pShooter, float power, boolean hasFire, boolean hasExplosion) {
-        super(pEntityType, pShooter, pLevel);
-        this.setDamage(power);
-        this.setFire(hasFire);
-        this.setExplosion(hasExplosion);
+    protected ProjectileBaseEntity(EntityType<? extends ProjectileBaseEntity> pEntityType, Level pLevel, LivingEntity caster, HashMap<String, Integer> effects) {
+        super(pEntityType, caster, pLevel);
+        this.owner = caster;
+        this.effects = effects;
+        this.baseDamage = effects.get("power");
     }
 
-    public void setDamage(float damage) {
-        this.baseDamage = damage;
-    }
+    private LivingEntity owner;
+    private HashMap<String, Integer> effects;
+    private float baseDamage = 0.0f;
 
     public float getDamage() {
         return this.baseDamage;
     }
 
-    public void setFire(boolean hasFire) {
-        this.hasFire = hasFire;
+    protected void hurtTarget(Mob target) {
+        if ( getDamage() > 0 ) {
+            target.hurt(DamageSource.indirectMagic(this, owner), getDamage());
+        }
+        if ( effects.get("explosion") == 1 ) {
+            SpawnEffect.causeExplosion(owner, this, effects);
+        }
     }
-
-    public boolean getFire() {
-        return this.hasFire;
-    }
-
-    public void setExplosion(boolean hasExplosion) {
-        this.hasExplosion = hasExplosion;
-    }
-
-    public boolean getExplosion() {
-        return this.hasExplosion;
-    }
-
-    @Override
-    protected Item getDefaultItem() {
-        return Items.SNOWBALL;
+    protected void doBlockEffects() {
+        if ( effects.get("explosion") == 1 ) {
+            SpawnEffect.causeExplosion(owner, this, effects);
+        }
     }
 
     @Override
-    protected float getGravity() {
-        return 0.03f;
+    protected void onHitEntity(EntityHitResult result) {
+        if ( level.isClientSide ) return;
+
+        if ( result.getEntity() instanceof Mob living ) {
+            hurtTarget(living);
+        }
+        this.discard();
     }
 
-    protected SimpleParticleType getParticle() {
-        return ParticleTypes.ASH;
+    @Override
+    protected void onHitBlock(BlockHitResult result) {
+        if ( level.isClientSide ) return;
+
+        doBlockEffects();
+
+        this.discard();
     }
+
+
 
     @Override
     public void tick() {
@@ -86,7 +85,14 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         if (level.isClientSide) {
             return;
         }
+        if ( this.tickCount > 160 ) {
+            this.discard();
+        }
         spawnParticles();
+    }
+
+    protected SimpleParticleType getParticle() {
+        return ParticleTypes.ASH;
     }
 
     private void spawnParticles() {
@@ -97,55 +103,14 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult result) {
-        Entity caster = getOwner();
-
-        if ( level.isClientSide ) return;
-
-        if ( result.getEntity() instanceof Mob living ) {
-            hurtTarget(living, caster);
-        }
-        this.discard();
+    protected float getGravity() {
+        return 0.001F;
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
-        Entity caster = getOwner();
-        BlockPos blockPos = result.getBlockPos().relative(result.getDirection());
-
-        if ( level.isClientSide ) return;
-
-        doBlockEffects(blockPos, caster);
-
-        this.discard();
+    protected Item getDefaultItem() {
+        return Items.SNOWBALL;
     }
-
-
-
-    protected void hurtTarget(Mob target, Entity caster) {
-        if ( getDamage() > 0 ) {
-            target.hurt(DamageSource.indirectMagic(this, caster), getDamage());
-        }
-        if ( getFire() ) {
-            target.setSecondsOnFire((int)getDamage());
-        }
-        if ( getExplosion() ) {
-            WandItem.causeExplosion(level, (Player)caster, target.getBoundingBox().getCenter());
-        }
-    }
-    protected void doBlockEffects(BlockPos blockPos, Entity caster) {
-        if ( getFire() ) {
-            if ( level.isEmptyBlock(blockPos) ) {
-                level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(level, blockPos));
-            }
-        }
-        if ( getExplosion() ) {
-            Vec3 onBlock = new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            WandItem.causeExplosion(level, (Player)caster, onBlock);
-        }
-    }
-
-
 
     @Override
     public Packet<?> getAddEntityPacket() {

@@ -1,6 +1,6 @@
 package net.mindoth.runicitems.inventory;
 
-import net.mindoth.runicitems.item.ModWand;
+import net.mindoth.runicitems.item.WandItem;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -12,7 +12,7 @@ public class WandUtils {
     @SuppressWarnings("ConstantConditions")
     @Nonnull
     public static Optional<UUID> getUUID(@Nonnull ItemStack stack) {
-        if ( stack.getItem() instanceof ModWand && stack.hasTag() && stack.getTag().contains("UUID") ) {
+        if ( stack.getItem() instanceof WandItem && stack.hasTag() && stack.getTag().contains("UUID") ) {
             return Optional.of(stack.getTag().getUUID("UUID"));
         }
         else return Optional.empty();

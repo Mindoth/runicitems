@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -16,24 +17,16 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.HashMap;
+
 public class SparkBoltEntity extends ProjectileBaseEntity {
 
     public SparkBoltEntity(EntityType<SparkBoltEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    public SparkBoltEntity(Level level, Player player, float power, boolean hasFire, boolean hasExplosion) {
-        super(RunicItemsEntities.SPARK_BOLT.get(), level, player, power, hasFire, hasExplosion);
-    }
-
-    @Override
-    protected Item getDefaultItem() {
-        return Items.SNOWBALL;
-    }
-
-    @Override
-    protected float getGravity() {
-        return 0.03f;
+    public SparkBoltEntity(Level level, LivingEntity caster, HashMap<String, Integer> effects) {
+        super(RunicItemsEntities.SPARK_BOLT.get(), level, caster, effects);
     }
 
     @Override

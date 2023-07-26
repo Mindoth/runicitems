@@ -7,7 +7,6 @@ import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.rune.UtilityRuneItem;
 import net.mindoth.runicitems.item.wand.BasicWandItem;
-import net.mindoth.runicitems.item.wand.WandItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -43,7 +42,7 @@ public class RunicItemsItems {
 
 
     //Wands
-    public static final RegistryObject<Item> WAND = ITEMS.register("wand",
+    public static final RegistryObject<Item> BASIC_WAND = ITEMS.register("basic_wand",
             () -> new BasicWandItem(WandType.BASIC));
 
 

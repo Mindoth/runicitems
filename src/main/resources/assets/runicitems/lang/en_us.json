@@ -7,7 +7,9 @@
   "item.runicitems.eagle_boots": "Eagle Boots",
   "item.runicitems.warrior_boots": "Warrior Boots",
   "item.runicitems.sorcerer_boots": "Sorcerer Boots",
-  "item.runicitems.wand": "Wand",
+
+  "item.runicitems.basic_wand": "Basic Wand",
+
   "item.runicitems.empty_rune": "Empty Rune",
   "item.runicitems.spark_bolt_rune": "Spark Bolt Rune",
   "item.runicitems.explosion_rune": "Explosion Rune",
