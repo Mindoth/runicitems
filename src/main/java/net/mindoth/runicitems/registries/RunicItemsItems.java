@@ -5,7 +5,6 @@ import net.mindoth.runicitems.item.*;
 import net.mindoth.runicitems.item.rune.EffectRuneItem;
 import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
-import net.mindoth.runicitems.item.rune.UtilityRuneItem;
 import net.mindoth.runicitems.item.wand.BasicWandItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
@@ -37,7 +36,7 @@ public class RunicItemsItems {
             () -> new EffectRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
-            () -> new UtilityRuneItem(new Item.Properties()));
+            () -> new EffectRuneItem(new Item.Properties()));
 
 
 

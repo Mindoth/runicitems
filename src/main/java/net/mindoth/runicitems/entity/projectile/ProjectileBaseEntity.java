@@ -1,5 +1,7 @@
 package net.mindoth.runicitems.entity.projectile;
 
+import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.runicitems.spell.PowerCalculation;
 import net.mindoth.runicitems.spell.SpawnEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,6 +24,7 @@ import net.minecraftforge.network.NetworkHooks;
 import java.util.HashMap;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
 
 public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
@@ -29,15 +32,15 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         super(entityType, level);
     }
 
-    protected ProjectileBaseEntity(EntityType<? extends ProjectileBaseEntity> pEntityType, Level pLevel, LivingEntity caster, HashMap<String, Integer> effects) {
+    protected ProjectileBaseEntity(EntityType<? extends ProjectileBaseEntity> pEntityType, Level pLevel, LivingEntity caster, HashMap<Item, Integer> effects) {
         super(pEntityType, caster, pLevel);
         this.owner = caster;
         this.effects = effects;
-        this.baseDamage = effects.get("power");
+        this.baseDamage = PowerCalculation.getPower(effects);
     }
 
     private LivingEntity owner;
-    private HashMap<String, Integer> effects;
+    private HashMap<Item, Integer> effects;
     private float baseDamage = 0.0f;
 
     public float getDamage() {
@@ -48,14 +51,8 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         if ( getDamage() > 0 ) {
             target.hurt(DamageSource.indirectMagic(this, owner), getDamage());
         }
-        if ( effects.get("explosion") == 1 ) {
-            SpawnEffect.causeExplosion(owner, this, effects);
-        }
     }
     protected void doBlockEffects() {
-        if ( effects.get("explosion") == 1 ) {
-            SpawnEffect.causeExplosion(owner, this, effects);
-        }
     }
 
     @Override

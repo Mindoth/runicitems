@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -13,7 +14,7 @@ import java.util.HashMap;
 
 public class ShootProjectile {
 
-    public static void shootSparkBolt(LivingEntity owner, Entity caster, HashMap<String, Integer> effects) {
+    public static void shootSparkBolt(LivingEntity owner, Entity caster, HashMap<Item, Integer> effects) {
         Level level = caster.level;
         SparkBoltEntity sparkBolt = new SparkBoltEntity(level, owner, effects);
         sparkBolt.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, 1.5F, 1.0F);

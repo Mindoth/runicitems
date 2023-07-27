@@ -25,7 +25,7 @@ public class SparkBoltEntity extends ProjectileBaseEntity {
         super(entityType, level);
     }
 
-    public SparkBoltEntity(Level level, LivingEntity caster, HashMap<String, Integer> effects) {
+    public SparkBoltEntity(Level level, LivingEntity caster, HashMap<Item, Integer> effects) {
         super(RunicItemsEntities.SPARK_BOLT.get(), level, caster, effects);
     }
 
