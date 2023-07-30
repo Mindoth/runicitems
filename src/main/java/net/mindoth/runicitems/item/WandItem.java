@@ -99,7 +99,11 @@ public class WandItem extends Item {
             }
             else {
                 if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
-                    SpellBuilder.cast(playerIn, wand);
+                    CompoundTag tag = wand.getOrCreateTag();
+                    if ( !tag.contains("SLOT") ) {
+                        tag.putInt("SLOT", 0);
+                    }
+                    SpellBuilder.cast(tag, playerIn, wand);
                     return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
                 }
             }

@@ -20,20 +20,18 @@ import static net.mindoth.runicitems.spell.ShootProjectile.shootSparkBolt;
 import static net.mindoth.runicitems.spell.SpawnEffect.causeExplosion;
 
 public class SpellBuilder {
-    public static void cast(Player owner, ItemStack wand) {
+
+    //TODO make the list of runes in wand inside WandItem.class instead and then use that here. Spells can then reference that list and trigger effect might be possible
+    public static void cast(CompoundTag tag, Player owner, ItemStack wand) {
         HashMap<Item, Integer> effectsNew = new HashMap<>();
         resetEffects(effectsNew);
         if ( WandManager.get().getCapability(wand).isPresent() ) {
             IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
-            CompoundTag tag = wand.getOrCreateTag();
-            if ( !tag.contains("SLOT") ) {
-                tag.putInt("SLOT", 0);
-            }
             for ( int i = getSlot(wand); i < itemHandler.getSlots(); i++ ) {
                 Item rune = getRune(itemHandler, wand);
                 if ( !itemHandler.getStackInSlot(getSlot(wand)).isEmpty() ) {
                     if ( rune instanceof SpellRuneItem ) {
-                        doSpell(owner, owner, wand, itemHandler);
+                        doSpell(tag, owner, owner, wand, itemHandler);
                         break;
                     }
                     if ( rune instanceof EffectRuneItem ) {
@@ -46,14 +44,15 @@ public class SpellBuilder {
         }
     }
 
-    private static void doSpell(Player owner, Entity caster, ItemStack wand, IItemHandler itemHandler) {
+    //TODO add a way to use slot tag inside spells to determine trigger
+    private static void doSpell(CompoundTag tag, Player owner, Entity caster, ItemStack wand, IItemHandler itemHandler) {
         Item rune = getRune(itemHandler, wand);
 
         if ( rune == RunicItemsItems.SPARK_BOLT_RUNE.get() ) {
-            shootSparkBolt(owner, caster, effects);
+            shootSparkBolt(tag, owner, caster, effects);
         }
         if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
-            causeExplosion(owner, caster, effects);
+            causeExplosion(tag, owner, caster, effects);
         }
 
         if ( caster instanceof Player player ) {

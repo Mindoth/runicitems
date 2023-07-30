@@ -2,6 +2,7 @@ package net.mindoth.runicitems.spell;
 
 import net.mindoth.runicitems.entity.projectile.SparkBoltEntity;
 import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 
 public class ShootProjectile {
 
-    public static void shootSparkBolt(LivingEntity owner, Entity caster, HashMap<Item, Integer> effects) {
+    public static void shootSparkBolt(CompoundTag tag, LivingEntity owner, Entity caster, HashMap<Item, Integer> effects) {
         Level level = caster.level;
         SparkBoltEntity sparkBolt = new SparkBoltEntity(level, owner, effects);
         sparkBolt.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, 1.5F, 1.0F);
