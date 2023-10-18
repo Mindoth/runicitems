@@ -1,94 +1,91 @@
 package net.mindoth.runicitems.spell;
 
-import net.mindoth.runicitems.inventory.WandManager;
-import net.mindoth.runicitems.item.WandItem;
 import net.mindoth.runicitems.item.rune.EffectRuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
 import static java.lang.Math.max;
-import static net.mindoth.runicitems.item.WandItem.getdelay;
-import static net.mindoth.runicitems.spell.ShootProjectile.shootSparkBolt;
-import static net.mindoth.runicitems.spell.SpawnEffect.causeExplosion;
+import static net.mindoth.runicitems.spell.ShootSpell.causeExplosion;
+import static net.mindoth.runicitems.spell.ShootSpell.shootMagicSpark;
 
 public class SpellBuilder {
 
-    //TODO make the list of runes in wand inside WandItem.class instead and then use that here. Spells can then reference that list and trigger effect might be possible
-    public static void cast(CompoundTag tag, Player owner, ItemStack wand) {
-        HashMap<Item, Integer> effectsNew = new HashMap<>();
-        resetEffects(effectsNew);
-        if ( WandManager.get().getCapability(wand).isPresent() ) {
-            IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
-            for ( int i = getSlot(wand); i < itemHandler.getSlots(); i++ ) {
-                Item rune = getRune(itemHandler, wand);
-                if ( !itemHandler.getStackInSlot(getSlot(wand)).isEmpty() ) {
-                    if ( rune instanceof SpellRuneItem ) {
-                        doSpell(tag, owner, owner, wand, itemHandler);
-                        break;
-                    }
-                    if ( rune instanceof EffectRuneItem ) {
-                        effects.merge(rune, 1, Integer::sum);
-                    }
+    public static void cast(Player owner, Entity caster, IItemHandler itemHandler, int slot) {
+        HashMap<Item, Integer> effects = new HashMap<>();
+        for (int i = slot; i < itemHandler.getSlots(); i++ ) {
+            Item rune = getRune(itemHandler, i);
+            if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
+                if ( rune instanceof SpellRuneItem ) {
+                    doSpell(owner, caster, itemHandler, i, effects);
+                    break;
                 }
-                advance(tag, wand, owner, itemHandler);
+                if ( rune instanceof EffectRuneItem ) {
+                    effects.merge(rune, 1, Integer::sum);
+                }
             }
-            advance(tag, wand, owner, itemHandler);
         }
     }
 
-    //TODO add a way to use slot tag inside spells to determine trigger
-    private static void doSpell(CompoundTag tag, Player owner, Entity caster, ItemStack wand, IItemHandler itemHandler) {
-        Item rune = getRune(itemHandler, wand);
+    public static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects) {
+        Item rune = getRune(itemHandler, slot);
 
-        if ( rune == RunicItemsItems.SPARK_BOLT_RUNE.get() ) {
-            shootSparkBolt(tag, owner, caster, effects);
+        if ( rune == RunicItemsItems.MAGIC_SPARK_RUNE.get() ) {
+            shootMagicSpark(owner, caster, itemHandler, slot, effects);
         }
         if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
-            causeExplosion(tag, owner, caster, effects);
-        }
-
-        if ( caster instanceof Player player ) {
-            player.getCooldowns().addCooldown(wand.getItem(), getdelay(wand.getItem()));
+            causeExplosion(owner, caster, itemHandler, slot, effects);
         }
     }
 
-    private static Item getRune(IItemHandler itemHandler, ItemStack wand) {
-        return itemHandler.getStackInSlot(getSlot(wand)).getItem();
+    private static Item getRune(IItemHandler itemHandler, int slot) {
+        return itemHandler.getStackInSlot(slot).getItem();
     }
 
-    private static int getSlot(ItemStack wand) {
-        CompoundTag tag = wand.getTag();
-        return tag.getInt("SLOT");
-    }
-
-    private static void resetEffects(HashMap<Item, Integer> effectsNew) {
-        effects = effectsNew;
-    }
-
-    private static HashMap<Item, Integer> effects;
-
-    private static Item getNextSpell(int i, IItemHandler itemHandler) {
-        Item nextRune = null;
+    public static int getNextSpellSlot(int i, IItemHandler itemHandler) {
+        int nextRune = -1;
         for ( int j = i + 1; j < itemHandler.getSlots(); j++ ) {
             if ( itemHandler.getStackInSlot(j).getItem() instanceof SpellRuneItem ) {
-                nextRune = itemHandler.getStackInSlot(j).getItem();
+                nextRune = j;
             }
         }
         return nextRune;
     }
 
-    private static void advance(CompoundTag tag, ItemStack wand, Player player, IItemHandler itemHandler) {
-        if ( getNextSpell(getSlot(wand), itemHandler) == null ) {
-            WandItem.reload(wand, player);
+    public static Integer getPower(HashMap<Item, Integer> effects) {
+        int power = 0;
+        if ( effects.containsKey(RunicItemsItems.AMPLIFICATION_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.AMPLIFICATION_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.AMPLIFICATION_RUNE.get());
+            }
         }
-        else tag.putInt("SLOT", getSlot(wand) + 1);
+        if ( effects.containsKey(RunicItemsItems.NULLIFICATION_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.NULLIFICATION_RUNE.get()) != null ) {
+                power -= effects.get(RunicItemsItems.NULLIFICATION_RUNE.get());
+            }
+        }
+        power = max(power, 0);
+        return power;
+    }
+
+    public static boolean getTrigger(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.TRIGGER_RUNE.get());
+    }
+
+    public static boolean getFire(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.FIRE_RUNE.get());
+    }
+
+    public static boolean getBounce(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.BOUNCE_RUNE.get());
+    }
+
+    public static boolean getGravity(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.GRAVITY_RUNE.get());
     }
 }

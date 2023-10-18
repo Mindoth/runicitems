@@ -24,6 +24,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class WandItem extends Item {
@@ -99,45 +100,29 @@ public class WandItem extends Item {
             }
             else {
                 if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
-                    CompoundTag tag = wand.getOrCreateTag();
-                    if ( !tag.contains("SLOT") ) {
-                        tag.putInt("SLOT", 0);
-                    }
-                    SpellBuilder.cast(tag, playerIn, wand);
+                    IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
+                    SpellBuilder.cast(playerIn, playerIn, itemHandler, 0);
+
+                    playerIn.getCooldowns().addCooldown(wand.getItem(), getdelay(wand.getItem()));
                     return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
                 }
             }
         }
+        playerIn.getCooldowns().addCooldown(wand.getItem(), getCooldown(wand.getItem()));
         return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
     }
 
-    @Override
-    public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
-        if ( pIsSelected && pEntity.isShiftKeyDown() ) {
-            CompoundTag tag = pStack.getOrCreateTag();
-            if ( pEntity instanceof Player player && !player.getCooldowns().isOnCooldown(pStack.getItem()) && tag.getInt("SLOT") > 0 ) {
-                reload(pStack, (Player)pEntity);
-            }
-        }
-    }
-
     public static int getdelay(Item wand) {
-        if ( wand == RunicItemsItems.BASIC_WAND.get() ) {
-            return 5;
-        }
-        else return 0;
-    }
-
-    public static int getCooldown(Item wand) {
         if ( wand == RunicItemsItems.BASIC_WAND.get() ) {
             return 20;
         }
         else return 0;
     }
 
-    public static void reload(ItemStack wand, Player player) {
-        CompoundTag tag = wand.getOrCreateTag();
-        tag.putInt("SLOT", 0);
-        player.getCooldowns().addCooldown(wand.getItem(), getCooldown(wand.getItem()));
+    public static int getCooldown(Item wand) {
+        if ( wand == RunicItemsItems.BASIC_WAND.get() ) {
+            return 10;
+        }
+        else return 0;
     }
 }

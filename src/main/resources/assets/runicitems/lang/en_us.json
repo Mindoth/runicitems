@@ -11,12 +11,14 @@
   "item.runicitems.basic_wand": "Basic Wand",
 
   "item.runicitems.empty_rune": "Empty Rune",
-  "item.runicitems.spark_bolt_rune": "Spark Bolt Rune",
+  "item.runicitems.magic_spark_rune": "Magic Spark Rune",
   "item.runicitems.explosion_rune": "Explosion Rune",
-  "item.runicitems.fire_rune": "Fire Rune",
+  "item.runicitems.trigger_rune": "Trigger Rune",
   "item.runicitems.amplification_rune": "Amplification Rune",
   "item.runicitems.nullification_rune": "Nullification Rune",
-  "item.runicitems.trigger_rune": "Trigger Rune",
+  "item.runicitems.fire_rune": "Fire Rune",
+  "item.runicitems.bounce_rune": "Bounce Rune",
+  "item.runicitems.gravity_rune": "Gravity Rune",
 
   "enchantment.runicitems.target_cracker": "Target Cracker",
 

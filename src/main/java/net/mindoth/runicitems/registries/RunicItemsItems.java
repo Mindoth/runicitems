@@ -20,13 +20,15 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> EMPTY_RUNE = ITEMS.register("empty_rune",
             () -> new RuneItem(new Item.Properties()));
 
-    public static final RegistryObject<Item> SPARK_BOLT_RUNE = ITEMS.register("spark_bolt_rune",
+
+    public static final RegistryObject<Item> MAGIC_SPARK_RUNE = ITEMS.register("magic_spark_rune",
             () -> new SpellRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
             () -> new SpellRuneItem(new Item.Properties()));
 
-    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
+
+    public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> AMPLIFICATION_RUNE = ITEMS.register("amplification_rune",
@@ -35,7 +37,13 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> NULLIFICATION_RUNE = ITEMS.register("nullification_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
-    public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
+    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> BOUNCE_RUNE = ITEMS.register("bounce_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> GRAVITY_RUNE = ITEMS.register("gravity_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
 

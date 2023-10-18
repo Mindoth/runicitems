@@ -1,9 +1,7 @@
 package net.mindoth.runicitems.entity.projectile;
 
-import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.mindoth.runicitems.spell.PowerCalculation;
-import net.mindoth.runicitems.spell.SpawnEffect;
-import net.minecraft.core.BlockPos;
+import net.mindoth.runicitems.spell.SpellBuilder;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.protocol.Packet;
@@ -12,19 +10,20 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.HashMap;
-
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
 
 public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
@@ -32,46 +31,83 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         super(entityType, level);
     }
 
-    protected ProjectileBaseEntity(EntityType<? extends ProjectileBaseEntity> pEntityType, Level pLevel, LivingEntity caster, HashMap<Item, Integer> effects) {
-        super(pEntityType, caster, pLevel);
-        this.owner = caster;
+    protected ProjectileBaseEntity(EntityType<? extends ProjectileBaseEntity> pEntityType, Level pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects) {
+        super(pEntityType, owner, pLevel);
+        this.owner = owner;
+        this.caster = caster;
+        this.itemHandler = itemHandler;
+        this.slot = slot;
         this.effects = effects;
-        this.baseDamage = PowerCalculation.getPower(effects);
     }
 
     private LivingEntity owner;
+    private Entity caster;
+    private IItemHandler itemHandler;
+    private int slot;
     private HashMap<Item, Integer> effects;
-    private float baseDamage = 0.0f;
 
-    public float getDamage() {
-        return this.baseDamage;
-    }
-
-    protected void hurtTarget(Mob target) {
-        if ( getDamage() > 0 ) {
-            target.hurt(DamageSource.indirectMagic(this, owner), getDamage());
+    protected void hurtTarget(LivingEntity target) {
+        int power = SpellBuilder.getPower(effects);
+        if ( power > 0 ) {
+            target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
+        if ( SpellBuilder.getFire(effects) ) {
+            target.setSecondsOnFire(5);
+        }
+
+        this.discard();
     }
-    protected void doBlockEffects() {
+
+    protected void doBlockEffects(HitResult result) {
+        if ( SpellBuilder.getBounce(effects) ) {
+            BlockHitResult traceResult = (BlockHitResult) result;
+            BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
+            if (!blockstate.getCollisionShape(this.level, traceResult.getBlockPos()).isEmpty()) {
+                Direction face = traceResult.getDirection();
+                blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
+
+                Vec3 motion = this.getDeltaMovement();
+
+                double motionX = motion.x();
+                double motionY = motion.y();
+                double motionZ = motion.z();
+
+
+                if (face == Direction.EAST)
+                    motionX = -motionX;
+                else if (face == Direction.SOUTH)
+                    motionZ = -motionZ;
+                else if (face == Direction.WEST)
+                    motionX = -motionX;
+                else if (face == Direction.NORTH)
+                    motionZ = -motionZ;
+                else if (face == Direction.UP)
+                    motionY = -motionY;
+                else if (face == Direction.DOWN)
+                    motionY = -motionY;
+
+                this.setDeltaMovement(motionX, motionY, motionZ);
+            }
+        }
+        else this.discard();
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult result) {
+    protected void onHit(HitResult result) {
         if ( level.isClientSide ) return;
 
-        if ( result.getEntity() instanceof Mob living ) {
+        if ( result.getType() == HitResult.Type.ENTITY && ((EntityHitResult)result).getEntity() instanceof LivingEntity living ) {
             hurtTarget(living);
         }
-        this.discard();
-    }
 
-    @Override
-    protected void onHitBlock(BlockHitResult result) {
-        if ( level.isClientSide ) return;
+        if ( result.getType() == HitResult.Type.BLOCK ) {
+            doBlockEffects(result);
+        }
 
-        doBlockEffects();
-
-        this.discard();
+        if ( SpellBuilder.getTrigger(effects) && SpellBuilder.getNextSpellSlot(slot, itemHandler) >= 0 ) {
+            caster = this;
+            SpellBuilder.cast((Player)owner, caster, itemHandler, slot + 1);
+        }
     }
 
 
@@ -101,7 +137,7 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
     @Override
     protected float getGravity() {
-        return 0.001F;
+        return 0.1F;
     }
 
     @Override
