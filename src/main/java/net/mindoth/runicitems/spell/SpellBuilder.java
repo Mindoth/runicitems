@@ -11,8 +11,7 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.HashMap;
 
 import static java.lang.Math.max;
-import static net.mindoth.runicitems.spell.ShootSpell.causeExplosion;
-import static net.mindoth.runicitems.spell.ShootSpell.shootMagicSpark;
+import static net.mindoth.runicitems.spell.ShootSpell.*;
 
 public class SpellBuilder {
 
@@ -40,6 +39,9 @@ public class SpellBuilder {
         }
         if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
             causeExplosion(owner, caster, itemHandler, slot, effects);
+        }
+        if ( rune == RunicItemsItems.HEALING_BOLT_RUNE.get() ) {
+            shootHealingBolt(owner, caster, itemHandler, slot, effects);
         }
     }
 

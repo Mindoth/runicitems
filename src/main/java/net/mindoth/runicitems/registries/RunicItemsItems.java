@@ -27,6 +27,9 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
             () -> new SpellRuneItem(new Item.Properties()));
 
+    public static final RegistryObject<Item> HEALING_BOLT_RUNE = ITEMS.register("healing_bolt_rune",
+            () -> new SpellRuneItem(new Item.Properties()));
+
 
     public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
             () -> new EffectRuneItem(new Item.Properties()));

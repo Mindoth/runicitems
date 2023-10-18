@@ -7,7 +7,6 @@ import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -39,6 +38,7 @@ public class RunicItemsClient {
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(RunicItemsEntities.SPARK_BOLT.get(), ProjectileBaseRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.MAGIC_SPARK.get(), ProjectileBaseRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.HEALING_BOLT.get(), ProjectileBaseRenderer::new);
     }
 }

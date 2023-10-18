@@ -14,13 +14,13 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
-public class MagicSparkEntity extends ProjectileBaseEntity {
+public class HealingBoltEntity extends ProjectileBaseEntity {
 
-    public MagicSparkEntity(EntityType<MagicSparkEntity> entityType, Level level) {
+    public HealingBoltEntity(EntityType<HealingBoltEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    public MagicSparkEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects) {
+    public HealingBoltEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects) {
         super(RunicItemsEntities.MAGIC_SPARK.get(), level, owner, caster, itemHandler, slot, effects);
         this.owner = owner;
         this.caster = caster;
@@ -39,7 +39,7 @@ public class MagicSparkEntity extends ProjectileBaseEntity {
     protected void hurtTarget(LivingEntity target) {
         int power = 1 + SpellBuilder.getPower(effects);
         if ( power > 0 ) {
-            target.hurt(DamageSource.indirectMagic(this, owner), power);
+            target.heal(power);
         }
         if ( SpellBuilder.getFire(effects) ) {
             target.setSecondsOnFire(5);
@@ -50,6 +50,6 @@ public class MagicSparkEntity extends ProjectileBaseEntity {
 
     @Override
     protected SimpleParticleType getParticle() {
-        return ParticleTypes.END_ROD;
+        return ParticleTypes.HAPPY_VILLAGER;
     }
 }

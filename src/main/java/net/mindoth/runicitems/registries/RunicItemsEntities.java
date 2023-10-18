@@ -1,6 +1,7 @@
 package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
+import net.mindoth.runicitems.entity.projectile.HealingBoltEntity;
 import net.mindoth.runicitems.entity.projectile.MagicSparkEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -12,8 +13,10 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class RunicItemsEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, RunicItems.MOD_ID);
-    public static final RegistryObject<EntityType<MagicSparkEntity>> SPARK_BOLT = ENTITIES.register("spark_bolt",
+    public static final RegistryObject<EntityType<MagicSparkEntity>> MAGIC_SPARK = ENTITIES.register("magic_spark",
             () -> getDefaultSizeEntityType(MagicSparkEntity::new));
+    public static final RegistryObject<EntityType<HealingBoltEntity>> HEALING_BOLT = ENTITIES.register("healing_bolt",
+            () -> getDefaultSizeEntityType(HealingBoltEntity::new));
 
 
 

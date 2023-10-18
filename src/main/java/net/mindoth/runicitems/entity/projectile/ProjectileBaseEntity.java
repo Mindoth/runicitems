@@ -47,14 +47,6 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
     private HashMap<Item, Integer> effects;
 
     protected void hurtTarget(LivingEntity target) {
-        int power = SpellBuilder.getPower(effects);
-        if ( power > 0 ) {
-            target.hurt(DamageSource.indirectMagic(this, owner), power);
-        }
-        if ( SpellBuilder.getFire(effects) ) {
-            target.setSecondsOnFire(5);
-        }
-
         this.discard();
     }
 
@@ -98,6 +90,7 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
         if ( result.getType() == HitResult.Type.ENTITY && ((EntityHitResult)result).getEntity() instanceof LivingEntity living ) {
             hurtTarget(living);
+            splashParticles(living);
         }
 
         if ( result.getType() == HitResult.Type.BLOCK ) {
@@ -132,6 +125,15 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         if ( !this.level.isClientSide ) {
             ServerLevel level = (ServerLevel)this.level;
             level.sendParticles(this.getParticle(), getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getY() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
+        }
+    }
+
+    private void splashParticles(LivingEntity target) {
+        if ( !this.level.isClientSide ) {
+            ServerLevel level = (ServerLevel)this.level;
+            for (int i = 0; i < 1 + 2 * SpellBuilder.getPower(effects); ++i) {
+                level.sendParticles(this.getParticle(), target.getBoundingBox().getCenter().x, target.getBoundingBox().getCenter().y, target.getBoundingBox().getCenter().z, 1, target.getBoundingBox().getXsize() / 2 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getYsize() / 4 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getZsize() / 2 + this.random.nextDouble() * 0.15F, 0);
+            }
         }
     }
 
