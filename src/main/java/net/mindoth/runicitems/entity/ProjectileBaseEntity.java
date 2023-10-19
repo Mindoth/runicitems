@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.entity.projectile;
+package net.mindoth.runicitems.entity;
 
 import net.mindoth.runicitems.spell.SpellBuilder;
 import net.minecraft.core.Direction;
@@ -6,7 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,24 +37,63 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         this.caster = caster;
         this.itemHandler = itemHandler;
         this.slot = slot;
-        this.effects = effects;
+        this.trigger = SpellBuilder.getTrigger(effects);
+        this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
+        this.nextSpellSlot = SpellBuilder.getNextSpellSlot(slot, itemHandler);
+        this.power = SpellBuilder.getPower(effects);
+        this.bounces = SpellBuilder.getBounce(effects);
+        this.life = Math.max(10, 160 + SpellBuilder.getLife(effects));
+        this.fire = SpellBuilder.getFire(effects);
+        this.ice = SpellBuilder.getIce(effects);
     }
 
-    private LivingEntity owner;
-    private Entity caster;
-    private IItemHandler itemHandler;
-    private int slot;
-    private HashMap<Item, Integer> effects;
+    protected LivingEntity owner;
+    protected Entity caster;
+    protected IItemHandler itemHandler;
+    protected int slot;
+    protected boolean trigger;
+    protected boolean deathTrigger;
+    protected int nextSpellSlot;
+    protected int power;
+    protected int bounces;
+    protected int life;
+    protected boolean fire;
+    protected boolean ice;
+
+    @Override
+    protected void onHit(HitResult result) {
+        if ( level.isClientSide ) return;
+
+        if ( result.getType() == HitResult.Type.ENTITY && ((EntityHitResult)result).getEntity() instanceof LivingEntity living ) {
+            hurtTarget(living);
+            classHurtTarget(living);
+            //splashParticles(living);
+        }
+
+        if ( result.getType() == HitResult.Type.BLOCK ) {
+            doBlockEffects(result);
+        }
+
+        if ( trigger && nextSpellSlot >= 0 ) {
+            caster = this;
+            SpellBuilder.cast((Player)owner, caster, itemHandler, slot + 1);
+        }
+    }
 
     protected void hurtTarget(LivingEntity target) {
-        this.discard();
+        if ( fire && !ice ) {
+            target.setSecondsOnFire(5);
+        }
+        if ( ice && !fire ) {
+            target.setTicksFrozen(560);
+        }
     }
 
     protected void doBlockEffects(HitResult result) {
-        if ( SpellBuilder.getBounce(effects) ) {
-            BlockHitResult traceResult = (BlockHitResult) result;
-            BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
-            if (!blockstate.getCollisionShape(this.level, traceResult.getBlockPos()).isEmpty()) {
+        BlockHitResult traceResult = (BlockHitResult) result;
+        BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
+        if ( bounces > 0 ) {
+            if ( !blockstate.getCollisionShape(this.level, traceResult.getBlockPos()).isEmpty() ) {
                 Direction face = traceResult.getDirection();
                 blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
 
@@ -80,33 +119,14 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
                 this.setDeltaMovement(motionX, motionY, motionZ);
             }
+            this.bounces -= 1;
         }
         else this.discard();
+        level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
     }
 
-    @Override
-    protected void onHit(HitResult result) {
-        if ( level.isClientSide ) return;
-
-        if ( result.getType() == HitResult.Type.ENTITY && ((EntityHitResult)result).getEntity() instanceof LivingEntity living ) {
-            hurtTarget(living);
-            if ( SpellBuilder.getFire(effects) ) {
-                living.setSecondsOnFire(5);
-            }
-            if ( SpellBuilder.getIce(effects) ) {
-                living.setTicksFrozen(560);
-            }
-            splashParticles(living);
-        }
-
-        if ( result.getType() == HitResult.Type.BLOCK ) {
-            doBlockEffects(result);
-        }
-
-        if ( SpellBuilder.getTrigger(effects) && SpellBuilder.getNextSpellSlot(slot, itemHandler) >= 0 ) {
-            caster = this;
-            SpellBuilder.cast((Player)owner, caster, itemHandler, slot + 1);
-        }
+    protected void classHurtTarget(LivingEntity target) {
     }
 
 
@@ -117,13 +137,17 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         if (level.isClientSide) {
             return;
         }
-        if ( this.tickCount > 160 ) {
+        if ( this.tickCount > life ) {
+            if ( deathTrigger && nextSpellSlot >= 0 ) {
+                caster = this;
+                SpellBuilder.cast((Player)owner, caster, itemHandler, slot + 1);
+            }
             this.discard();
         }
         spawnParticles();
     }
 
-    private void splashParticles(LivingEntity target) {
+    /*private void splashParticles(LivingEntity target) {
         if ( !this.level.isClientSide ) {
             ServerLevel level = (ServerLevel)this.level;
             for (int i = 0; i < 1 + 2 * SpellBuilder.getPower(effects); ++i) {
@@ -140,7 +164,7 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
                 }
             }
         }
-    }
+    }*/
 
     private void spawnParticles() {
         if ( !this.level.isClientSide ) {
@@ -156,7 +180,7 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
     @Override
     protected float getGravity() {
-        return 0.1F;
+        return 0.025F;
     }
 
     @Override

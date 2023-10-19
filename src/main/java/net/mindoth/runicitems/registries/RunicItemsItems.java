@@ -34,10 +34,14 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
-    public static final RegistryObject<Item> AMPLIFICATION_RUNE = ITEMS.register("amplification_rune",
+
+    public static final RegistryObject<Item> DEATH_TRIGGER_RUNE = ITEMS.register("death_trigger_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
-    public static final RegistryObject<Item> NULLIFICATION_RUNE = ITEMS.register("nullification_rune",
+    public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> DECREASE_POWER_RUNE = ITEMS.register("decrease_power_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
@@ -56,6 +60,12 @@ public class RunicItemsItems {
             () -> new EffectRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> INCREASE_LIFE_RUNE = ITEMS.register("increase_life_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> DECREASE_LIFE_RUNE = ITEMS.register("decrease_life_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
 

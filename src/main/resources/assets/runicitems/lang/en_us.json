@@ -16,14 +16,17 @@
   "item.runicitems.healing_bolt_rune": "Healing Bolt Rune",
 
   "item.runicitems.trigger_rune": "Trigger Rune",
-  "item.runicitems.amplification_rune": "Amplification Rune",
-  "item.runicitems.nullification_rune": "Nullification Rune",
+  "item.runicitems.death_trigger_rune": "Death Trigger Rune",
+  "item.runicitems.increase_power_rune": "Increase Power Rune",
+  "item.runicitems.decrease_power_rune": "Decrease Power Rune",
   "item.runicitems.fire_rune": "Fire Rune",
   "item.runicitems.bounce_rune": "Bounce Rune",
   "item.runicitems.gravity_rune": "Gravity Rune",
   "item.runicitems.increase_speed_rune": "Increase Speed Rune",
   "item.runicitems.decrease_speed_rune": "Decrease Speed Rune",
   "item.runicitems.ice_rune": "Ice Rune",
+  "item.runicitems.increase_life_rune": "Increase Life Rune",
+  "item.runicitems.decrease_life_rune": "Decrease Life Rune",
 
   "enchantment.runicitems.target_cracker": "Target Cracker",
 

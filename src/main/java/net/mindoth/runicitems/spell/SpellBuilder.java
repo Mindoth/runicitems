@@ -61,14 +61,14 @@ public class SpellBuilder {
 
     public static Integer getPower(HashMap<Item, Integer> effects) {
         int power = 0;
-        if ( effects.containsKey(RunicItemsItems.AMPLIFICATION_RUNE.get()) ) {
-            if ( effects.get(RunicItemsItems.AMPLIFICATION_RUNE.get()) != null ) {
-                power += effects.get(RunicItemsItems.AMPLIFICATION_RUNE.get());
+        if ( effects.containsKey(RunicItemsItems.INCREASE_POWER_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get());
             }
         }
-        if ( effects.containsKey(RunicItemsItems.NULLIFICATION_RUNE.get()) ) {
-            if ( effects.get(RunicItemsItems.NULLIFICATION_RUNE.get()) != null ) {
-                power -= effects.get(RunicItemsItems.NULLIFICATION_RUNE.get());
+        if ( effects.containsKey(RunicItemsItems.DECREASE_POWER_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.DECREASE_POWER_RUNE.get()) != null ) {
+                power -= effects.get(RunicItemsItems.DECREASE_POWER_RUNE.get());
             }
         }
         return power;
@@ -88,17 +88,46 @@ public class SpellBuilder {
         }
         if ( power != 0 ) {
             if ( power > 0 ) {
-                speed += power;
+                speed += (power / 2);
             }
             else if ( power < 0  ) {
-                speed /= Math.abs(power);
+                speed /= (Math.abs(power) / 2);
             }
         }
         return speed;
     }
 
+    public static Integer getBounce(HashMap<Item, Integer> effects) {
+        int power = 0;
+        if ( effects.containsKey(RunicItemsItems.BOUNCE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.BOUNCE_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.BOUNCE_RUNE.get());
+            }
+        }
+        return power;
+    }
+
+    public static Integer getLife(HashMap<Item, Integer> effects) {
+        int power = 0;
+        if ( effects.containsKey(RunicItemsItems.INCREASE_LIFE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.INCREASE_LIFE_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.INCREASE_LIFE_RUNE.get());
+            }
+        }
+        if ( effects.containsKey(RunicItemsItems.DECREASE_LIFE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.DECREASE_LIFE_RUNE.get()) != null ) {
+                power -= effects.get(RunicItemsItems.DECREASE_LIFE_RUNE.get());
+            }
+        }
+        return power * 40;
+    }
+
     public static boolean getTrigger(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.TRIGGER_RUNE.get());
+    }
+
+    public static boolean getDeathTrigger(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.DEATH_TRIGGER_RUNE.get());
     }
 
     public static boolean getFire(HashMap<Item, Integer> effects) {
@@ -107,10 +136,6 @@ public class SpellBuilder {
 
     public static boolean getIce(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.ICE_RUNE.get());
-    }
-
-    public static boolean getBounce(HashMap<Item, Integer> effects) {
-        return effects.containsKey(RunicItemsItems.BOUNCE_RUNE.get());
     }
 
     public static boolean getGravity(HashMap<Item, Integer> effects) {
