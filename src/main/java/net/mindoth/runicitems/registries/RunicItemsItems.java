@@ -49,6 +49,15 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> GRAVITY_RUNE = ITEMS.register("gravity_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
+    public static final RegistryObject<Item> INCREASE_SPEED_RUNE = ITEMS.register("increase_speed_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> DECREASE_SPEED_RUNE = ITEMS.register("decrease_speed_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
 
 
     //Wands

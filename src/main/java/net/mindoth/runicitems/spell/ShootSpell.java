@@ -35,7 +35,7 @@ public class ShootSpell {
         if ( caster != owner ) {
             projectile.setPos(center);
         }
-        projectile.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, 1.5F, 1.0F);
+        projectile.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, SpellBuilder.getSpeed(effects, 1), 1.0F);
 
         level.addFreshEntity(projectile);
         level.playSound(null, center.x, center.y, center.z,
@@ -55,7 +55,7 @@ public class ShootSpell {
         if ( caster != owner ) {
             projectile.setPos(center);
         }
-        projectile.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, 1.5F, 1.0F);
+        projectile.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, SpellBuilder.getSpeed(effects, 1), 1.0F);
 
         level.addFreshEntity(projectile);
         level.playSound(null, center.x, center.y, center.z,

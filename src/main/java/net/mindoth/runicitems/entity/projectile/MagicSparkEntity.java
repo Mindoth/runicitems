@@ -41,9 +41,6 @@ public class MagicSparkEntity extends ProjectileBaseEntity {
         if ( power > 0 ) {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
-        if ( SpellBuilder.getFire(effects) ) {
-            target.setSecondsOnFire(5);
-        }
 
         this.discard();
     }

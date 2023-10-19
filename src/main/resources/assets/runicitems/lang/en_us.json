@@ -21,6 +21,9 @@
   "item.runicitems.fire_rune": "Fire Rune",
   "item.runicitems.bounce_rune": "Bounce Rune",
   "item.runicitems.gravity_rune": "Gravity Rune",
+  "item.runicitems.increase_speed_rune": "Increase Speed Rune",
+  "item.runicitems.decrease_speed_rune": "Decrease Speed Rune",
+  "item.runicitems.ice_rune": "Ice Rune",
 
   "enchantment.runicitems.target_cracker": "Target Cracker",
 

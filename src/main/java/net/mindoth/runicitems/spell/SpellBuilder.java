@@ -71,8 +71,30 @@ public class SpellBuilder {
                 power -= effects.get(RunicItemsItems.NULLIFICATION_RUNE.get());
             }
         }
-        power = max(power, 0);
         return power;
+    }
+
+    public static Float getSpeed(HashMap<Item, Integer> effects, float speed) {
+        float power = 0;
+        if ( effects.containsKey(RunicItemsItems.INCREASE_SPEED_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.INCREASE_SPEED_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.INCREASE_SPEED_RUNE.get());
+            }
+        }
+        if ( effects.containsKey(RunicItemsItems.DECREASE_SPEED_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.DECREASE_SPEED_RUNE.get()) != null ) {
+                power -= effects.get(RunicItemsItems.DECREASE_SPEED_RUNE.get());
+            }
+        }
+        if ( power != 0 ) {
+            if ( power > 0 ) {
+                speed += power;
+            }
+            else if ( power < 0  ) {
+                speed /= Math.abs(power);
+            }
+        }
+        return speed;
     }
 
     public static boolean getTrigger(HashMap<Item, Integer> effects) {
@@ -81,6 +103,10 @@ public class SpellBuilder {
 
     public static boolean getFire(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.FIRE_RUNE.get());
+    }
+
+    public static boolean getIce(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.ICE_RUNE.get());
     }
 
     public static boolean getBounce(HashMap<Item, Integer> effects) {

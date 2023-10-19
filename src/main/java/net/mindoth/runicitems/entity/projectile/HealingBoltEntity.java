@@ -41,9 +41,6 @@ public class HealingBoltEntity extends ProjectileBaseEntity {
         if ( power > 0 ) {
             target.heal(power);
         }
-        if ( SpellBuilder.getFire(effects) ) {
-            target.setSecondsOnFire(5);
-        }
 
         this.discard();
     }

@@ -90,6 +90,12 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
 
         if ( result.getType() == HitResult.Type.ENTITY && ((EntityHitResult)result).getEntity() instanceof LivingEntity living ) {
             hurtTarget(living);
+            if ( SpellBuilder.getFire(effects) ) {
+                living.setSecondsOnFire(5);
+            }
+            if ( SpellBuilder.getIce(effects) ) {
+                living.setTicksFrozen(560);
+            }
             splashParticles(living);
         }
 
@@ -117,24 +123,35 @@ public class ProjectileBaseEntity extends ThrowableItemProjectile {
         spawnParticles();
     }
 
-    protected SimpleParticleType getParticle() {
-        return ParticleTypes.ASH;
-    }
-
-    private void spawnParticles() {
-        if ( !this.level.isClientSide ) {
-            ServerLevel level = (ServerLevel)this.level;
-            level.sendParticles(this.getParticle(), getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getY() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
-        }
-    }
-
     private void splashParticles(LivingEntity target) {
         if ( !this.level.isClientSide ) {
             ServerLevel level = (ServerLevel)this.level;
             for (int i = 0; i < 1 + 2 * SpellBuilder.getPower(effects); ++i) {
                 level.sendParticles(this.getParticle(), target.getBoundingBox().getCenter().x, target.getBoundingBox().getCenter().y, target.getBoundingBox().getCenter().z, 1, target.getBoundingBox().getXsize() / 2 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getYsize() / 4 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getZsize() / 2 + this.random.nextDouble() * 0.15F, 0);
             }
+            if ( SpellBuilder.getFire(effects) ) {
+                for (int i = 0; i < 8; ++i) {
+                    level.sendParticles(ParticleTypes.FLAME, target.getBoundingBox().getCenter().x, target.getBoundingBox().getCenter().y, target.getBoundingBox().getCenter().z, 1, target.getBoundingBox().getXsize() / 2 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getYsize() / 4 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getZsize() / 2 + this.random.nextDouble() * 0.15F, 0);
+                }
+            }
+            if ( SpellBuilder.getIce(effects) ) {
+                for (int i = 0; i < 8; ++i) {
+                    level.sendParticles(ParticleTypes.SNOWFLAKE, target.getBoundingBox().getCenter().x, target.getBoundingBox().getCenter().y, target.getBoundingBox().getCenter().z, 1, target.getBoundingBox().getXsize() / 2 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getYsize() / 4 + this.random.nextDouble() * 0.15F, target.getBoundingBox().getZsize() / 2 + this.random.nextDouble() * 0.15F, 0);
+                }
+            }
         }
+    }
+
+    private void spawnParticles() {
+        if ( !this.level.isClientSide ) {
+            ServerLevel level = (ServerLevel)this.level;
+            level.sendParticles(this.getParticle(), getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getY() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
+
+        }
+    }
+
+    protected SimpleParticleType getParticle() {
+        return ParticleTypes.ASH;
     }
 
     @Override
