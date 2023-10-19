@@ -1,6 +1,8 @@
 package net.mindoth.runicitems.spell;
 
 import net.mindoth.runicitems.item.rune.EffectRuneItem;
+import net.mindoth.runicitems.item.rune.FamiliarRuneItem;
+import net.mindoth.runicitems.item.rune.ProjectileRuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.minecraft.world.entity.Entity;
@@ -34,14 +36,14 @@ public class SpellBuilder {
     public static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects) {
         Item rune = getRune(itemHandler, slot);
 
-        if ( rune == RunicItemsItems.MAGIC_SPARK_RUNE.get() ) {
-            shootMagicSpark(owner, caster, itemHandler, slot, effects);
+        if ( rune instanceof ProjectileRuneItem ) {
+            shootMagic(owner, caster, itemHandler, slot, effects, rune);
+        }
+        if ( rune instanceof FamiliarRuneItem) {
+            summonFamiliar(owner, caster, itemHandler, slot, effects, rune);
         }
         if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
             causeExplosion(owner, caster, itemHandler, slot, effects);
-        }
-        if ( rune == RunicItemsItems.HEALING_BOLT_RUNE.get() ) {
-            shootHealingBolt(owner, caster, itemHandler, slot, effects);
         }
     }
 
@@ -60,7 +62,7 @@ public class SpellBuilder {
     }
 
     public static Integer getPower(HashMap<Item, Integer> effects) {
-        int power = 0;
+        int power = 1;
         if ( effects.containsKey(RunicItemsItems.INCREASE_POWER_RUNE.get()) ) {
             if ( effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get()) != null ) {
                 power += effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get());
@@ -88,7 +90,7 @@ public class SpellBuilder {
         }
         if ( power != 0 ) {
             if ( power > 0 ) {
-                speed += (power / 2);
+                speed += (power / 4);
             }
             else if ( power < 0  ) {
                 speed /= (Math.abs(power) / 2);

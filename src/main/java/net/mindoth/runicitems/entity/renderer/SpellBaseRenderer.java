@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import net.mindoth.runicitems.entity.ProjectileBaseEntity;
+import net.mindoth.runicitems.entity.spell.SpellBaseEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class ProjectileBaseRenderer<T extends ProjectileBaseEntity> extends EntityRenderer<T> {
+public class SpellBaseRenderer<T extends SpellBaseEntity> extends EntityRenderer<T> {
     private final Map<EntityType<?>, RenderType> entityCutOuts = new HashMap<>();
 
-    public ProjectileBaseRenderer(EntityRendererProvider.Context context) {
+    public SpellBaseRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 

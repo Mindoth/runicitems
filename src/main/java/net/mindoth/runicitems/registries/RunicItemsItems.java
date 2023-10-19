@@ -2,9 +2,7 @@ package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.*;
-import net.mindoth.runicitems.item.rune.EffectRuneItem;
-import net.mindoth.runicitems.item.rune.RuneItem;
-import net.mindoth.runicitems.item.rune.SpellRuneItem;
+import net.mindoth.runicitems.item.rune.*;
 import net.mindoth.runicitems.item.wand.BasicWandItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,21 +20,24 @@ public class RunicItemsItems {
 
 
     public static final RegistryObject<Item> MAGIC_SPARK_RUNE = ITEMS.register("magic_spark_rune",
-            () -> new SpellRuneItem(new Item.Properties()));
+            () -> new ProjectileRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
             () -> new SpellRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> HEALING_BOLT_RUNE = ITEMS.register("healing_bolt_rune",
-            () -> new SpellRuneItem(new Item.Properties()));
+            () -> new ProjectileRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> STORMY_CLOUD_RUNE = ITEMS.register("stormy_cloud_rune",
+            () -> new FamiliarRuneItem(new Item.Properties()));
 
 
     public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
-
     public static final RegistryObject<Item> DEATH_TRIGGER_RUNE = ITEMS.register("death_trigger_rune",
             () -> new EffectRuneItem(new Item.Properties()));
+
 
     public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",
             () -> new EffectRuneItem(new Item.Properties()));

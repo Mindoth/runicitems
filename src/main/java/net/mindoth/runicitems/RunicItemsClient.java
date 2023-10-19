@@ -2,7 +2,7 @@ package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.client.gui.WandGui;
 import net.mindoth.runicitems.client.models.armor.Boots2Model;
-import net.mindoth.runicitems.entity.renderer.ProjectileBaseRenderer;
+import net.mindoth.runicitems.entity.renderer.SpellBaseRenderer;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -38,7 +38,7 @@ public class RunicItemsClient {
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(RunicItemsEntities.MAGIC_SPARK.get(), ProjectileBaseRenderer::new);
-        event.registerEntityRenderer(RunicItemsEntities.HEALING_BOLT.get(), ProjectileBaseRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.PROJECTILE_BASE.get(), SpellBaseRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.FAMILIAR_BASE.get(), SpellBaseRenderer::new);
     }
 }

@@ -1,8 +1,8 @@
 package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
-import net.mindoth.runicitems.entity.projectile.HealingBoltEntity;
-import net.mindoth.runicitems.entity.projectile.MagicSparkEntity;
+import net.mindoth.runicitems.entity.spell.FamiliarBaseEntity;
+import net.mindoth.runicitems.entity.spell.ProjectileBaseEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -13,10 +13,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class RunicItemsEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, RunicItems.MOD_ID);
-    public static final RegistryObject<EntityType<MagicSparkEntity>> MAGIC_SPARK = ENTITIES.register("magic_spark",
-            () -> getDefaultSizeEntityType(MagicSparkEntity::new));
-    public static final RegistryObject<EntityType<HealingBoltEntity>> HEALING_BOLT = ENTITIES.register("healing_bolt",
-            () -> getDefaultSizeEntityType(HealingBoltEntity::new));
+
+    public static final RegistryObject<EntityType<ProjectileBaseEntity>> PROJECTILE_BASE = ENTITIES.register("projectile_base",
+            () -> getDefaultSizeEntityType(ProjectileBaseEntity::new));
+
+    public static final RegistryObject<EntityType<FamiliarBaseEntity>> FAMILIAR_BASE = ENTITIES.register("familiar_base",
+            () -> getDefaultSizeEntityType(FamiliarBaseEntity::new));
 
 
 
