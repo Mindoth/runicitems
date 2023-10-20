@@ -3,6 +3,7 @@ package net.mindoth.runicitems.entity.spell;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.runicitems.spell.SpellBuilder;
+import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -17,13 +18,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FamiliarBaseEntity extends SpellBaseEntity {
@@ -32,24 +31,9 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
         super(entityType, level);
     }
 
-    public FamiliarBaseEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.FAMILIAR_BASE.get(), level, owner, caster, itemHandler, slot, effects, rune);
-    }
-
-    @Override
-    protected void hurtTarget(LivingEntity target) {
-        addEffects(target);
-        int potency = 1 + power;
-        if ( RunicItemsItems.MAGIC_SPARK_RUNE.get().equals(rune) ) {
-            if ( potency > 0 ) {
-                target.hurt(DamageSource.indirectMagic(this, owner), potency);
-            }
-        }
-        else if ( RunicItemsItems.MAGIC_SPARK_RUNE.get().equals(rune) ) {
-            if ( potency > 0 ) {
-                target.heal(potency);
-            }
-        }
+    public FamiliarBaseEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
+                              HashMap<Item, Integer> effects, Item rune, float xRot, float yRot) {
+        super(RunicItemsEntities.FAMILIAR_BASE.get(), level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
     }
 
     @Override
@@ -95,59 +79,49 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
             }
             this.bounces -= 1;
         }
-        else this.discard();
-        level.playSound(null, this.getX(), this.getY(), this.getZ(),
-                blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
+        else if ( !blockPiercing ) {
+            level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                    blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
+            this.discard();
+        }
     }
 
     protected void zapTarget(Entity player, Level pLevel, double size, int power) {
-        ArrayList<LivingEntity> targets = (ArrayList<LivingEntity>) pLevel.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2 + size));
-        if ( targets.size() > 0 ) {
-            pLevel.playSound(null, player.getBoundingBox().getCenter().x, player.getBoundingBox().getCenter().y, player.getBoundingBox().getCenter().z,
-                    SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.25f, 0.25f);
-            pLevel.playSound(null, player.getBoundingBox().getCenter().x, player.getBoundingBox().getCenter().y, player.getBoundingBox().getCenter().z,
-                    SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 2, 1);
+        Entity target = SpellBuilder.getNearestEntity(player, pLevel, size);
+        if ( target == null ) return;
+        target.hurt(DamageSource.MAGIC, power);
+        ServerLevel level = (ServerLevel) pLevel;
+        double playerX = CommonEvents.getEntityCenter(player).x;
+        double playerY = CommonEvents.getEntityCenter(player).y;
+        double playerZ = CommonEvents.getEntityCenter(player).z;
+        double listedEntityX = CommonEvents.getEntityCenter(target).x();
+        double listedEntityY = CommonEvents.getEntityCenter(target).y();
+        double listedEntityZ = CommonEvents.getEntityCenter(target).z();
+        int particleInterval = (int)Math.round(player.distanceTo(target)) * 5;
+        for ( int k = 1; k < (1 + particleInterval); k++ ) {
+            double lineX = playerX * (1 - ((double) k / particleInterval)) + listedEntityX * ((double) k / particleInterval);
+            double lineY = playerY * (1 - ((double) k / particleInterval)) + listedEntityY * ((double) k / particleInterval);
+            double lineZ = playerZ * (1 - ((double) k / particleInterval)) + listedEntityZ * ((double) k / particleInterval);
+            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, lineX, lineY, lineZ, 1, 0, 0, 0, 0);
         }
-        for ( LivingEntity target : targets ) {
-            if ( target != player && !target.isAlliedTo(player) && target.isAttackable() ) {
-                target.hurt(DamageSource.MAGIC, power);
-                ServerLevel level = (ServerLevel) pLevel;
-                double playerX = player.getBoundingBox().getCenter().x;
-                double playerY = player.getBoundingBox().getCenter().y;
-                double playerZ = player.getBoundingBox().getCenter().z;
-                double listedEntityX = target.getBoundingBox().getCenter().x();
-                double listedEntityY = target.getBoundingBox().getCenter().y();
-                double listedEntityZ = target.getBoundingBox().getCenter().z();
-                int particleInterval = (int)Math.round(player.distanceTo(target)) * 5;
-                for ( int k = 1; k < (1 + particleInterval); k++ ) {
-                    double lineX = playerX * (1 - ((double) k / particleInterval)) + listedEntityX * ((double) k / particleInterval);
-                    double lineY = playerY * (1 - ((double) k / particleInterval)) + listedEntityY * ((double) k / particleInterval);
-                    double lineZ = playerZ * (1 - ((double) k / particleInterval)) + listedEntityZ * ((double) k / particleInterval);
-                    level.sendParticles(ParticleTypes.ELECTRIC_SPARK, lineX, lineY, lineZ, 1, 0, 0, 0, 0);
-                }
-            }
-        }
+        pLevel.playSound(null, player.getBoundingBox().getCenter().x, player.getBoundingBox().getCenter().y, player.getBoundingBox().getCenter().z,
+                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.1f, 2);
+        pLevel.playSound(null, player.getBoundingBox().getCenter().x, player.getBoundingBox().getCenter().y, player.getBoundingBox().getCenter().z,
+                SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 2, 1);
     }
-
     @Override
-    public void tick() {
-        super.tick();
-        if (level.isClientSide) {
-            return;
+    public void doTickEffects() {
+        if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() && this.tickCount % 10 == 0 && this.tickCount >= 30 ) {
+            Entity nearest = SpellBuilder.getNearestEntity(this, level, 3);
+            if ( nearest == null ) return;
+            zapTarget( this, level, 3, power);
         }
-
-        if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() && this.tickCount % 20 == 0 && this.tickCount >= 40 ) {
-            zapTarget( this, level, ((double)power / 2), power);
+        if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && nextSpellSlot >= 0 && this.tickCount % 40 == 0 && this.tickCount >= 40 ) {
+            Entity nearest = SpellBuilder.getNearestEntity(this, level, 3);
+            if ( nearest == null ) return;
+            SpellBuilder.lookAt(this, nearest);
+            SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
         }
-
-        if ( this.tickCount > life ) {
-            if ( deathTrigger && nextSpellSlot >= 0 ) {
-                caster = this;
-                SpellBuilder.cast((Player)owner, caster, itemHandler, slot + 1);
-            }
-            this.discard();
-        }
-        spawnParticles();
     }
 
     @Override
@@ -155,7 +129,7 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
         if ( !this.level.isClientSide ) {
             ServerLevel level = (ServerLevel)this.level;
             for (int i = 0; i < 8; ++i) {
-                level.sendParticles(this.getParticle(), getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getY() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
+                level.sendParticles(this.getParticle(), getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getY() + 0.1 + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
             }
         }
     }
@@ -164,6 +138,9 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
     protected SimpleParticleType getParticle() {
         if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) {
             return ParticleTypes.SMOKE;
+        }
+        else if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() ) {
+            return ParticleTypes.WITCH;
         }
         else return ParticleTypes.ASH;
     }

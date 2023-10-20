@@ -5,11 +5,17 @@ import net.mindoth.runicitems.item.rune.FamiliarRuneItem;
 import net.mindoth.runicitems.item.rune.ProjectileRuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static java.lang.Math.max;
@@ -23,7 +29,9 @@ public class SpellBuilder {
             Item rune = getRune(itemHandler, i);
             if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
                 if ( rune instanceof SpellRuneItem ) {
-                    doSpell(owner, caster, itemHandler, i, effects);
+                    float xRot = caster.getXRot();
+                    float yRot = caster.getYRot();
+                    doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
                     break;
                 }
                 if ( rune instanceof EffectRuneItem ) {
@@ -33,14 +41,14 @@ public class SpellBuilder {
         }
     }
 
-    public static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects) {
+    public static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, float xRot, float yRot) {
         Item rune = getRune(itemHandler, slot);
 
         if ( rune instanceof ProjectileRuneItem ) {
-            shootMagic(owner, caster, itemHandler, slot, effects, rune);
+            shootMagic(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
         }
         if ( rune instanceof FamiliarRuneItem) {
-            summonFamiliar(owner, caster, itemHandler, slot, effects, rune);
+            summonFamiliar(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
         }
         if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
             causeExplosion(owner, caster, itemHandler, slot, effects);
@@ -141,6 +149,43 @@ public class SpellBuilder {
     }
 
     public static boolean getGravity(HashMap<Item, Integer> effects) {
-        return effects.containsKey(RunicItemsItems.GRAVITY_RUNE.get());
+        return !effects.containsKey(RunicItemsItems.GRAVITY_RUNE.get());
+    }
+
+    public static boolean getEnemyPiercing(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.ENEMY_PIERCING_RUNE.get());
+    }
+
+    public static boolean getBlockPiercing(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.BLOCK_PIERCING_RUNE.get());
+    }
+
+    public static Entity getNearestEntity(Entity player, Level pLevel, double size) {
+        ArrayList<LivingEntity> targets = (ArrayList<LivingEntity>) pLevel.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(size));
+        LivingEntity target = null;
+        double lowestSoFar = Double.MAX_VALUE;
+        for ( LivingEntity closestSoFar : targets ) {
+            if ( closestSoFar != player && !closestSoFar.isAlliedTo(player) && closestSoFar.isAttackable() && closestSoFar.isAlive() ) {
+                double testDistance = player.distanceTo(closestSoFar);
+                if ( testDistance < lowestSoFar ) {
+                    target = closestSoFar;
+                }
+            }
+        }
+        return target;
+    }
+
+    public static void lookAt(Entity spell, Entity target) {
+        Vec3 vec3 = CommonEvents.getEntityCenter(spell);
+        Vec3 pTarget = CommonEvents.getEntityCenter(target);
+        double d0 = pTarget.x - vec3.x;
+        double d1 = pTarget.y - vec3.y;
+        double d2 = pTarget.z - vec3.z;
+        double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+        spell.setXRot(Mth.wrapDegrees((float)(-(Mth.atan2(d1, d3) * (double)(180F / (float)Math.PI)))));
+        spell.setYRot(Mth.wrapDegrees((float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F));
+        spell.setYHeadRot(spell.getYRot());
+        spell.xRotO = spell.getXRot();
+        spell.yRotO = spell.getYRot();
     }
 }

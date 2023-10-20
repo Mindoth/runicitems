@@ -25,7 +25,7 @@ public class RunicItemsEntities {
     private RunicItemsEntities() {}
 
     private static <T extends Entity> EntityType<T> getDefaultSizeEntityType(EntityType.EntityFactory<T> factory) {
-        return getEntityType(factory, 0, 0);
+        return getEntityType(factory, 0.25f, 0.25f);
     }
 
     private static <T extends Entity> EntityType<T> getEntityType(EntityType.EntityFactory<T> factory, float width, float height) {

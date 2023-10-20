@@ -38,6 +38,9 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> DEATH_TRIGGER_RUNE = ITEMS.register("death_trigger_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
+    public static final RegistryObject<Item> MAGICAL_CLOUD_RUNE = ITEMS.register("magical_cloud_rune",
+            () -> new FamiliarRuneItem(new Item.Properties()));
+
 
     public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",
             () -> new EffectRuneItem(new Item.Properties()));
@@ -67,6 +70,12 @@ public class RunicItemsItems {
             () -> new EffectRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> DECREASE_LIFE_RUNE = ITEMS.register("decrease_life_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> ENEMY_PIERCING_RUNE = ITEMS.register("enemy_piercing_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> BLOCK_PIERCING_RUNE = ITEMS.register("block_piercing_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 
 

@@ -33,7 +33,7 @@ public class SpellBaseRenderer<T extends SpellBaseEntity> extends EntityRenderer
     @Override
     public void render(T entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
-        matrixStackIn.scale(1.0F, 1.0F, 1.0F);
+        matrixStackIn.scale(0, 0, 0);
         matrixStackIn.mulPose(this.entityRenderDispatcher.cameraOrientation());
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F));
         PoseStack.Pose matrixstack$entry = matrixStackIn.last();

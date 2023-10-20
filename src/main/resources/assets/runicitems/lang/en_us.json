@@ -8,7 +8,9 @@
   "item.runicitems.warrior_boots": "Warrior Boots",
   "item.runicitems.sorcerer_boots": "Sorcerer Boots",
 
+
   "item.runicitems.basic_wand": "Basic Wand",
+
 
   "item.runicitems.empty_rune": "Empty Rune",
   "item.runicitems.magic_spark_rune": "Magic Spark Rune",
@@ -18,6 +20,8 @@
 
   "item.runicitems.trigger_rune": "Trigger Rune",
   "item.runicitems.death_trigger_rune": "Death Trigger Rune",
+  "item.runicitems.magical_cloud_rune": "Magical Cloud Rune",
+
   "item.runicitems.increase_power_rune": "Increase Power Rune",
   "item.runicitems.decrease_power_rune": "Decrease Power Rune",
   "item.runicitems.fire_rune": "Fire Rune",
@@ -28,8 +32,12 @@
   "item.runicitems.ice_rune": "Ice Rune",
   "item.runicitems.increase_life_rune": "Increase Life Rune",
   "item.runicitems.decrease_life_rune": "Decrease Life Rune",
+  "item.runicitems.enemy_piercing_rune": "Enemy Piercing Rune",
+  "item.runicitems.block_piercing_rune": "Block Piercing Rune",
+
 
   "enchantment.runicitems.target_cracker": "Target Cracker",
+
 
   "tooltip.runicitems.archer_boots": "\u00A77Increases Projectile Damage\u00A7r",
   "tooltip.runicitems.fighter_boots": "\u00A77Increases Melee Damage\u00A7r",
