@@ -1,30 +1,33 @@
 package net.mindoth.runicitems.entity.spell;
 
-import net.mindoth.runicitems.spell.SpellBuilder;
+import net.mindoth.runicitems.event.ClientReference;
+import net.mindoth.runicitems.event.SpellBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.HashMap;
 
-public class SpellBaseEntity extends ThrowableItemProjectile {
+public class SpellBaseEntity extends ThrowableProjectile {
 
     protected SpellBaseEntity(EntityType<? extends SpellBaseEntity> entityType, Level level) {
         super(entityType, level);
@@ -33,6 +36,9 @@ public class SpellBaseEntity extends ThrowableItemProjectile {
     protected SpellBaseEntity(EntityType<? extends SpellBaseEntity> pEntityType, Level pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
                               HashMap<Item, Integer> effects, Item rune, float xRot, float yRot) {
         super(pEntityType, owner, pLevel);
+        this.xRot = xRot;
+        this.yRot = yRot;
+
         this.owner = owner;
         this.caster = caster;
         this.itemHandler = itemHandler;
@@ -48,9 +54,7 @@ public class SpellBaseEntity extends ThrowableItemProjectile {
         this.ice = SpellBuilder.getIce(effects);
         this.enemyPiercing = SpellBuilder.getEnemyPiercing(effects);
         this.blockPiercing = SpellBuilder.getBlockPiercing(effects);
-
-        this.xRot = xRot;
-        this.yRot = yRot;
+        this.speed = SpellBuilder.getSpeed(effects, 0.5f);
     }
 
     protected float xRot;
@@ -71,6 +75,7 @@ public class SpellBaseEntity extends ThrowableItemProjectile {
     protected boolean ice;
     protected boolean enemyPiercing;
     protected boolean blockPiercing;
+    protected float speed;
 
     @Override
     protected void onHit(HitResult result) {
@@ -174,6 +179,7 @@ public class SpellBaseEntity extends ThrowableItemProjectile {
         if (level.isClientSide) return;
         doTickEffects();
         spawnParticles();
+        if ( this.random.nextDouble() > 0.5d ) spawnEffectParticles();
 
         if ( this.tickCount > life ) {
             if ( deathTrigger && nextSpellSlot >= 0 ) {
@@ -191,18 +197,19 @@ public class SpellBaseEntity extends ThrowableItemProjectile {
     protected void spawnParticles() {
     }
 
+    protected void spawnEffectParticles() {
+    }
+
     protected SimpleParticleType getParticle() {
         return ParticleTypes.ASH;
     }
 
-    @Override
-    protected float getGravity() {
-        return 0.025F;
+    public ResourceLocation getSpellTexture() {
+        return ClientReference.CLEAR;
     }
 
     @Override
-    protected Item getDefaultItem() {
-        return Items.SNOWBALL;
+    protected void defineSynchedData() {
     }
 
     @Override

@@ -2,7 +2,7 @@ package net.mindoth.runicitems.entity.spell;
 
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.mindoth.runicitems.spell.SpellBuilder;
+import net.mindoth.runicitems.event.SpellBuilder;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -111,13 +111,14 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
     }
     @Override
     public void doTickEffects() {
+        float size = 2 + (power * 1.5f);
         if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() && this.tickCount % 10 == 0 && this.tickCount >= 30 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, 3);
+            Entity nearest = SpellBuilder.getNearestEntity(this, level, size);
             if ( nearest == null ) return;
-            zapTarget( this, level, 3, power);
+            zapTarget( this, level, size, power);
         }
-        if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && nextSpellSlot >= 0 && this.tickCount % 40 == 0 && this.tickCount >= 40 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, 3);
+        if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && nextSpellSlot >= 0 && rune != RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && this.tickCount % 40 == 0 && this.tickCount >= 40 ) {
+            Entity nearest = SpellBuilder.getNearestEntity(this, level, size);
             if ( nearest == null ) return;
             SpellBuilder.lookAt(this, nearest);
             SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
@@ -129,7 +130,7 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
         if ( !this.level.isClientSide ) {
             ServerLevel level = (ServerLevel)this.level;
             for (int i = 0; i < 8; ++i) {
-                level.sendParticles(this.getParticle(), getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getY() + 0.1 + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
+                level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).y + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), 2, 0, 0, 0, 0);
             }
         }
     }

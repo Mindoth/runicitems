@@ -4,14 +4,13 @@ import net.mindoth.runicitems.client.gui.WandContainer;
 import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.inventory.WandManager;
 import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.mindoth.runicitems.spell.SpellBuilder;
+import net.mindoth.runicitems.event.SpellBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -24,7 +23,6 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class WandItem extends Item {

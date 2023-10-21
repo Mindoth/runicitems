@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.spell;
+package net.mindoth.runicitems.event;
 
 import net.mindoth.runicitems.item.rune.EffectRuneItem;
 import net.mindoth.runicitems.item.rune.FamiliarRuneItem;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static java.lang.Math.max;
-import static net.mindoth.runicitems.spell.ShootSpell.*;
+import static net.mindoth.runicitems.event.ShootSpell.*;
 
 public class SpellBuilder {
 

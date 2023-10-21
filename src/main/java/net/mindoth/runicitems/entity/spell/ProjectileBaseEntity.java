@@ -1,29 +1,26 @@
 package net.mindoth.runicitems.entity.spell;
 
+import net.mindoth.runicitems.event.ClientReference;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.mindoth.runicitems.spell.SpellBuilder;
-import net.minecraft.core.Direction;
+import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
 public class ProjectileBaseEntity extends SpellBaseEntity {
+
+    //TODO make each projectile spell their own class so sprites work in Renderer
 
     public ProjectileBaseEntity(EntityType<ProjectileBaseEntity> entityType, Level level) {
         super(entityType, level);
@@ -64,10 +61,15 @@ public class ProjectileBaseEntity extends SpellBaseEntity {
 
     @Override
     protected void spawnParticles() {
-        if ( !this.level.isClientSide ) {
-            ServerLevel level = (ServerLevel)this.level;
-            level.sendParticles(this.getParticle(), getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getY() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
-        }
+        ServerLevel level = (ServerLevel)this.level;
+        level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).y + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
+    }
+
+    @Override
+    protected void spawnEffectParticles() {
+        ServerLevel level = (ServerLevel)this.level;
+        if (fire && !ice) level.sendParticles(ParticleTypes.FLAME, CommonEvents.getEntityCenter(this).x, CommonEvents.getEntityCenter(this).y, CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
+        if (ice && !fire) level.sendParticles(ParticleTypes.SNOWFLAKE, CommonEvents.getEntityCenter(this).x, CommonEvents.getEntityCenter(this).y, CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
     }
 
     @Override
@@ -79,5 +81,13 @@ public class ProjectileBaseEntity extends SpellBaseEntity {
             return ParticleTypes.HAPPY_VILLAGER;
         }
         else return ParticleTypes.ASH;
+    }
+
+    @Override
+    public ResourceLocation getSpellTexture() {
+        if ( rune == RunicItemsItems.MAGIC_SPARK_RUNE.get() ) {
+            return ClientReference.MAGIC_SPARK;
+        }
+        else return ClientReference.HEALING_BOLT;
     }
 }

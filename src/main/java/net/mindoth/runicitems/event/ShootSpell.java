@@ -1,11 +1,10 @@
-package net.mindoth.runicitems.spell;
+package net.mindoth.runicitems.event;
 
 import net.mindoth.runicitems.entity.spell.FamiliarBaseEntity;
 import net.mindoth.runicitems.entity.spell.ProjectileBaseEntity;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +28,7 @@ public class ShootSpell {
         Level level = caster.level;
         Vec3 center = CommonEvents.getEntityCenter(caster);
         ProjectileBaseEntity projectile = new ProjectileBaseEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
-        if ( SpellBuilder.getGravity(effects) ) projectile.setNoGravity(true);
+        projectile.setNoGravity(SpellBuilder.getGravity(effects));
         if ( caster != owner ) projectile.setPos(center);
 
         projectile.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, SpellBuilder.getSpeed(effects, 0.5F), 1.0F);
