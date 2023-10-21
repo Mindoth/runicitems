@@ -117,11 +117,13 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
             if ( nearest == null ) return;
             zapTarget( this, level, size, power);
         }
-        if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && nextSpellSlot >= 0 && rune != RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && this.tickCount % 40 == 0 && this.tickCount >= 40 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, size);
-            if ( nearest == null ) return;
-            SpellBuilder.lookAt(this, nearest);
-            SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
+        if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && nextSpellSlot >= 0 && this.tickCount % 40 == 0 && this.tickCount >= 40 ) {
+            if ( itemHandler.getStackInSlot(nextSpellSlot).getItem() != RunicItemsItems.MAGICAL_CLOUD_RUNE.get()  ) {
+                Entity nearest = SpellBuilder.getNearestEntity(this, level, size);
+                if ( nearest == null ) return;
+                SpellBuilder.lookAt(this, nearest);
+                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
+            }
         }
     }
 

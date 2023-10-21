@@ -85,9 +85,6 @@ public class ProjectileBaseEntity extends SpellBaseEntity {
 
     @Override
     public ResourceLocation getSpellTexture() {
-        if ( rune == RunicItemsItems.MAGIC_SPARK_RUNE.get() ) {
-            return ClientReference.MAGIC_SPARK;
-        }
-        else return ClientReference.HEALING_BOLT;
+        return ClientReference.MAGIC_SPARK;
     }
 }
