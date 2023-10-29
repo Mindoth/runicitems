@@ -23,14 +23,12 @@ import static net.mindoth.runicitems.event.ShootSpell.*;
 
 public class SpellBuilder {
 
-    public static void cast(Player owner, Entity caster, IItemHandler itemHandler, int slot) {
+    public static void cast(Player owner, Entity caster, IItemHandler itemHandler, int slot, float xRot, float yRot) {
         HashMap<Item, Integer> effects = new HashMap<>();
         for (int i = slot; i < itemHandler.getSlots(); i++ ) {
             Item rune = getRune(itemHandler, i);
             if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
                 if ( rune instanceof SpellRuneItem ) {
-                    float xRot = caster.getXRot();
-                    float yRot = caster.getYRot();
                     doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
                     break;
                 }

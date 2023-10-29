@@ -31,7 +31,7 @@ public class ShootSpell {
         projectile.setNoGravity(SpellBuilder.getGravity(effects));
         if ( caster != owner ) projectile.setPos(center);
 
-        projectile.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, SpellBuilder.getSpeed(effects, 0.5F), 1.0F);
+        projectile.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, 0.5F), 1.0F);
         level.addFreshEntity(projectile);
 
         level.playSound(null, center.x, center.y, center.z,
@@ -47,7 +47,7 @@ public class ShootSpell {
         if ( SpellBuilder.getGravity(effects) ) familiar.setNoGravity(true);
         if ( caster != owner ) familiar.setPos(center);
 
-        familiar.shootFromRotation(caster, caster.getXRot(), caster.getYRot(), 0F, SpellBuilder.getSpeed(effects, 0), 0);
+        familiar.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, 0), 0);
         if ( SpellBuilder.getSpeed(effects, 0) == 0 ) familiar.setDeltaMovement(0, 0, 0);
         level.addFreshEntity(familiar);
 

@@ -85,9 +85,7 @@ public class SpellBaseEntity extends ThrowableProjectile {
             hurtTarget(living);
 
             if ( trigger && nextSpellSlot >= 0 ) {
-                this.setXRot(xRot);
-                this.setYRot(yRot);
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
+                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
             }
         }
 
@@ -107,31 +105,30 @@ public class SpellBaseEntity extends ThrowableProjectile {
                     double motionY = motion.y();
                     double motionZ = motion.z();
 
-
-                    if (face == Direction.EAST)
+                    if (face == Direction.EAST) {
                         motionX = -motionX;
-                    else if (face == Direction.SOUTH)
+                    }
+                    else if (face == Direction.SOUTH) {
                         motionZ = -motionZ;
-                    else if (face == Direction.WEST)
+                    }
+                    else if (face == Direction.WEST) {
                         motionX = -motionX;
-                    else if (face == Direction.NORTH)
+                    }
+                    else if (face == Direction.NORTH) {
                         motionZ = -motionZ;
-                    else if (face == Direction.UP)
+                    }
+                    else if (face == Direction.UP) {
                         motionY = -motionY;
-                    else if (face == Direction.DOWN)
+                    }
+                    else if (face == Direction.DOWN) {
                         motionY = -motionY;
+                    }
 
                     this.setDeltaMovement(motionX, motionY, motionZ);
                 }
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
+                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
             }
         }
-    }
-
-    protected void hurtTarget(LivingEntity target) {
-    }
-
-    protected void addEffects(LivingEntity target) {
     }
 
     protected void doBlockEffects(HitResult result) {
@@ -148,19 +145,24 @@ public class SpellBaseEntity extends ThrowableProjectile {
                 double motionY = motion.y();
                 double motionZ = motion.z();
 
-
-                if (face == Direction.EAST)
+                if (face == Direction.EAST) {
                     motionX = -motionX;
-                else if (face == Direction.SOUTH)
+                }
+                else if (face == Direction.SOUTH) {
                     motionZ = -motionZ;
-                else if (face == Direction.WEST)
+                }
+                else if (face == Direction.WEST) {
                     motionX = -motionX;
-                else if (face == Direction.NORTH)
+                }
+                else if (face == Direction.NORTH) {
                     motionZ = -motionZ;
-                else if (face == Direction.UP)
+                }
+                else if (face == Direction.UP) {
                     motionY = -motionY;
-                else if (face == Direction.DOWN)
+                }
+                else if (face == Direction.DOWN) {
                     motionY = -motionY;
+                }
 
                 this.setDeltaMovement(motionX, motionY, motionZ);
             }
@@ -183,12 +185,16 @@ public class SpellBaseEntity extends ThrowableProjectile {
 
         if ( this.tickCount > life ) {
             if ( deathTrigger && nextSpellSlot >= 0 ) {
-                this.setXRot(xRot);
-                this.setYRot(yRot);
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
+                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
             }
             this.discard();
         }
+    }
+
+    protected void hurtTarget(LivingEntity target) {
+    }
+
+    protected void addEffects(LivingEntity target) {
     }
 
     protected void doTickEffects() {

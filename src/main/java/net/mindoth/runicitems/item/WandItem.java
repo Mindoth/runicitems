@@ -99,7 +99,7 @@ public class WandItem extends Item {
             else {
                 if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
                     IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
-                    SpellBuilder.cast(playerIn, playerIn, itemHandler, 0);
+                    SpellBuilder.cast(playerIn, playerIn, itemHandler, 0, playerIn.getXRot(), playerIn.getYRot());
 
                     playerIn.getCooldowns().addCooldown(wand.getItem(), getdelay(wand.getItem()));
                     return InteractionResultHolder.success(playerIn.getItemInHand(handIn));

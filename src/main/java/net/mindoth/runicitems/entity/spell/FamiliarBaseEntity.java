@@ -46,7 +46,7 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
         }
     }
 
-    @Override
+    /*@Override
     protected void doBlockEffects(HitResult result) {
         BlockHitResult traceResult = (BlockHitResult) result;
         BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
@@ -84,7 +84,7 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
                     blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
             this.discard();
         }
-    }
+    }*/
 
     protected void zapTarget(Entity player, Level pLevel, double size, int power) {
         Entity target = SpellBuilder.getNearestEntity(player, pLevel, size);
@@ -109,6 +109,7 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
         pLevel.playSound(null, player.getBoundingBox().getCenter().x, player.getBoundingBox().getCenter().y, player.getBoundingBox().getCenter().z,
                 SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 2, 1);
     }
+
     @Override
     public void doTickEffects() {
         float size = 2 + (power * 1.5f);
@@ -120,9 +121,13 @@ public class FamiliarBaseEntity extends SpellBaseEntity {
         if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() && nextSpellSlot >= 0 && this.tickCount % 40 == 0 && this.tickCount >= 40 ) {
             if ( itemHandler.getStackInSlot(nextSpellSlot).getItem() != RunicItemsItems.MAGICAL_CLOUD_RUNE.get()  ) {
                 Entity nearest = SpellBuilder.getNearestEntity(this, level, size);
-                if ( nearest == null ) return;
-                SpellBuilder.lookAt(this, nearest);
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1);
+                if ( nearest != null ) {
+                    SpellBuilder.lookAt(this, nearest);
+                    SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
+                }
+                else {
+                    SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
+                }
             }
         }
     }
