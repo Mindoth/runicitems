@@ -202,7 +202,7 @@ public class CommonEvents {
             CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
             if ( data.getBoolean(TAG_UNDEAD) ) {
                 //Burn in the sun
-                if ( !player.isInWaterOrRain() && !player.isOnFire() && player.level.canSeeSky(player.blockPosition()) && player.level.isDay() && !player.hasItemInSlot(EquipmentSlot.HEAD) ) {
+                if ( RunicItemsCommonConfig.UNDEAD_BURN.get() && !player.isInWaterOrRain() && !player.isOnFire() && player.level.canSeeSky(player.blockPosition()) && player.level.isDay() && !player.hasItemInSlot(EquipmentSlot.HEAD) ) {
                     player.setSecondsOnFire(8);
                 }
                 //Breathe in water

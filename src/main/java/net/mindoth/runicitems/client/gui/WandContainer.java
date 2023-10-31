@@ -117,11 +117,11 @@ public class WandContainer extends AbstractContainerMenu {
         Slot slot = this.slots.get(index);
 
         if (slot != null && slot.hasItem()) {
-            int bagslotcount = this.slots.size();
+            int wandslotcount = this.slots.size();
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < playerIn.getInventory().items.size()) {
-                if (!this.moveItemStackTo(itemstack1, playerIn.getInventory().items.size(), bagslotcount, false))
+                if (!this.moveItemStackTo(itemstack1, playerIn.getInventory().items.size(), wandslotcount, false))
                     return ItemStack.EMPTY;
             } else if (!this.moveItemStackTo(itemstack1, 0, playerIn.getInventory().items.size(), false)) {
                 return ItemStack.EMPTY;

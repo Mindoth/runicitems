@@ -1,10 +1,10 @@
 package net.mindoth.runicitems.item;
 
 import net.mindoth.runicitems.client.gui.WandContainer;
+import net.mindoth.runicitems.event.SpellBuilder;
 import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.inventory.WandManager;
-import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.mindoth.runicitems.event.SpellBuilder;
+import net.mindoth.runicitems.itemgroup.RunicItemsItemGroup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,7 +12,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -27,7 +30,7 @@ import java.util.UUID;
 
 public class WandItem extends Item {
     public WandItem(WandType tier) {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).fireResistant());
+        super(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB).stacksTo(1).fireResistant());
         this.tier = tier;
     }
     final WandType tier;
@@ -111,14 +114,14 @@ public class WandItem extends Item {
     }
 
     public static int getdelay(Item wand) {
-        if ( wand == RunicItemsItems.BASIC_WAND.get() ) {
+        if ( wand instanceof WandItem ) {
             return 20;
         }
         else return 0;
     }
 
     public static int getCooldown(Item wand) {
-        if ( wand == RunicItemsItems.BASIC_WAND.get() ) {
+        if ( wand instanceof WandItem ) {
             return 10;
         }
         else return 0;

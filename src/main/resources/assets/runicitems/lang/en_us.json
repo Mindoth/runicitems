@@ -1,6 +1,8 @@
 {
-  "item.runicitems.mallet": "Mallet",
+  "itemGroup.runic_items_tab": "Runic Items",
+
   "item.runicitems.stone_tablet": "\u00A75Secrets of Life and Death\u00A7r",
+  "item.runicitems.mallet": "Mallet",
   "item.runicitems.archer_boots": "Archer Boots",
   "item.runicitems.fighter_boots": "Fighter Boots",
   "item.runicitems.wizard_boots": "Wizard Boots",
@@ -9,7 +11,9 @@
   "item.runicitems.sorcerer_boots": "Sorcerer Boots",
 
 
-  "item.runicitems.basic_wand": "Basic Wand",
+  "item.runicitems.tier1_wand": "Basic Wand",
+  "item.runicitems.tier2_wand": "Improved Wand",
+  "item.runicitems.tier3_wand": "Masterful Wand",
 
 
   "item.runicitems.empty_rune": "Empty Rune",

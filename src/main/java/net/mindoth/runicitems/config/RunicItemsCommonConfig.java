@@ -16,6 +16,7 @@ public class RunicItemsCommonConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> SORCERERBOOTS_BONUS;
     public static final ForgeConfigSpec.ConfigValue<Float> TABLET_CHANCE;
     public static final ForgeConfigSpec.ConfigValue<Float> MALLET_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> UNDEAD_BURN;
 
     static {
         BUILDER.push("Configs for Runic Items");
@@ -47,11 +48,14 @@ public class RunicItemsCommonConfig {
         SORCERERBOOTS_BONUS = BUILDER.comment("Bonus Damage given by Sorcerer Boots (Default = 6)")
                 .define("Sorcerer Boots Bonus", 6);
 
+        MALLET_CHANCE = BUILDER.comment("Chance of a Wither Skeleton to spawn holding a Mallet (Default = 0.15 = 15%)")
+                .define("Mallet Chance", 0.15f);
+
         TABLET_CHANCE = BUILDER.comment("Chance of getting the Secrets of Life and Death as a drop from an Evoker instead of a Totem of Undying (Default = 0.1 = 10%)")
                 .define("Tablet Chance", 0.1f);
 
-        MALLET_CHANCE = BUILDER.comment("Chance of a Wither Skeleton to spawn holding a Mallet (Default = 0.15 = 15%)")
-                .define("Mallet Chance", 0.15f);
+        UNDEAD_BURN = BUILDER.comment("Should undead players burn in the sun when not wearing a helmet (Default = true)")
+                .define("Undead Burn", true);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

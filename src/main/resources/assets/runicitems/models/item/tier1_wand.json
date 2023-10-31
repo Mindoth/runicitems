@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:item/handheld",
 	"textures": {
-		"layer0": "runicitems:items/basic_wand"
+		"layer0": "minecraft:item/stick"
 	}
 }
