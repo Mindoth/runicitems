@@ -66,14 +66,25 @@ public class RunicItemsItems {
             () -> new RuneItem(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
 
 
-    public static final RegistryObject<Item> MAGIC_SPARK_RUNE = ITEMS.register("magic_spark_rune",
-            () -> new ProjectileRuneItem(new Item.Properties()));
-
     public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
             () -> new SpellRuneItem(new Item.Properties()));
 
+
+    public static final RegistryObject<Item> MAGIC_SPARK_RUNE = ITEMS.register("magic_spark_rune",
+            () -> new ProjectileRuneItem(new Item.Properties()));
+
     public static final RegistryObject<Item> HEALING_BOLT_RUNE = ITEMS.register("healing_bolt_rune",
             () -> new ProjectileRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> METEOR_RUNE = ITEMS.register("meteor_rune",
+            () -> new ProjectileRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> COMET_RUNE = ITEMS.register("comet_rune",
+            () -> new ProjectileRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> WITHER_SKULL_RUNE = ITEMS.register("wither_skull_rune",
+            () -> new ProjectileRuneItem(new Item.Properties()));
+
 
     public static final RegistryObject<Item> STORMY_CLOUD_RUNE = ITEMS.register("stormy_cloud_rune",
             () -> new FamiliarRuneItem(new Item.Properties()));
@@ -123,5 +134,17 @@ public class RunicItemsItems {
             () -> new EffectRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> BLOCK_PIERCING_RUNE = ITEMS.register("block_piercing_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> PERMABOUNCE_RUNE = ITEMS.register("permabounce_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> HOMING_RUNE = ITEMS.register("homing_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> INCREASE_RANGE_RUNE = ITEMS.register("increase_range_rune",
+            () -> new EffectRuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> DECREASE_RANGE_RUNE = ITEMS.register("decrease_range_rune",
             () -> new EffectRuneItem(new Item.Properties()));
 }

@@ -18,7 +18,6 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static java.lang.Math.max;
 import static net.mindoth.runicitems.event.ShootSpell.*;
 
 public class SpellBuilder {
@@ -95,12 +94,7 @@ public class SpellBuilder {
             }
         }
         if ( power != 0 ) {
-            if ( power > 0 ) {
-                speed += (power / 4);
-            }
-            else if ( power < 0  ) {
-                speed /= (Math.abs(power) / 2);
-            }
+            speed += (power / 4);
         }
         return speed;
     }
@@ -110,6 +104,11 @@ public class SpellBuilder {
         if ( effects.containsKey(RunicItemsItems.BOUNCE_RUNE.get()) ) {
             if ( effects.get(RunicItemsItems.BOUNCE_RUNE.get()) != null ) {
                 power += effects.get(RunicItemsItems.BOUNCE_RUNE.get());
+            }
+        }
+        if ( effects.containsKey(RunicItemsItems.PERMABOUNCE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.PERMABOUNCE_RUNE.get()) != null ) {
+                power += 99999;
             }
         }
         return power;
@@ -128,6 +127,21 @@ public class SpellBuilder {
             }
         }
         return power * 40;
+    }
+
+    public static Integer getRange(HashMap<Item, Integer> effects) {
+        int power = 3;
+        if ( effects.containsKey(RunicItemsItems.INCREASE_RANGE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.INCREASE_RANGE_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.INCREASE_RANGE_RUNE.get());
+            }
+        }
+        if ( effects.containsKey(RunicItemsItems.DECREASE_RANGE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.DECREASE_RANGE_RUNE.get()) != null ) {
+                power -= effects.get(RunicItemsItems.DECREASE_RANGE_RUNE.get());
+            }
+        }
+        return Math.max(power, 1);
     }
 
     public static boolean getTrigger(HashMap<Item, Integer> effects) {
@@ -158,12 +172,22 @@ public class SpellBuilder {
         return effects.containsKey(RunicItemsItems.BLOCK_PIERCING_RUNE.get());
     }
 
-    public static Entity getNearestEntity(Entity player, Level pLevel, double size) {
+    public static boolean getHoming(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.HOMING_RUNE.get());
+    }
+
+    public static ArrayList<LivingEntity> getEntitiesAround(Entity player, Level pLevel, double size) {
         ArrayList<LivingEntity> targets = (ArrayList<LivingEntity>) pLevel.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(size));
+        targets.removeIf(entry -> entry == player || !(entry.isAttackable()) || !(entry.isAlive()));
+        return targets;
+    }
+
+    public static Entity getNearestEntity(Entity player, Level pLevel, double size) {
+        ArrayList<LivingEntity> targets = getEntitiesAround(player, pLevel, size);
         LivingEntity target = null;
         double lowestSoFar = Double.MAX_VALUE;
         for ( LivingEntity closestSoFar : targets ) {
-            if ( closestSoFar != player && !closestSoFar.isAlliedTo(player) && closestSoFar.isAttackable() && closestSoFar.isAlive() ) {
+            if ( !closestSoFar.isAlliedTo(player) ) {
                 double testDistance = player.distanceTo(closestSoFar);
                 if ( testDistance < lowestSoFar ) {
                     target = closestSoFar;
