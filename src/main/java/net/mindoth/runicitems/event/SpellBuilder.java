@@ -1,6 +1,6 @@
 package net.mindoth.runicitems.event;
 
-import net.mindoth.runicitems.item.rune.EffectRuneItem;
+import net.mindoth.runicitems.item.rune.ModifierRuneItem;
 import net.mindoth.runicitems.item.rune.FamiliarRuneItem;
 import net.mindoth.runicitems.item.rune.ProjectileRuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
@@ -31,7 +31,7 @@ public class SpellBuilder {
                     doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
                     break;
                 }
-                if ( rune instanceof EffectRuneItem ) {
+                if ( rune instanceof ModifierRuneItem) {
                     effects.merge(rune, 1, Integer::sum);
                 }
             }

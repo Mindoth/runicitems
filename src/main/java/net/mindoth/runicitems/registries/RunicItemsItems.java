@@ -5,7 +5,6 @@ import net.mindoth.runicitems.item.*;
 import net.mindoth.runicitems.item.rune.*;
 import net.mindoth.runicitems.itemgroup.RunicItemsItemGroup;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -91,60 +90,60 @@ public class RunicItemsItems {
 
 
     public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> DEATH_TRIGGER_RUNE = ITEMS.register("death_trigger_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> MAGICAL_CLOUD_RUNE = ITEMS.register("magical_cloud_rune",
             () -> new FamiliarRuneItem(new Item.Properties()));
 
 
     public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> DECREASE_POWER_RUNE = ITEMS.register("decrease_power_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> BOUNCE_RUNE = ITEMS.register("bounce_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> GRAVITY_RUNE = ITEMS.register("gravity_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> INCREASE_SPEED_RUNE = ITEMS.register("increase_speed_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> DECREASE_SPEED_RUNE = ITEMS.register("decrease_speed_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> INCREASE_LIFE_RUNE = ITEMS.register("increase_life_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> DECREASE_LIFE_RUNE = ITEMS.register("decrease_life_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> ENEMY_PIERCING_RUNE = ITEMS.register("enemy_piercing_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> BLOCK_PIERCING_RUNE = ITEMS.register("block_piercing_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> PERMABOUNCE_RUNE = ITEMS.register("permabounce_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> HOMING_RUNE = ITEMS.register("homing_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> INCREASE_RANGE_RUNE = ITEMS.register("increase_range_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> DECREASE_RANGE_RUNE = ITEMS.register("decrease_range_rune",
-            () -> new EffectRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties()));
 }
