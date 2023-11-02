@@ -210,8 +210,8 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
     protected void spawnEffectParticles() {
         if ( this.level.isClientSide ) return;
         ServerLevel level = (ServerLevel)this.level;
-        if (fire && !ice) level.sendParticles(ParticleTypes.FLAME, CommonEvents.getEntityCenter(this).x, CommonEvents.getEntityCenter(this).y, CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
-        if (ice && !fire) level.sendParticles(ParticleTypes.SNOWFLAKE, CommonEvents.getEntityCenter(this).x, CommonEvents.getEntityCenter(this).y, CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
+        if (fire && !ice) level.sendParticles(ParticleTypes.FLAME, CommonEvents.getEntityCenter(this).x, this.getY(), CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
+        if (ice && !fire) level.sendParticles(ParticleTypes.SNOWFLAKE, CommonEvents.getEntityCenter(this).x, this.getY(), CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
     }
 
     protected SimpleParticleType getParticle() {

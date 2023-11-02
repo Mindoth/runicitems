@@ -3,7 +3,9 @@ package net.mindoth.runicitems;
 import net.mindoth.runicitems.client.RunicItemsLayers;
 import net.mindoth.runicitems.client.gui.WandGui;
 import net.mindoth.runicitems.client.models.armor.Boots2Model;
-import net.mindoth.runicitems.client.models.spells.*;
+import net.mindoth.runicitems.client.models.spells.BlockSpellModel;
+import net.mindoth.runicitems.client.models.spells.BoltSpellModel;
+import net.mindoth.runicitems.client.models.spells.CubeSpellModel;
 import net.mindoth.runicitems.client.renderer.*;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
@@ -15,27 +17,21 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import static net.mindoth.runicitems.item.Boots2Item.BOOTS2_LAYER;
-
 public class RunicItemsClient {
 
     public static void registerHandlers() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(RunicItemsClient::clientSetup);
         modBus.addListener(RunicItemsClient::registerEntityRenderers);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            modBus.addListener(RunicItemsClient::registerLayerDefinitions);
-        });
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(RunicItemsClient::registerLayerDefinitions));
     }
 
     public static void clientSetup(FMLClientSetupEvent event) {
         MenuScreens.register(RunicItemsContainers.WAND_CONTAINER.get(), WandGui::new);
     }
 
-
-
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(BOOTS2_LAYER, Boots2Model::createBodyLayer);
+        event.registerLayerDefinition(RunicItemsLayers.BOOTS2_LAYER, Boots2Model::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.MAGIC_SPARK_LAYER, BoltSpellModel::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.HEALING_BOLT_LAYER, BoltSpellModel::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.METEOR_LAYER, BlockSpellModel::createBodyLayer);

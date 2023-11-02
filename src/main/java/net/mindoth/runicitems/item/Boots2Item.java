@@ -1,11 +1,9 @@
 package net.mindoth.runicitems.item;
 
-import net.mindoth.runicitems.RunicItemsClient;
+import net.mindoth.runicitems.client.RunicItemsLayers;
 import net.mindoth.runicitems.client.models.armor.Boots2Model;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,11 +28,9 @@ public class Boots2Item extends ArmorItem {
 
     private final LazyLoadedValue<HumanoidModel<?>> model;
 
-    public static final ModelLayerLocation BOOTS2_LAYER = new ModelLayerLocation(new ResourceLocation("modid", "boots2_armor"), "main");
-
     @OnlyIn(Dist.CLIENT)
     public HumanoidModel<?> provideArmorModelForSlot(EquipmentSlot slot) {
-        return new Boots2Model<>(Minecraft.getInstance().getEntityModels().bakeLayer(BOOTS2_LAYER), slot);
+        return new Boots2Model<>(Minecraft.getInstance().getEntityModels().bakeLayer(RunicItemsLayers.BOOTS2_LAYER), slot);
     }
 
     @Override
