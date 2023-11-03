@@ -69,7 +69,7 @@ public class CometEntity extends ProjectileBaseEntity {
 
     @Override
     protected void addEffects(LivingEntity target) {
-        target.setTicksFrozen(560);
+        if ( !fire ) target.setTicksFrozen(this.power * 70);
     }
 
     @Override

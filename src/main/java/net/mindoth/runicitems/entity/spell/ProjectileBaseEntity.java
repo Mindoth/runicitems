@@ -192,10 +192,10 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
 
     protected void addEffects(LivingEntity target) {
         if ( fire && !ice ) {
-            target.setSecondsOnFire(5);
+            target.setSecondsOnFire(this.power);
         }
         if ( ice && !fire ) {
-            target.setTicksFrozen(560);
+            target.setTicksFrozen(this.power * 70);
         }
     }
 

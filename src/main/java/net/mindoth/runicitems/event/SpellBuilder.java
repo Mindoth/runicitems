@@ -52,7 +52,7 @@ public class SpellBuilder {
         }
     }
 
-    private static Item getRune(IItemHandler itemHandler, int slot) {
+    public static Item getRune(IItemHandler itemHandler, int slot) {
         return itemHandler.getStackInSlot(slot).getItem();
     }
 

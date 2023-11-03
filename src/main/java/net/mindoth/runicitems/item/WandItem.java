@@ -4,15 +4,19 @@ import net.mindoth.runicitems.client.gui.WandContainer;
 import net.mindoth.runicitems.event.SpellBuilder;
 import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.inventory.WandManager;
+import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.itemgroup.RunicItemsItemGroup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -29,8 +33,8 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class WandItem extends Item {
-    public WandItem(WandType tier) {
-        super(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB).stacksTo(1).fireResistant());
+    public WandItem(WandType tier, int durability) {
+        super(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB).stacksTo(1).durability(durability));
         this.tier = tier;
     }
     final WandType tier;
@@ -100,30 +104,69 @@ public class WandItem extends Item {
                 NetworkHooks.openScreen(((ServerPlayer) playerIn), new SimpleMenuProvider( (windowId, playerInventory, playerEntity) -> new WandContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), wand.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
             }
             else {
+                IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
                 if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
-                    IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
-                    SpellBuilder.cast(playerIn, playerIn, itemHandler, 0, playerIn.getXRot(), playerIn.getYRot());
-
-                    playerIn.getCooldowns().addCooldown(wand.getItem(), getdelay(wand.getItem()));
-                    return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
+                    if ( checkDurability(itemHandler, wand) ) {
+                        SpellBuilder.cast(playerIn, playerIn, itemHandler, 0, playerIn.getXRot(), playerIn.getYRot());
+                        drainDurability(getDrainAmount(itemHandler), wand, playerIn, handIn);
+                        addCooldown(playerIn, wand);
+                        return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
+                    }
+                    else {
+                        castFail(playerIn);
+                        addCooldown(playerIn, wand);
+                        return InteractionResultHolder.fail(playerIn.getItemInHand(handIn));
+                    }
                 }
             }
         }
-        playerIn.getCooldowns().addCooldown(wand.getItem(), getCooldown(wand.getItem()));
         return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
     }
 
-    public static int getdelay(Item wand) {
+    @Override
+    public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
+        if ( pLevel.isClientSide ) return;
+        if ( pStack.getDamageValue() > 0 ) {
+            pStack.setDamageValue(pStack.getDamageValue() - 1);
+        }
+    }
+
+    public void castFail(Player player) {
+        player.displayClientMessage(Component.translatable("message.runicitems.failedcast"), true);
+        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1, 1);
+    }
+
+    private static void addCooldown(Player player, ItemStack wand) {
+        player.getCooldowns().addCooldown(wand.getItem(), getCooldown(wand.getItem()));
+    }
+
+    private static int getCooldown(Item wand) {
         if ( wand instanceof WandItem ) {
             return 20;
         }
         else return 0;
     }
 
-    public static int getCooldown(Item wand) {
-        if ( wand instanceof WandItem ) {
-            return 10;
+    private static boolean checkDurability(IItemHandler itemHandler, ItemStack wand) {
+        return getDrainAmount(itemHandler) < (wand.getMaxDamage() - wand.getDamageValue());
+    }
+
+    private static int getDrainAmount(IItemHandler itemHandler) {
+        int drain = 0;
+        for (int i = 0; i < itemHandler.getSlots(); i++ ) {
+            if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
+                Item item = SpellBuilder.getRune(itemHandler, i);
+                if ( item instanceof RuneItem rune ) {
+                    drain += rune.getRuneDrain();
+                }
+            }
         }
-        else return 0;
+        return drain;
+    }
+
+    private static void drainDurability(int amount, ItemStack wand, Player player, InteractionHand hand) {
+        for ( int i = 0; i < amount; i++ ) {
+            wand.hurtAndBreak(1, player, (holder) -> holder.broadcastBreakEvent(hand));
+        }
     }
 }

@@ -50,100 +50,100 @@ public class RunicItemsItems {
     
     //Wands
     public static final RegistryObject<Item> TIER1_WAND = ITEMS.register("tier1_wand",
-            () -> new WandItem(WandType.TIER1));
+            () -> new WandItem(WandType.TIER1, 129));
 
     public static final RegistryObject<Item> TIER2_WAND = ITEMS.register("tier2_wand",
-            () -> new WandItem(WandType.TIER2));
+            () -> new WandItem(WandType.TIER2, 513));
 
     public static final RegistryObject<Item> TIER3_WAND = ITEMS.register("tier3_wand",
-            () -> new WandItem(WandType.TIER3));
+            () -> new WandItem(WandType.TIER3, 1025));
     
     
 
     //Runes
     public static final RegistryObject<Item> EMPTY_RUNE = ITEMS.register("empty_rune",
-            () -> new RuneItem(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
+            () -> new RuneItem(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB), 0));
 
 
     public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
-            () -> new SpellRuneItem(new Item.Properties()));
+            () -> new SpellRuneItem(new Item.Properties(), 40));
 
 
     public static final RegistryObject<Item> MAGIC_SPARK_RUNE = ITEMS.register("magic_spark_rune",
-            () -> new ProjectileRuneItem(new Item.Properties()));
+            () -> new ProjectileRuneItem(new Item.Properties(), 8));
 
     public static final RegistryObject<Item> HEALING_BOLT_RUNE = ITEMS.register("healing_bolt_rune",
-            () -> new ProjectileRuneItem(new Item.Properties()));
+            () -> new ProjectileRuneItem(new Item.Properties(), 64));
 
     public static final RegistryObject<Item> METEOR_RUNE = ITEMS.register("meteor_rune",
-            () -> new ProjectileRuneItem(new Item.Properties()));
+            () -> new ProjectileRuneItem(new Item.Properties(), 128));
 
     public static final RegistryObject<Item> COMET_RUNE = ITEMS.register("comet_rune",
-            () -> new ProjectileRuneItem(new Item.Properties()));
+            () -> new ProjectileRuneItem(new Item.Properties(), 128));
 
     public static final RegistryObject<Item> WITHER_SKULL_RUNE = ITEMS.register("wither_skull_rune",
-            () -> new ProjectileRuneItem(new Item.Properties()));
+            () -> new ProjectileRuneItem(new Item.Properties(), 64));
 
 
     public static final RegistryObject<Item> STORMY_CLOUD_RUNE = ITEMS.register("stormy_cloud_rune",
-            () -> new FamiliarRuneItem(new Item.Properties()));
+            () -> new FamiliarRuneItem(new Item.Properties(), 40));
 
 
     public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 80));
 
     public static final RegistryObject<Item> DEATH_TRIGGER_RUNE = ITEMS.register("death_trigger_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 80));
 
     public static final RegistryObject<Item> MAGICAL_CLOUD_RUNE = ITEMS.register("magical_cloud_rune",
-            () -> new FamiliarRuneItem(new Item.Properties()));
+            () -> new FamiliarRuneItem(new Item.Properties(), 128));
 
 
     public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 32));
 
     public static final RegistryObject<Item> DECREASE_POWER_RUNE = ITEMS.register("decrease_power_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 8));
 
     public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
-
-    public static final RegistryObject<Item> BOUNCE_RUNE = ITEMS.register("bounce_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
-
-    public static final RegistryObject<Item> GRAVITY_RUNE = ITEMS.register("gravity_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
-
-    public static final RegistryObject<Item> INCREASE_SPEED_RUNE = ITEMS.register("increase_speed_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
-
-    public static final RegistryObject<Item> DECREASE_SPEED_RUNE = ITEMS.register("decrease_speed_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 16));
 
     public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 16));
+
+    public static final RegistryObject<Item> BOUNCE_RUNE = ITEMS.register("bounce_rune",
+            () -> new ModifierRuneItem(new Item.Properties(), 16));
+
+    public static final RegistryObject<Item> GRAVITY_RUNE = ITEMS.register("gravity_rune",
+            () -> new ModifierRuneItem(new Item.Properties(), 8));
+
+    public static final RegistryObject<Item> INCREASE_SPEED_RUNE = ITEMS.register("increase_speed_rune",
+            () -> new ModifierRuneItem(new Item.Properties(), 32));
+
+    public static final RegistryObject<Item> DECREASE_SPEED_RUNE = ITEMS.register("decrease_speed_rune",
+            () -> new ModifierRuneItem(new Item.Properties(), 16));
 
     public static final RegistryObject<Item> INCREASE_LIFE_RUNE = ITEMS.register("increase_life_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 32));
 
     public static final RegistryObject<Item> DECREASE_LIFE_RUNE = ITEMS.register("decrease_life_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 16));
 
     public static final RegistryObject<Item> ENEMY_PIERCING_RUNE = ITEMS.register("enemy_piercing_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 80));
 
     public static final RegistryObject<Item> BLOCK_PIERCING_RUNE = ITEMS.register("block_piercing_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 32));
 
     public static final RegistryObject<Item> PERMABOUNCE_RUNE = ITEMS.register("permabounce_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 128));
 
     public static final RegistryObject<Item> HOMING_RUNE = ITEMS.register("homing_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 128));
 
     public static final RegistryObject<Item> INCREASE_RANGE_RUNE = ITEMS.register("increase_range_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 32));
 
     public static final RegistryObject<Item> DECREASE_RANGE_RUNE = ITEMS.register("decrease_range_rune",
-            () -> new ModifierRuneItem(new Item.Properties()));
+            () -> new ModifierRuneItem(new Item.Properties(), 8));
 }

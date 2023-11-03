@@ -69,7 +69,7 @@ public class MeteorEntity extends ProjectileBaseEntity {
 
     @Override
     protected void addEffects(LivingEntity target) {
-        if ( !ice ) target.setSecondsOnFire(5);
+        if ( !ice ) target.setSecondsOnFire(this.power);
     }
 
     @Override
