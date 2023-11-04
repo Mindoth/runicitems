@@ -156,15 +156,15 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
         spawnParticles();
         if ( this.random.nextDouble() > 0.5d ) spawnEffectParticles();
 
-        if ( this.homing && this.tickCount > 20 ) {
+        if ( this.homing && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
             if ( nearest != null ) {
                 double mX = getDeltaMovement().x();
                 double mY = getDeltaMovement().y();
                 double mZ = getDeltaMovement().z();
-                Vec3 arrowLoc = new Vec3(getX(), getY(), getZ());
-                Vec3 targetLoc = new Vec3(CommonEvents.getEntityCenter(nearest).x, CommonEvents.getEntityCenter(nearest).y, CommonEvents.getEntityCenter(nearest).z);
-                Vec3 lookVec = targetLoc.subtract(arrowLoc);
+                Vec3 spellPos = new Vec3(getX(), getY(), getZ());
+                Vec3 targetPos = new Vec3(CommonEvents.getEntityCenter(nearest).x, CommonEvents.getEntityCenter(nearest).y, CommonEvents.getEntityCenter(nearest).z);
+                Vec3 lookVec = targetPos.subtract(spellPos);
                 Vec3 arrowMotion = new Vec3(mX, mY, mZ);
                 double theta = SpellBuilder.wrap180Radian(SpellBuilder.angleBetween(arrowMotion, lookVec));
                 theta = SpellBuilder.clampAbs(theta, Math.PI / 16);

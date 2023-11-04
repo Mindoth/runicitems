@@ -25,7 +25,7 @@ public class RuneItem extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
-        if ( stack.getItem() != RunicItemsItems.EMPTY_RUNE.get() ) tooltip.add(Component.translatable("tooltip.runicitems.runedrain")
+        if ( stack.getItem() != RunicItemsItems.EMPTY_RUNE.get() ) tooltip.add(Component.translatable("tooltip.runicitems.rune_drain")
                 .append(Component.literal(": " + getRuneDrain()).withStyle(ChatFormatting.GRAY)));
 
         super.appendHoverText(stack, world, tooltip, flagIn);

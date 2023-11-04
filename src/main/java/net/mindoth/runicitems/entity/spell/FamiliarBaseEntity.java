@@ -152,7 +152,7 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         spawnParticles();
         if ( this.random.nextDouble() > 0.5d ) spawnEffectParticles();
 
-        if ( this.homing && this.tickCount > 20 ) {
+        if ( this.homing && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
             if ( nearest != null ) {
                 double mX = getDeltaMovement().x();

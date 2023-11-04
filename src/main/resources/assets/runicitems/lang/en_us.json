@@ -13,9 +13,13 @@
   "item.runicitems.sorcerer_boots": "Sorcerer Boots",
 
 
-  "item.runicitems.tier1_wand": "Basic Wand",
-  "item.runicitems.tier2_wand": "Improved Wand",
-  "item.runicitems.tier3_wand": "Masterful Wand",
+  "item.runicitems.tier1_wand": "Crude Wand",
+  "item.runicitems.tier2_wand": "Basic Wand",
+  "item.runicitems.tier3_wand": "Improved Wand",
+  "item.runicitems.tier4_wand": "Celestial Wand",
+  "item.runicitems.tier5_wand": "Masterful Wand",
+  "item.runicitems.tier6_wand": "Arcane Wand",
+  "item.runicitems.tier7_wand": "Mythical Wand",
 
 
   "item.runicitems.empty_rune": "Empty Rune",
@@ -60,6 +64,6 @@
   "tooltip.runicitems.warrior_boots": "\u00A77Greatly Increases Melee Damage\u00A7r",
   "tooltip.runicitems.sorcerer_boots": "\u00A77Greatly Increases Magic Damage\u00A7r",
 
-  "tooltip.runicitems.runedrain": "\u00A77Drain\u00A7r",
-  "tooltip.runicitems.totalrunedrain": "\u00A77Spell drain\u00A7r"
+  "tooltip.runicitems.rune_drain": "\u00A77Drain\u00A7r",
+  "tooltip.runicitems.wand_charge": "\u00A77Current charge\u00A7r"
 }

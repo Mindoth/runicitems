@@ -47,23 +47,21 @@ public class WandItem extends Item {
     final WandType tier;
 
     //TODO doesn't work in multiplayer for some reason
-    /*@OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
-        if ( WandManager.get().getCapability(stack).resolve().isPresent() ) {
-            IItemHandler itemHandler = WandManager.get().getCapability(stack).resolve().get();
-            ChatFormatting color;
-            if ( checkDurability(itemHandler, stack) ) {
-                color = ChatFormatting.GRAY;
-            }
-            else color = ChatFormatting.RED;
-            tooltip.add(Component.translatable("tooltip.runicitems.totalrunedrain")
-                    .append(Component.literal(": "))
-                    .append(Component.literal("" + getDrainAmount(itemHandler)).withStyle(color)));
+        ChatFormatting color;
+        if ( stack.getDamageValue() <= 0 ) {
+            color = ChatFormatting.GREEN;
         }
+        else color = ChatFormatting.GRAY;
+
+        tooltip.add(Component.translatable("tooltip.runicitems.wand_charge")
+                .append(Component.literal(": "))
+                .append(Component.literal("" + (stack.getMaxDamage() - stack.getDamageValue() - 1)).withStyle(color)));
 
         super.appendHoverText(stack, world, tooltip, flagIn);
-    }*/
+    }
 
     public static WandData getData(ItemStack stack) {
         if ( !(stack.getItem() instanceof WandItem))

@@ -61,7 +61,7 @@ public class WandManager extends SavedData {
     public static WandManager load(CompoundTag nbt) {
         if ( nbt.contains("Wands") ) {
             ListTag list = nbt.getList("Wands", Tag.TAG_COMPOUND);
-            list.forEach((backpackNBT) -> WandData.fromNBT((CompoundTag) backpackNBT).ifPresent((backpack) -> data.put(backpack.getUuid(), backpack)));
+            list.forEach((wandNBT) -> WandData.fromNBT((CompoundTag) wandNBT).ifPresent((wand) -> data.put(wand.getUuid(), wand)));
         }
         return new WandManager();
     }
@@ -69,9 +69,9 @@ public class WandManager extends SavedData {
     @Override
     @Nonnull
     public CompoundTag save(CompoundTag compound) {
-        ListTag backpacks = new ListTag();
-        data.forEach(((uuid, backpackData) -> backpacks.add(backpackData.toNBT())));
-        compound.put("Wands", backpacks);
+        ListTag wands = new ListTag();
+        data.forEach(((uuid, wandData) -> wands.add(wandData.toNBT())));
+        compound.put("Wands", wands);
         return compound;
     }
 }

@@ -1,13 +1,11 @@
 package net.mindoth.runicitems.client.gui;
 
-import net.mindoth.runicitems.inventory.WandUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
-import java.util.function.Predicate;
 
 public class WandContainerSlot extends SlotItemHandler {
     private final int index;
@@ -18,7 +16,12 @@ public class WandContainerSlot extends SlotItemHandler {
 
     @Override
     public int getMaxStackSize(@Nonnull ItemStack stack) {
-        return super.getMaxStackSize();
+        return 1;
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return 1;
     }
 
     @Override
@@ -26,7 +29,6 @@ public class WandContainerSlot extends SlotItemHandler {
         return super.mayPlace(stack);
     }
 
-    //bandage till forge PR fixes this
     @Override
     public void initialize(ItemStack itemStack) {
         ((IItemHandlerModifiable) this.getItemHandler()).setStackInSlot(index, itemStack);

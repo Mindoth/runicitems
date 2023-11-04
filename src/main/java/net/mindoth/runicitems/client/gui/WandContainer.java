@@ -56,9 +56,9 @@ public class WandContainer extends AbstractContainerMenu {
     @Override
     @Nonnull
     public void clicked(int slot, int dragType, @Nonnull ClickType clickTypeIn, @Nonnull Player player) {
-        if (clickTypeIn == ClickType.SWAP)
+        if ( clickTypeIn == ClickType.SWAP )
             return;
-        if (slot >= 0) getSlot(slot).container.setChanged();
+        if ( slot >= 0 ) getSlot(slot).container.setChanged();
         super.clicked(slot, dragType, clickTypeIn, player);
     }
 
@@ -67,7 +67,7 @@ public class WandContainer extends AbstractContainerMenu {
         int originY = this.tier.slotYOffset;
 
         //Hotbar
-        for (int col = 0; col < 9; col++) {
+        for ( int col = 0; col < 9; col++ ) {
             int x = originX + col * 18;
             int y = originY + 58;
             Optional<UUID> uuidOptional = WandUtils.getUUID(playerInventory.items.get(col));
@@ -76,8 +76,8 @@ public class WandContainer extends AbstractContainerMenu {
         }
 
         //Player Inventory
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) {
+        for ( int row = 0; row < 3; row++ ) {
+            for ( int col = 0; col < 9; col++ ) {
                 int x = originX + col * 18;
                 int y = originY + row * 18;
                 int index = (col + row * 9) + 9;
@@ -89,16 +89,17 @@ public class WandContainer extends AbstractContainerMenu {
     }
 
     private void addMySlots() {
-        if (this.handler == null) return;
+        if ( this.handler == null ) return;
 
         int cols = this.tier.slotCols;
         int rows = this.tier.slotRows;
+        int originX = this.tier.mySlotXOffset;
 
         int slot_index = 0;
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                int x = 7 + col * 18;
+        for ( int row = 0; row < rows; row++ ) {
+            for ( int col = 0; col < cols; col++ ) {
+                int x = originX + col * 18;
                 int y = 17 + row * 18;
 
                 this.addSlot(new WandContainerSlot(this.handler, slot_index, x + 1, y + 1));
@@ -116,17 +117,18 @@ public class WandContainer extends AbstractContainerMenu {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
 
-        if (slot != null && slot.hasItem()) {
+        if ( slot != null && slot.hasItem() ) {
             int wandslotcount = this.slots.size();
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < playerIn.getInventory().items.size()) {
-                if (!this.moveItemStackTo(itemstack1, playerIn.getInventory().items.size(), wandslotcount, false))
+            if ( index < playerIn.getInventory().items.size() ) {
+                if ( !this.moveItemStackTo(itemstack1, playerIn.getInventory().items.size(), wandslotcount, false) )
                     return ItemStack.EMPTY;
-            } else if (!this.moveItemStackTo(itemstack1, 0, playerIn.getInventory().items.size(), false)) {
+            }
+            else if ( !this.moveItemStackTo(itemstack1, 0, playerIn.getInventory().items.size(), false) ) {
                 return ItemStack.EMPTY;
             }
-            if (itemstack1.isEmpty()) slot.set(ItemStack.EMPTY); else slot.setChanged();
+            if ( itemstack1.isEmpty() ) slot.set(ItemStack.EMPTY); else slot.setChanged();
         }
         return itemstack;
     }
