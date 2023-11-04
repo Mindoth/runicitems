@@ -18,8 +18,8 @@ import java.util.HashMap;
 public class HealingBoltEntity extends ProjectileBaseEntity {
 
     public HealingBoltEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects, Item rune, float xRot, float yRot) {
-        super(RunicItemsEntities.HEALING_BOLT.get(), level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+                            HashMap<Item, Integer> effects, Item rune) {
+        super(RunicItemsEntities.HEALING_BOLT.get(), level, owner, caster, itemHandler, slot, effects, rune);
     }
 
     public HealingBoltEntity(EntityType entityType, Level level) {

@@ -2,6 +2,7 @@ package net.mindoth.runicitems.entity.spell;
 
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.event.SpellBuilder;
+import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -34,20 +35,18 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
     }
 
     protected FamiliarBaseEntity(EntityType<? extends FamiliarBaseEntity> pEntityType, Level pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                                   HashMap<Item, Integer> effects, Item rune, float xRot, float yRot) {
+                                   HashMap<Item, Integer> effects, Item rune) {
         super(pEntityType, owner, pLevel);
-        this.xRot = xRot;
-        this.yRot = yRot;
 
         this.owner = owner;
         this.caster = caster;
         this.itemHandler = itemHandler;
         this.slot = slot;
         this.rune = rune;
+        this.nextSpellSlot = SpellBuilder.getNextSpellSlot(slot, itemHandler);
+
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
-        this.nextSpellSlot = SpellBuilder.getNextSpellSlot(slot, itemHandler);
-        this.power = SpellBuilder.getPower(effects);
         this.bounces = SpellBuilder.getBounce(effects);
         this.life = Math.max(10, 160 + SpellBuilder.getLife(effects));
         this.range = SpellBuilder.getRange(effects);
@@ -55,12 +54,14 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         this.ice = SpellBuilder.getIce(effects);
         this.enemyPiercing = SpellBuilder.getEnemyPiercing(effects);
         this.blockPiercing = SpellBuilder.getBlockPiercing(effects);
-        this.speed = SpellBuilder.getSpeed(effects, 0.5f);
+        this.speed = SpellBuilder.getSpeed(effects, 0.125F);
         this.homing = SpellBuilder.getHoming(effects);
-    }
 
-    protected float xRot;
-    protected float yRot;
+        this.basePower = 1;
+        if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) this.basePower += 1;
+
+        this.power = SpellBuilder.getPower(effects, this.basePower);
+    }
 
     protected LivingEntity owner;
     protected Entity caster;
@@ -70,6 +71,7 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
     protected boolean trigger;
     protected boolean deathTrigger;
     protected int nextSpellSlot;
+    protected int basePower;
     protected int power;
     protected int bounces;
     protected int life;
@@ -89,7 +91,7 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
             hurtTarget(living);
 
             if ( trigger && nextSpellSlot >= 0 ) {
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
+                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
             }
         }
 
@@ -99,47 +101,43 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
             BlockHitResult traceResult = (BlockHitResult) result;
             BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
             if ( !blockstate.getCollisionShape(this.level, traceResult.getBlockPos()).isEmpty() ) {
-                if ( bounces > 0 ) {
-                    Direction face = traceResult.getDirection();
-                    blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
+                if ( !blockPiercing ) {
+                    if ( (trigger && nextSpellSlot >= 0) || bounces > 0 ) {
+                        Direction face = traceResult.getDirection();
+                        blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
+                        Vec3 motion = this.getDeltaMovement();
+                        double motionX = motion.x();
+                        double motionY = motion.y();
+                        double motionZ = motion.z();
+                        if (face == Direction.EAST) {
+                            motionX = -motionX;
+                        }
+                        else if (face == Direction.SOUTH) {
+                            motionZ = -motionZ;
+                        }
+                        else if (face == Direction.WEST) {
+                            motionX = -motionX;
+                        }
+                        else if (face == Direction.NORTH) {
+                            motionZ = -motionZ;
+                        }
+                        else if (face == Direction.UP) {
+                            motionY = -motionY;
+                        }
+                        else if (face == Direction.DOWN) {
+                            motionY = -motionY;
+                        }
+                        //this.setDeltaMovement(motionX, motionY, motionZ);
 
-                    Vec3 motion = this.getDeltaMovement();
-
-                    double motionX = motion.x();
-                    double motionY = motion.y();
-                    double motionZ = motion.z();
-
-                    if (face == Direction.EAST) {
-                        motionX = -motionX;
+                        //This seems to work better with low velocity projectiles
+                        shoot(motionX, motionY, motionZ, this.speed, 0);
                     }
-                    else if (face == Direction.SOUTH) {
-                        motionZ = -motionZ;
-                    }
-                    else if (face == Direction.WEST) {
-                        motionX = -motionX;
-                    }
-                    else if (face == Direction.NORTH) {
-                        motionZ = -motionZ;
-                    }
-                    else if (face == Direction.UP) {
-                        motionY = -motionY;
-                    }
-                    else if (face == Direction.DOWN) {
-                        motionY = -motionY;
-                    }
-
-                    this.setDeltaMovement(motionX, motionY, motionZ);
-                    this.bounces -= 1;
-                }
-                else if ( !blockPiercing ) {
-                    this.setDeltaMovement(0, 0, 0);
-                    level.playSound(null, this.getX(), this.getY(), this.getZ(),
-                            blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
+                    if ( trigger && nextSpellSlot >= 0 ) SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
+                    if ( bounces > 0 ) this.bounces -= 1;
+                    else this.setDeltaMovement(0, 0, 0);
                 }
             }
-            if ( trigger && nextSpellSlot >= 0 ) {
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
-            }
+            if ( !blockPiercing ) level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
         }
     }
 
@@ -156,16 +154,26 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
 
         if ( this.homing && this.tickCount > 20 ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
-            if ( nearest != null && this.distanceTo(nearest) > 1 ) {
-                SpellBuilder.lookAt(this, nearest);
-                double factor = this.getDeltaMovement().length();
-                this.setDeltaMovement(this.getLookAngle().normalize().multiply(factor, factor, factor));
+            if ( nearest != null ) {
+                double mX = getDeltaMovement().x();
+                double mY = getDeltaMovement().y();
+                double mZ = getDeltaMovement().z();
+                Vec3 arrowLoc = new Vec3(getX(), getY(), getZ());
+                Vec3 targetLoc = new Vec3(CommonEvents.getEntityCenter(nearest).x, CommonEvents.getEntityCenter(nearest).y, CommonEvents.getEntityCenter(nearest).z);
+                Vec3 lookVec = targetLoc.subtract(arrowLoc);
+                Vec3 arrowMotion = new Vec3(mX, mY, mZ);
+                double theta = SpellBuilder.wrap180Radian(SpellBuilder.angleBetween(arrowMotion, lookVec));
+                theta = SpellBuilder.clampAbs(theta, Math.PI / 16);
+                Vec3 crossProduct = arrowMotion.cross(lookVec).normalize();
+                Vec3 adjustedLookVec = SpellBuilder.transform(crossProduct, theta, arrowMotion);
+
+                shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, speed, 0);
             }
         }
 
         if ( this.tickCount > life ) {
             if ( deathTrigger && nextSpellSlot >= 0 ) {
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
+                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
             }
             this.discard();
         }

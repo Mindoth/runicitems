@@ -6,6 +6,8 @@ import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.inventory.WandManager;
 import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.itemgroup.RunicItemsItemGroup;
+import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -20,7 +22,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -30,6 +35,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
 
 public class WandItem extends Item {
@@ -37,7 +43,27 @@ public class WandItem extends Item {
         super(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB).stacksTo(1).durability(durability));
         this.tier = tier;
     }
+
     final WandType tier;
+
+    //TODO doesn't work in multiplayer for some reason
+    /*@OnlyIn(Dist.CLIENT)
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+        if ( WandManager.get().getCapability(stack).resolve().isPresent() ) {
+            IItemHandler itemHandler = WandManager.get().getCapability(stack).resolve().get();
+            ChatFormatting color;
+            if ( checkDurability(itemHandler, stack) ) {
+                color = ChatFormatting.GRAY;
+            }
+            else color = ChatFormatting.RED;
+            tooltip.add(Component.translatable("tooltip.runicitems.totalrunedrain")
+                    .append(Component.literal(": "))
+                    .append(Component.literal("" + getDrainAmount(itemHandler)).withStyle(color)));
+        }
+
+        super.appendHoverText(stack, world, tooltip, flagIn);
+    }*/
 
     public static WandData getData(ItemStack stack) {
         if ( !(stack.getItem() instanceof WandItem))

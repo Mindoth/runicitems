@@ -21,8 +21,8 @@ import java.util.HashMap;
 public class MeteorEntity extends ProjectileBaseEntity {
 
     public MeteorEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects, Item rune, float xRot, float yRot) {
-        super(RunicItemsEntities.METEOR.get(), level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+                            HashMap<Item, Integer> effects, Item rune) {
+        super(RunicItemsEntities.METEOR.get(), level, owner, caster, itemHandler, slot, effects, rune);
     }
 
     public MeteorEntity(EntityType entityType, Level level) {
@@ -36,14 +36,12 @@ public class MeteorEntity extends ProjectileBaseEntity {
     @Override
     protected void hurtTarget(LivingEntity target) {
         addEffects(target);
+        splashDamage();
         if ( power > 0 ) {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
         if ( !enemyPiercing ) {
             this.discard();
-        }
-        if ( !blockPiercing ) {
-            splashDamage();
         }
     }
 

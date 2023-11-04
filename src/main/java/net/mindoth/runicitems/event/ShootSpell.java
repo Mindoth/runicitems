@@ -29,30 +29,35 @@ public class ShootSpell {
 
         ProjectileBaseEntity projectile;
         if ( rune == RunicItemsItems.MAGIC_SPARK_RUNE.get() ) {
-            projectile = new MagicSparkEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+            projectile = new MagicSparkEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSound(level, center);
         }
         else if ( rune == RunicItemsItems.HEALING_BOLT_RUNE.get() ) {
-            projectile = new HealingBoltEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+            projectile = new HealingBoltEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSound(level, center);
         }
         else if ( rune == RunicItemsItems.METEOR_RUNE.get() ) {
-            projectile = new MeteorEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+            projectile = new MeteorEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playFireSound(level, center);
         }
         else if ( rune == RunicItemsItems.COMET_RUNE.get() ) {
-            projectile = new CometEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+            projectile = new CometEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSound(level, center);
         }
         else if ( rune == RunicItemsItems.WITHER_SKULL_RUNE.get() ) {
-            projectile = new WitherSkullEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+            projectile = new WitherSkullEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playEvilSound(level, center);
         }
         else return;
 
         projectile.setNoGravity(SpellBuilder.getGravity(effects));
-        if ( caster != owner ) projectile.setPos(center);
-        projectile.shootFromRotation(caster, xRot, yRot, 0F, Math.max(SpellBuilder.getSpeed(effects, 1.0F), 0.1f), 1.0F);
+        if ( caster != owner ) {
+            projectile.setPos(center);
+            projectile.shootFromRotation(caster, xRot * -1, yRot * -1, 0F, SpellBuilder.getSpeed(effects, 1.0F), 1.0F);
+        }
+        else {
+            projectile.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, 1.0F), 1.0F);
+        }
         level.addFreshEntity(projectile);
     }
 
@@ -62,20 +67,23 @@ public class ShootSpell {
 
         FamiliarBaseEntity familiar;
         if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) {
-            familiar = new StormyCloudEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+            familiar = new StormyCloudEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSummonSound(level, center);
         }
         else if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() ) {
-            familiar = new MagicalCloudEntity(level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+            familiar = new MagicalCloudEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSummonSound(level, center);
         }
         else return;
 
         if ( SpellBuilder.getGravity(effects) ) familiar.setNoGravity(true);
-        if ( caster != owner ) familiar.setPos(center);
-
-        familiar.shootFromRotation(caster, xRot, yRot, 0F, Math.max(SpellBuilder.getSpeed(effects, 0), 0), 0);
-        if ( SpellBuilder.getSpeed(effects, 0) == 0 ) familiar.setDeltaMovement(0, 0, 0);
+        if ( caster != owner ) {
+            familiar.setPos(center);
+            familiar.shootFromRotation(caster, xRot * -1, yRot * -1, 0F, SpellBuilder.getSpeed(effects, 0.125F), 0);
+        }
+        else {
+            familiar.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, 0.125F), 0);
+        }
         level.addFreshEntity(familiar);
     }
 
@@ -85,7 +93,7 @@ public class ShootSpell {
         Explosion.BlockInteraction destroyBlocks;
         if ( SpellBuilder.getBlockPiercing(effects) ) destroyBlocks = Explosion.BlockInteraction.NONE;
         else destroyBlocks = Explosion.BlockInteraction.DESTROY;
-        level.explode(null, DamageSource.MAGIC, null, pos.x, pos.y, pos.z, SpellBuilder.getPower(effects), SpellBuilder.getFire(effects), destroyBlocks);
+        level.explode(null, DamageSource.MAGIC, null, pos.x, pos.y, pos.z, SpellBuilder.getPower(effects, 1), SpellBuilder.getFire(effects), destroyBlocks);
     }
 
 

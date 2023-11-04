@@ -66,8 +66,8 @@ public class SpellBuilder {
         return nextRune;
     }
 
-    public static Integer getPower(HashMap<Item, Integer> effects) {
-        int power = 1;
+    public static Integer getPower(HashMap<Item, Integer> effects, int basePower) {
+        int power = 0;
         if ( effects.containsKey(RunicItemsItems.INCREASE_POWER_RUNE.get()) ) {
             if ( effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get()) != null ) {
                 power += effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get());
@@ -78,7 +78,17 @@ public class SpellBuilder {
                 power -= effects.get(RunicItemsItems.DECREASE_POWER_RUNE.get());
             }
         }
-        return power;
+        if ( power > 0 ) {
+            for ( int i = 0; i < power; i++ ) {
+                basePower *= 1.5F;
+            }
+        }
+        else if ( power < 0 ) {
+            for ( int i = 0; i > power; i-- ) {
+                basePower *= 0.5F;
+            }
+        }
+        return basePower + power;
     }
 
     public static Float getSpeed(HashMap<Item, Integer> effects, float speed) {
@@ -93,8 +103,15 @@ public class SpellBuilder {
                 power -= effects.get(RunicItemsItems.DECREASE_SPEED_RUNE.get());
             }
         }
-        if ( power != 0 ) {
-            speed += (power / 4);
+        if ( power > 0 ) {
+            for ( int i = 0; i < power; i++ ) {
+                speed *= 1.5F;
+            }
+        }
+        else if ( power < 0 ) {
+            for ( int i = 0; i > power; i-- ) {
+                speed *= 0.5F;
+            }
         }
         return speed;
     }
@@ -197,17 +214,80 @@ public class SpellBuilder {
         return target;
     }
 
-    public static void lookAt(Entity spell, Entity target) {
-        Vec3 vec3 = CommonEvents.getEntityCenter(spell);
-        Vec3 pTarget = CommonEvents.getEntityCenter(target);
-        double d0 = pTarget.x - vec3.x;
-        double d1 = pTarget.y - vec3.y;
-        double d2 = pTarget.z - vec3.z;
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2);
-        spell.setXRot(Mth.wrapDegrees((float)(-(Mth.atan2(d1, d3) * (double)(180F / (float)Math.PI)))));
-        spell.setYRot(Mth.wrapDegrees((float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F));
-        spell.setYHeadRot(spell.getYRot());
-        spell.xRotO = spell.getXRot();
-        spell.yRotO = spell.getYRot();
+    public static Vec3 transform(Vec3 axis, double angle, Vec3 normal) {
+        double m00 = 1;
+        double m01 = 0;
+        double m02 = 0;
+
+        double m10 = 0;
+        double m11 = 1;
+        double m12 = 0;
+
+        double m20 = 0;
+        double m21 = 0;
+        double m22 = 1;
+        double mag = Math.sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
+        if (mag >= 1.0E-10) {
+            mag = 1.0 / mag;
+            double ax = axis.x * mag;
+            double ay = axis.y * mag;
+            double az = axis.z * mag;
+
+            double sinTheta = Math.sin(angle);
+            double cosTheta = Math.cos(angle);
+            double t = 1.0 - cosTheta;
+
+            double xz = ax * az;
+            double xy = ax * ay;
+            double yz = ay * az;
+
+            m00 = t * ax * ax + cosTheta;
+            m01 = t * xy - sinTheta * az;
+            m02 = t * xz + sinTheta * ay;
+
+            m10 = t * xy + sinTheta * az;
+            m11 = t * ay * ay + cosTheta;
+            m12 = t * yz - sinTheta * ax;
+
+            m20 = t * xz - sinTheta * ay;
+            m21 = t * yz + sinTheta * ax;
+            m22 = t * az * az + cosTheta;
+        }
+        return new Vec3(m00 * normal.x + m01 * normal.y + m02 * normal.z,
+                m10 * normal.x + m11 * normal.y + m12 * normal.z,
+                m20 * normal.x + m21 * normal.y + m22 * normal.z);
+    }
+
+    public static double angleBetween(Vec3 v1, Vec3 v2) {
+        double vDot = v1.dot(v2) / (v1.length() * v2.length());
+        if (vDot < -1.0) {
+            vDot = -1.0;
+        }
+        if (vDot > 1.0) {
+            vDot = 1.0;
+        }
+        return Math.acos(vDot);
+    }
+
+    public static double wrap180Radian(double radian) {
+        radian %= 2 * Math.PI;
+        while (radian >= Math.PI) {
+            radian -= 2 * Math.PI;
+        }
+        while (radian < -Math.PI) {
+            radian += 2 * Math.PI;
+        }
+        return radian;
+    }
+
+    public static double clampAbs(double param, double maxMagnitude) {
+        if (Math.abs(param) > maxMagnitude) {
+            if (param < 0) {
+                param = -Math.abs(maxMagnitude);
+            } else {
+                param = Math.abs(maxMagnitude);
+            }
+        }
+        return param;
     }
 }

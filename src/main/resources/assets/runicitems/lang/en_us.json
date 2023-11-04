@@ -60,5 +60,6 @@
   "tooltip.runicitems.warrior_boots": "\u00A77Greatly Increases Melee Damage\u00A7r",
   "tooltip.runicitems.sorcerer_boots": "\u00A77Greatly Increases Magic Damage\u00A7r",
 
-  "tooltip.runicitems.runedrain": "\u00A77Drain\u00A7r"
+  "tooltip.runicitems.runedrain": "\u00A77Drain\u00A7r",
+  "tooltip.runicitems.totalrunedrain": "\u00A77Spell drain\u00A7r"
 }

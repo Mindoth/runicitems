@@ -19,8 +19,8 @@ import java.util.HashMap;
 public class MagicSparkEntity extends ProjectileBaseEntity {
 
     public MagicSparkEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects, Item rune, float xRot, float yRot) {
-        super(RunicItemsEntities.MAGIC_SPARK.get(), level, owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+                            HashMap<Item, Integer> effects, Item rune) {
+        super(RunicItemsEntities.MAGIC_SPARK.get(), level, owner, caster, itemHandler, slot, effects, rune);
     }
 
     public MagicSparkEntity(EntityType entityType, Level level) {
