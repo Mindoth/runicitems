@@ -153,7 +153,7 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
                     else discard();
                 }
             }
-            if ( !blockPiercing ) level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
+            if ( !blockPiercing && this.getDeltaMovement().length() > 0 ) level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
         }
     }
 
@@ -166,7 +166,6 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
         if ( level.isClientSide ) return;
         doTickEffects();
         spawnParticles();
-        if ( this.random.nextDouble() > 0.5D ) spawnEffectParticles();
 
         if ( this.homing && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
@@ -195,6 +194,9 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
     protected void hurtTarget(LivingEntity target) {
     }
 
+    protected void addEffects(LivingEntity target) {
+    }
+
     protected void splashDamage() {
         ArrayList<LivingEntity> list = SpellBuilder.getEntitiesAround(this, level, this.range);
         for ( LivingEntity target : list ) {
@@ -207,28 +209,16 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
     protected void spawnSplashParticles() {
     }
 
-    protected void addEffects(LivingEntity target) {
-        if ( fire && !ice ) {
-            target.setSecondsOnFire(this.power);
-        }
-        if ( ice && !fire ) {
-            target.setTicksFrozen(this.power * 70);
-        }
+    protected void doTickEffects() {
     }
 
-    protected void doTickEffects() {
+    protected double getParticleHeight() {
+        return this.getY();
     }
 
     protected void spawnParticles() {
         ServerLevel level = (ServerLevel)this.level;
-        level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), this.getY() + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
-    }
-
-    protected void spawnEffectParticles() {
-        if ( this.level.isClientSide ) return;
-        ServerLevel level = (ServerLevel)this.level;
-        if (fire && !ice) level.sendParticles(ParticleTypes.FLAME, CommonEvents.getEntityCenter(this).x, this.getY(), CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
-        if (ice && !fire) level.sendParticles(ParticleTypes.SNOWFLAKE, CommonEvents.getEntityCenter(this).x, this.getY(), CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 0);
+        level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), getParticleHeight() + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
     }
 
     protected SimpleParticleType getParticle() {

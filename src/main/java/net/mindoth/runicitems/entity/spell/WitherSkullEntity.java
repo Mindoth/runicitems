@@ -43,10 +43,14 @@ public class WitherSkullEntity extends ProjectileBaseEntity {
         if ( power > 0 ) {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
+        explode();
         if ( !enemyPiercing ) {
             this.discard();
         }
-        explode();
+    }
+
+    @Override
+    protected void addEffects(LivingEntity target) {
         target.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 1));
     }
 

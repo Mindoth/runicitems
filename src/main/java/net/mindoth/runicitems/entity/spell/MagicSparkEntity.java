@@ -43,6 +43,11 @@ public class MagicSparkEntity extends ProjectileBaseEntity {
     }
 
     @Override
+    protected double getParticleHeight() {
+        return CommonEvents.getEntityCenter(this).y - 0.1D;
+    }
+
+    @Override
     protected SimpleParticleType getParticle() {
         return ParticleTypes.DRAGON_BREATH;
     }

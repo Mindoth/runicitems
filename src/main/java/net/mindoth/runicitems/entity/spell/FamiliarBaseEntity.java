@@ -145,7 +145,7 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
                     else this.setDeltaMovement(0, 0, 0);
                 }
             }
-            if ( !blockPiercing ) level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
+            if ( !blockPiercing && this.getDeltaMovement().length() > 0 ) level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
         }
     }
 
@@ -158,7 +158,6 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         if ( level.isClientSide ) return;
         doTickEffects();
         spawnParticles();
-        if ( this.random.nextDouble() > 0.5D ) spawnEffectParticles();
 
         if ( this.homing && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
@@ -195,9 +194,6 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         for (int i = 0; i < 8; ++i) {
             level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).y + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), 2, 0, 0, 0, 0);
         }
-    }
-
-    protected void spawnEffectParticles() {
     }
 
     protected SimpleParticleType getParticle() {

@@ -28,7 +28,6 @@ public class StormyCloudRenderer<T extends StormyCloudEntity> extends EntityRend
     @Override
     public void render(T entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
-        matrixStackIn.scale(0.5F, 0.5F, 0.5F);
         matrixStackIn.mulPose(this.entityRenderDispatcher.cameraOrientation());
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F));
         PoseStack.Pose matrixstack$entry = matrixStackIn.last();

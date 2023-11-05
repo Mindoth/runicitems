@@ -36,13 +36,18 @@ public class MeteorEntity extends ProjectileBaseEntity {
     @Override
     protected void hurtTarget(LivingEntity target) {
         addEffects(target);
-        splashDamage();
         if ( power > 0 ) {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
+        splashDamage();
         if ( !enemyPiercing ) {
             this.discard();
         }
+    }
+
+    @Override
+    protected void addEffects(LivingEntity target) {
+        target.setSecondsOnFire(this.power);
     }
 
     @Override
@@ -63,11 +68,6 @@ public class MeteorEntity extends ProjectileBaseEntity {
         for (int i = 0; i < this.power * 4; ++i) {
             level.sendParticles(ParticleTypes.SMOKE, this.getBoundingBox().getCenter().x, this.getBoundingBox().getCenter().y, this.getBoundingBox().getCenter().z, 1, 0, 0, 0, 0.5f);
         }
-    }
-
-    @Override
-    protected void addEffects(LivingEntity target) {
-        if ( !ice ) target.setSecondsOnFire(this.power);
     }
 
     @Override

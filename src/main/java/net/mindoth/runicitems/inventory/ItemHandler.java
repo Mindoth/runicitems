@@ -19,6 +19,6 @@ public class ItemHandler extends ItemStackHandler {
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return ( stack.getItem() instanceof RuneItem && stack.getItem() != RunicItemsItems.EMPTY_RUNE.get() );
+        return ( stack.getItem() instanceof RuneItem );
     }
 }

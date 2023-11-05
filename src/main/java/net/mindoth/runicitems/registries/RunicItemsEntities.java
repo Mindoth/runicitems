@@ -13,14 +13,6 @@ import net.minecraftforge.registries.RegistryObject;
 public class RunicItemsEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, RunicItems.MOD_ID);
 
-    public static final RegistryObject<EntityType<MagicSparkEntity>> MAGIC_SPARK =
-            ENTITIES.register("magic_spark", () -> registerEntity(EntityType.Builder.of(MagicSparkEntity::new, MobCategory.MISC)
-                    .sized(0.5F, 0.5F).setCustomClientFactory(MagicSparkEntity::new), "magic_spark"));
-
-    public static final RegistryObject<EntityType<HealingBoltEntity>> HEALING_BOLT =
-            ENTITIES.register("healing_bolt", () -> registerEntity(EntityType.Builder.of(HealingBoltEntity::new, MobCategory.MISC)
-                    .sized(0.5F, 0.5F).setCustomClientFactory(HealingBoltEntity::new), "healing_bolt"));
-
     public static final RegistryObject<EntityType<MeteorEntity>> METEOR =
             ENTITIES.register("meteor", () -> registerEntity(EntityType.Builder.of(MeteorEntity::new, MobCategory.MISC)
                     .sized(1.0F, 1.0F).setCustomClientFactory(MeteorEntity::new), "meteor"));
@@ -39,6 +31,12 @@ public class RunicItemsEntities {
 
 
 
+    public static final RegistryObject<EntityType<MagicSparkEntity>> MAGIC_SPARK = ENTITIES.register("magic_spark",
+            () -> getProjectileEntityType(MagicSparkEntity::new));
+
+    public static final RegistryObject<EntityType<HealingBoltEntity>> HEALING_BOLT = ENTITIES.register("healing_bolt",
+            () -> getProjectileEntityType(HealingBoltEntity::new));
+
     public static final RegistryObject<EntityType<StormyCloudEntity>> STORMY_CLOUD = ENTITIES.register("stormy_cloud",
             () -> getDefaultSizeEntityType(StormyCloudEntity::new));
 
@@ -48,6 +46,9 @@ public class RunicItemsEntities {
     private RunicItemsEntities() {}
     private static <T extends Entity> EntityType<T> getDefaultSizeEntityType(EntityType.EntityFactory<T> factory) {
         return getEntityType(factory, 0, 0);
+    }
+    private static <T extends Entity> EntityType<T> getProjectileEntityType(EntityType.EntityFactory<T> factory) {
+        return getEntityType(factory, 0.5F, 0.5F);
     }
     private static <T extends Entity> EntityType<T> getEntityType(EntityType.EntityFactory<T> factory, float width, float height) {
         return getEntityType(factory, width, height, 128);

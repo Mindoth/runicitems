@@ -74,7 +74,13 @@ public class RunicItemsItems {
 
     //Runes
     public static final RegistryObject<Item> EMPTY_RUNE = ITEMS.register("empty_rune",
-            () -> new RuneItem(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB), 0));
+            () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
+
+    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
+            () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
+
+    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
+            () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
 
 
     public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
@@ -116,12 +122,6 @@ public class RunicItemsItems {
 
     public static final RegistryObject<Item> DECREASE_POWER_RUNE = ITEMS.register("decrease_power_rune",
             () -> new ModifierRuneItem(new Item.Properties(), 5));
-
-    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
-            () -> new ModifierRuneItem(new Item.Properties(), 10));
-
-    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
-            () -> new ModifierRuneItem(new Item.Properties(), 10));
 
     public static final RegistryObject<Item> BOUNCE_RUNE = ITEMS.register("bounce_rune",
             () -> new ModifierRuneItem(new Item.Properties(), 0));
