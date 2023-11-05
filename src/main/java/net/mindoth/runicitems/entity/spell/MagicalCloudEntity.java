@@ -37,7 +37,7 @@ public class MagicalCloudEntity extends FamiliarBaseEntity {
 
     @Override
     public void doTickEffects() {
-        if ( nextSpellSlot >= 0 && this.tickCount % 40 == 0 && this.tickCount >= 40 ) {
+        if ( nextSpellSlot >= 0 && this.tickCount % 20 == 0 && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
             if ( itemHandler.getStackInSlot(nextSpellSlot).getItem() != RunicItemsItems.MAGICAL_CLOUD_RUNE.get()  ) {
                 Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
                 if ( nearest != null ) {

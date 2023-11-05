@@ -26,7 +26,7 @@ public class WitherSkullRenderer extends EntityRenderer<WitherSkullEntity> {
 
     public void render(WitherSkullEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
-        poseStack.scale(0.68584f, 0.68584f, 0.68584f);
+        poseStack.scale(0.68584F, 0.68584F, 0.68584F);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) + 90.0F));
         VertexConsumer vertexconsumer = ItemRenderer.getFoilBufferDirect(bufferSource, this.model.renderType(this.getTextureLocation(entity)), false, false);

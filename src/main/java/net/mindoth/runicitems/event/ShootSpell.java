@@ -28,6 +28,7 @@ public class ShootSpell {
         Vec3 center = CommonEvents.getEntityCenter(caster);
 
         ProjectileBaseEntity projectile;
+        float speed = 1.0F;
         if ( rune == RunicItemsItems.MAGIC_SPARK_RUNE.get() ) {
             projectile = new MagicSparkEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSound(level, center);
@@ -39,10 +40,12 @@ public class ShootSpell {
         else if ( rune == RunicItemsItems.METEOR_RUNE.get() ) {
             projectile = new MeteorEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playFireSound(level, center);
+            speed = 1.5F;
         }
         else if ( rune == RunicItemsItems.COMET_RUNE.get() ) {
             projectile = new CometEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSound(level, center);
+            speed = 1.5F;
         }
         else if ( rune == RunicItemsItems.WITHER_SKULL_RUNE.get() ) {
             projectile = new WitherSkullEntity(level, owner, caster, itemHandler, slot, effects, rune);
@@ -53,10 +56,10 @@ public class ShootSpell {
         projectile.setNoGravity(SpellBuilder.getGravity(effects));
         if ( caster != owner ) {
             projectile.setPos(center);
-            projectile.shootFromRotation(caster, xRot * -1, yRot * -1, 0F, SpellBuilder.getSpeed(effects, 1.0F), 1.0F);
+            projectile.shootFromRotation(caster, xRot * -1, yRot * -1, 0F, SpellBuilder.getSpeed(effects, speed), 1.0F);
         }
         else {
-            projectile.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, 1.0F), 1.0F);
+            projectile.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, speed), 1.0F);
         }
         level.addFreshEntity(projectile);
     }
@@ -66,6 +69,7 @@ public class ShootSpell {
         Vec3 center = CommonEvents.getEntityCenter(caster);
 
         FamiliarBaseEntity familiar;
+        float speed = 0.125F;
         if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) {
             familiar = new StormyCloudEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSummonSound(level, center);
@@ -79,10 +83,10 @@ public class ShootSpell {
         if ( SpellBuilder.getGravity(effects) ) familiar.setNoGravity(true);
         if ( caster != owner ) {
             familiar.setPos(center);
-            familiar.shootFromRotation(caster, xRot * -1, yRot * -1, 0F, SpellBuilder.getSpeed(effects, 0.125F), 0);
+            familiar.shootFromRotation(caster, xRot * -1, yRot * -1, 0F, SpellBuilder.getSpeed(effects, speed), 0);
         }
         else {
-            familiar.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, 0.125F), 0);
+            familiar.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, speed), 0);
         }
         level.addFreshEntity(familiar);
     }

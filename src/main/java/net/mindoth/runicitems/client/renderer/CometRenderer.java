@@ -27,7 +27,7 @@ public class CometRenderer extends EntityRenderer<CometEntity> {
 
     public void render(CometEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
-        poseStack.scale(1.5f, 1.5f, 1.5f);
+        poseStack.scale(1.5F, 1.5F, 1.5F);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) + 90.0F));
         poseStack.mulPose(new Quaternion(Vector3f.YP, 0F, true));

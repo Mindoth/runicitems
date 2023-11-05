@@ -48,19 +48,24 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
         this.bounces = SpellBuilder.getBounce(effects);
-        this.life = Math.max(10, 160 + SpellBuilder.getLife(effects));
-        this.range = SpellBuilder.getRange(effects);
         this.fire = SpellBuilder.getFire(effects);
         this.ice = SpellBuilder.getIce(effects);
         this.enemyPiercing = SpellBuilder.getEnemyPiercing(effects);
         this.blockPiercing = SpellBuilder.getBlockPiercing(effects);
-        this.speed = SpellBuilder.getSpeed(effects, 0.125F);
         this.homing = SpellBuilder.getHoming(effects);
 
+        this.range = SpellBuilder.getRange(effects);
+
         this.basePower = 1;
+        this.baseSpeed = 0.125F;
+        this.baseLife = 100;
+
         if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) this.basePower += 1;
+        if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() ) this.baseLife = 160;
 
         this.power = SpellBuilder.getPower(effects, this.basePower);
+        this.speed = SpellBuilder.getSpeed(effects, this.baseSpeed);
+        this.life = Math.max(10, baseLife + SpellBuilder.getLife(effects));
     }
 
     protected LivingEntity owner;
@@ -71,17 +76,20 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
     protected boolean trigger;
     protected boolean deathTrigger;
     protected int nextSpellSlot;
-    protected int basePower;
-    protected int power;
     protected int bounces;
-    protected int life;
-    protected int range;
     protected boolean fire;
     protected boolean ice;
     protected boolean enemyPiercing;
     protected boolean blockPiercing;
-    protected float speed;
     protected boolean homing;
+    protected int range;
+
+    protected int basePower;
+    protected int power;
+    protected float baseSpeed;
+    protected float speed;
+    protected int baseLife;
+    protected int life;
 
     @Override
     protected void onHit(HitResult result) {
@@ -150,24 +158,21 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         if ( level.isClientSide ) return;
         doTickEffects();
         spawnParticles();
-        if ( this.random.nextDouble() > 0.5d ) spawnEffectParticles();
+        if ( this.random.nextDouble() > 0.5D ) spawnEffectParticles();
 
         if ( this.homing && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
-            if ( nearest != null ) {
+            if ( nearest != null && this.speed != 0 ) {
                 double mX = getDeltaMovement().x();
                 double mY = getDeltaMovement().y();
                 double mZ = getDeltaMovement().z();
-                Vec3 arrowLoc = new Vec3(getX(), getY(), getZ());
-                Vec3 targetLoc = new Vec3(CommonEvents.getEntityCenter(nearest).x, CommonEvents.getEntityCenter(nearest).y, CommonEvents.getEntityCenter(nearest).z);
-                Vec3 lookVec = targetLoc.subtract(arrowLoc);
-                Vec3 arrowMotion = new Vec3(mX, mY, mZ);
-                double theta = SpellBuilder.wrap180Radian(SpellBuilder.angleBetween(arrowMotion, lookVec));
-                theta = SpellBuilder.clampAbs(theta, Math.PI / 16);
-                Vec3 crossProduct = arrowMotion.cross(lookVec).normalize();
-                Vec3 adjustedLookVec = SpellBuilder.transform(crossProduct, theta, arrowMotion);
-
-                shoot(adjustedLookVec.x, adjustedLookVec.y, adjustedLookVec.z, speed, 0);
+                Vec3 spellPos = new Vec3(getX(), getY(), getZ());
+                Vec3 targetPos = new Vec3(CommonEvents.getEntityCenter(nearest).x, CommonEvents.getEntityCenter(nearest).y, CommonEvents.getEntityCenter(nearest).z);
+                Vec3 lookVec = targetPos.subtract(spellPos);
+                Vec3 spellMotion = new Vec3(mX, mY, mZ);
+                double arc = 0.25D;
+                Vec3 lerpVec = new Vec3(spellMotion.x + lookVec.x * arc, spellMotion.y + lookVec.y * arc, spellMotion.z + lookVec.z * arc);
+                shoot(lerpVec.x, lerpVec.y, lerpVec.z, speed, 0);
             }
         }
 

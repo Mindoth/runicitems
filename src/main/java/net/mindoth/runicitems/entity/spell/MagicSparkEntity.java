@@ -44,6 +44,6 @@ public class MagicSparkEntity extends ProjectileBaseEntity {
 
     @Override
     protected SimpleParticleType getParticle() {
-        return ParticleTypes.REVERSE_PORTAL;
+        return ParticleTypes.DRAGON_BREATH;
     }
 }

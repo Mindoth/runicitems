@@ -8,10 +8,10 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.RenderType;
 
-public class CubeSpellModel extends Model {
+public class StarSpellModel extends Model {
     private final ModelPart modelPart;
 
-    public CubeSpellModel(ModelPart root) {
+    public StarSpellModel(ModelPart root) {
         super(RenderType::entitySolid);
         this.modelPart = root.getChild("modelPart");
     }
@@ -20,10 +20,13 @@ public class CubeSpellModel extends Model {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition modelPart = partdefinition.addOrReplaceChild("modelPart", CubeListBuilder.create(), PartPose.offset(0.0F, 24.5F, 0.0F));
-        PartDefinition cube_r1 = modelPart.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -28.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 1.5708F, 1.5708F));
+        PartDefinition modelPart = partdefinition.addOrReplaceChild("modelPart", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -24.5F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
+                .texOffs(6, 9).addBox(-4.0F, -24.5F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 8).addBox(-1.0F, -24.5F, 2.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(6, 6).addBox(2.0F, -24.5F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 5).addBox(-1.0F, -24.5F, -4.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        return LayerDefinition.create(meshdefinition, 32, 32);
+        return LayerDefinition.create(meshdefinition, 16, 16);
     }
 
     @Override

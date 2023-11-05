@@ -55,7 +55,7 @@ public class StormyCloudEntity extends FamiliarBaseEntity {
 
     @Override
     public void doTickEffects() {
-        if ( this.tickCount % 10 == 0 && this.tickCount >= 30 ) {
+        if ( this.tickCount % 10 == 0 && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
             if ( nearest == null ) return;
             zapTarget(this, level, this.range, this.power);

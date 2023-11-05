@@ -60,6 +60,15 @@ public class RunicItemsItems {
 
     public static final RegistryObject<Item> TIER4_WAND = ITEMS.register("tier4_wand",
             () -> new WandItem(WandType.TIER4, 513));
+
+    public static final RegistryObject<Item> TIER5_WAND = ITEMS.register("tier5_wand",
+            () -> new WandItem(WandType.TIER5, 513));
+
+    public static final RegistryObject<Item> TIER6_WAND = ITEMS.register("tier6_wand",
+            () -> new WandItem(WandType.TIER6, 513));
+
+    public static final RegistryObject<Item> TIER7_WAND = ITEMS.register("tier7_wand",
+            () -> new WandItem(WandType.TIER7, 513));
     
     
 

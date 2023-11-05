@@ -4,8 +4,8 @@ import net.mindoth.runicitems.client.RunicItemsLayers;
 import net.mindoth.runicitems.client.gui.WandGui;
 import net.mindoth.runicitems.client.models.armor.Boots2Model;
 import net.mindoth.runicitems.client.models.spells.BlockSpellModel;
-import net.mindoth.runicitems.client.models.spells.BoltSpellModel;
 import net.mindoth.runicitems.client.models.spells.CubeSpellModel;
+import net.mindoth.runicitems.client.models.spells.StarSpellModel;
 import net.mindoth.runicitems.client.renderer.*;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
@@ -32,8 +32,8 @@ public class RunicItemsClient {
 
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RunicItemsLayers.BOOTS2_LAYER, Boots2Model::createBodyLayer);
-        event.registerLayerDefinition(RunicItemsLayers.MAGIC_SPARK_LAYER, BoltSpellModel::createBodyLayer);
-        event.registerLayerDefinition(RunicItemsLayers.HEALING_BOLT_LAYER, BoltSpellModel::createBodyLayer);
+        event.registerLayerDefinition(RunicItemsLayers.MAGIC_SPARK_LAYER, StarSpellModel::createBodyLayer);
+        event.registerLayerDefinition(RunicItemsLayers.HEALING_BOLT_LAYER, StarSpellModel::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.METEOR_LAYER, BlockSpellModel::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.COMET_LAYER, BlockSpellModel::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.WITHER_SKULL_LAYER, CubeSpellModel::createBodyLayer);
