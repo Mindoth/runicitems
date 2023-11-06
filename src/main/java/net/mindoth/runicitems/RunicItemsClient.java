@@ -9,6 +9,7 @@ import net.mindoth.runicitems.client.renderer.*;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.entity.BlazeRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -44,5 +45,6 @@ public class RunicItemsClient {
         event.registerEntityRenderer(RunicItemsEntities.METEOR.get(), MeteorRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.COMET.get(), CometRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.WITHER_SKULL.get(), WitherSkullRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.BLAZE_MINION.get(), BlazeRenderer::new);
     }
 }

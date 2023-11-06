@@ -103,6 +103,13 @@ public class RunicItemsItems {
             () -> new ProjectileRuneItem(new Item.Properties(), 64));
 
 
+    public static final RegistryObject<Item> FORGE_SPIRIT_RUNE = ITEMS.register("forge_spirit_rune",
+            () -> new MinionRuneItem(new Item.Properties(), 64));
+
+    public static final RegistryObject<Item> RAISE_DEAD_RUNE = ITEMS.register("raise_dead_rune",
+            () -> new MinionRuneItem(new Item.Properties(), 64));
+
+
     public static final RegistryObject<Item> STORMY_CLOUD_RUNE = ITEMS.register("stormy_cloud_rune",
             () -> new FamiliarRuneItem(new Item.Properties(), 64));
 

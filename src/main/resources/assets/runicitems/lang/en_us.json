@@ -23,14 +23,19 @@
 
 
   "item.runicitems.empty_rune": "Empty Rune",
+  "item.runicitems.fire_rune": "Fire Rune",
+  "item.runicitems.ice_rune": "Ice Rune",
 
   "item.runicitems.magic_spark_rune": "Magic Spark Rune",
-  "item.runicitems.explosion_rune": "Explosion Rune",
   "item.runicitems.healing_bolt_rune": "Healing Bolt Rune",
   "item.runicitems.stormy_cloud_rune": "Stormy Cloud Rune",
   "item.runicitems.meteor_rune": "Meteor Rune",
   "item.runicitems.comet_rune": "Comet Rune",
   "item.runicitems.wither_skull_rune": "Wither Skull Rune",
+
+  "item.runicitems.explosion_rune": "Explosion Rune",
+  "item.runicitems.forge_spirit_rune": "Forge Spirit Rune",
+  "item.runicitems.raise_dead_rune": "Raise Dead Rune",
 
   "item.runicitems.trigger_rune": "Trigger Rune",
   "item.runicitems.death_trigger_rune": "Death Trigger Rune",
@@ -38,8 +43,6 @@
 
   "item.runicitems.increase_power_rune": "Increase Power Rune",
   "item.runicitems.decrease_power_rune": "Decrease Power Rune",
-  "item.runicitems.fire_rune": "Fire Rune",
-  "item.runicitems.ice_rune": "Ice Rune",
   "item.runicitems.bounce_rune": "Bounce Rune",
   "item.runicitems.gravity_rune": "Gravity Rune",
   "item.runicitems.increase_speed_rune": "Increase Speed Rune",

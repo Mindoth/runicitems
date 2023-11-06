@@ -1,9 +1,6 @@
 package net.mindoth.runicitems.event;
 
-import net.mindoth.runicitems.item.rune.ModifierRuneItem;
-import net.mindoth.runicitems.item.rune.FamiliarRuneItem;
-import net.mindoth.runicitems.item.rune.ProjectileRuneItem;
-import net.mindoth.runicitems.item.rune.SpellRuneItem;
+import net.mindoth.runicitems.item.rune.*;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.util.Mth;
@@ -41,15 +38,10 @@ public class SpellBuilder {
     public static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, float xRot, float yRot) {
         Item rune = getRune(itemHandler, slot);
 
-        if ( rune instanceof ProjectileRuneItem ) {
-            shootMagic(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
-        }
-        if ( rune instanceof FamiliarRuneItem) {
-            summonFamiliar(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
-        }
-        if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) {
-            causeExplosion(owner, caster, itemHandler, slot, effects);
-        }
+        if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) causeExplosion(owner, caster, itemHandler, slot, effects);
+        if ( rune instanceof ProjectileRuneItem ) shootMagic(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+        if ( rune instanceof FamiliarRuneItem ) summonFamiliar(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+        if ( rune instanceof MinionRuneItem ) summonMinion(owner, caster, itemHandler, slot, effects, rune);
     }
 
     public static Item getRune(IItemHandler itemHandler, int slot) {

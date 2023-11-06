@@ -2,6 +2,8 @@ package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.entity.spell.*;
+import net.mindoth.runicitems.entity.summon.BlazeMinionEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -25,10 +27,6 @@ public class RunicItemsEntities {
             ENTITIES.register("ri_wither_skull", () -> registerEntity(EntityType.Builder.of(WitherSkullEntity::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F).setCustomClientFactory(WitherSkullEntity::new), "ri_wither_skull"));
 
-    private static final EntityType registerEntity(EntityType.Builder builder, String entityName) {
-        return (EntityType) builder.build(entityName);
-    }
-
 
 
     public static final RegistryObject<EntityType<MagicSparkEntity>> MAGIC_SPARK = ENTITIES.register("magic_spark",
@@ -42,6 +40,20 @@ public class RunicItemsEntities {
 
     public static final RegistryObject<EntityType<MagicalCloudEntity>> MAGICAL_CLOUD = ENTITIES.register("magical_cloud",
             () -> getDefaultSizeEntityType(MagicalCloudEntity::new));
+
+
+
+    public static final RegistryObject<EntityType<BlazeMinionEntity>> BLAZE_MINION =
+            ENTITIES.register("blaze_minion", () -> EntityType.Builder.<BlazeMinionEntity>of(BlazeMinionEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.8F)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(RunicItems.MOD_ID, "blaze_minion").toString()));
+
+
+
+    private static final EntityType registerEntity(EntityType.Builder builder, String entityName) {
+        return (EntityType) builder.build(entityName);
+    }
 
     private RunicItemsEntities() {}
     private static <T extends Entity> EntityType<T> getDefaultSizeEntityType(EntityType.EntityFactory<T> factory) {

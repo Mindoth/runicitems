@@ -1,13 +1,13 @@
 package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
+import net.mindoth.runicitems.entity.summon.BlazeMinionEntity;
 import net.mindoth.runicitems.loot.RunicItemsLootModifiers;
-import net.mindoth.runicitems.registries.RunicItemsContainers;
-import net.mindoth.runicitems.registries.RunicItemsEnchantments;
-import net.mindoth.runicitems.registries.RunicItemsEntities;
-import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.runicitems.registries.*;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -33,5 +33,15 @@ public class RunicItems {
         RunicItemsEnchantments.ENCHANTMENTS.register(modEventBus);
         RunicItemsLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(modEventBus);
         RunicItemsContainers.CONTAINERS.register(modEventBus);
+        RunicItemsEffects.MOB_EFFECT_DEFERRED_REGISTER.register(modEventBus);
+    }
+
+    @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class SetMobAttributes {
+
+        @SubscribeEvent
+        public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
+            event.put(RunicItemsEntities.BLAZE_MINION.get(), BlazeMinionEntity.setAttributes());
+        }
     }
 }
