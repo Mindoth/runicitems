@@ -187,7 +187,7 @@ public class SpellBuilder {
 
     public static ArrayList<LivingEntity> getEntitiesAround(Entity player, Level pLevel, double size) {
         ArrayList<LivingEntity> targets = (ArrayList<LivingEntity>) pLevel.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(size));
-        targets.removeIf(entry -> entry == player || !(entry.isAttackable()) || !(entry.isAlive()));
+        targets.removeIf(entry -> entry == player || !(entry.isAttackable()) || !(entry.isAlive() || (entry instanceof Player && ((Player)entry).getAbilities().instabuild)));
         return targets;
     }
 

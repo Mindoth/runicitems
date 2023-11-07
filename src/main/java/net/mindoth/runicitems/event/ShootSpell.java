@@ -66,7 +66,7 @@ public class ShootSpell {
         Vec3 center = CommonEvents.getEntityCenter(caster);
 
         CloudBaseEntity cloud;
-        float speed = 0.125F;
+        float speed = 0.25F;
         if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) {
             cloud = new StormyCloudEntity(level, owner, caster, itemHandler, slot, effects, rune);
             playMagicSummonSound(level, center);
@@ -87,7 +87,7 @@ public class ShootSpell {
             cloud.shootFromRotation(caster, xRot * -1, yRot * -1, 0F, SpellBuilder.getSpeed(effects, speed), 0);
         }
         else cloud.shootFromRotation(caster, xRot, yRot, 0F, SpellBuilder.getSpeed(effects, speed), 0);
-        if ( SpellBuilder.getSpeed(effects, speed) == 0.125F ) cloud.setDeltaMovement(0, 0, 0);
+        if ( SpellBuilder.getSpeed(effects, speed) == 0.25F ) cloud.setDeltaMovement(0, 0, 0);
         level.addFreshEntity(cloud);
     }
 
