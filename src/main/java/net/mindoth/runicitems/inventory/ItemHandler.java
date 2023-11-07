@@ -1,6 +1,8 @@
 package net.mindoth.runicitems.inventory;
 
+import net.mindoth.runicitems.item.rune.ModifierRuneItem;
 import net.mindoth.runicitems.item.rune.RuneItem;
+import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
@@ -19,6 +21,6 @@ public class ItemHandler extends ItemStackHandler {
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return ( stack.getItem() instanceof RuneItem );
+        return ( stack.getItem() instanceof SpellRuneItem || stack.getItem() instanceof ModifierRuneItem );
     }
 }

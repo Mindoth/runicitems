@@ -76,15 +76,14 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> EMPTY_RUNE = ITEMS.register("empty_rune",
             () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
 
-    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
-            () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
-
     public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
             () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
 
+    public static final RegistryObject<Item> STORM_RUNE = ITEMS.register("storm_rune",
+            () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
 
-    public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
-            () -> new SpellRuneItem(new Item.Properties(), 80));
+    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
+            () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB)));
 
 
     public static final RegistryObject<Item> MAGIC_SPARK_RUNE = ITEMS.register("magic_spark_rune",
@@ -96,22 +95,28 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> METEOR_RUNE = ITEMS.register("meteor_rune",
             () -> new ProjectileRuneItem(new Item.Properties(), 150));
 
-    public static final RegistryObject<Item> COMET_RUNE = ITEMS.register("comet_rune",
-            () -> new ProjectileRuneItem(new Item.Properties(), 150));
-
     public static final RegistryObject<Item> WITHER_SKULL_RUNE = ITEMS.register("wither_skull_rune",
             () -> new ProjectileRuneItem(new Item.Properties(), 64));
 
 
-    public static final RegistryObject<Item> FORGE_SPIRIT_RUNE = ITEMS.register("forge_spirit_rune",
-            () -> new MinionRuneItem(new Item.Properties(), 64));
+    public static final RegistryObject<Item> EXPLOSION_RUNE = ITEMS.register("explosion_rune",
+            () -> new SpellRuneItem(new Item.Properties(), 80));
 
     public static final RegistryObject<Item> RAISE_DEAD_RUNE = ITEMS.register("raise_dead_rune",
             () -> new MinionRuneItem(new Item.Properties(), 64));
 
+    public static final RegistryObject<Item> FORGE_SPIRIT_RUNE = ITEMS.register("forge_spirit_rune",
+            () -> new MinionRuneItem(new Item.Properties(), 64));
+
+    public static final RegistryObject<Item> GHOST_WALK_RUNE = ITEMS.register("ghost_walk_rune",
+            () -> new SpellRuneItem(new Item.Properties(), 64));
+
 
     public static final RegistryObject<Item> STORMY_CLOUD_RUNE = ITEMS.register("stormy_cloud_rune",
-            () -> new FamiliarRuneItem(new Item.Properties(), 64));
+            () -> new CloudRuneItem(new Item.Properties(), 64));
+
+    public static final RegistryObject<Item> TORNADO_RUNE = ITEMS.register("tornado_rune",
+            () -> new CloudRuneItem(new Item.Properties(), 64));
 
 
     public static final RegistryObject<Item> TRIGGER_RUNE = ITEMS.register("trigger_rune",
@@ -121,7 +126,7 @@ public class RunicItemsItems {
             () -> new ModifierRuneItem(new Item.Properties(), 20));
 
     public static final RegistryObject<Item> MAGICAL_CLOUD_RUNE = ITEMS.register("magical_cloud_rune",
-            () -> new FamiliarRuneItem(new Item.Properties(), 64));
+            () -> new CloudRuneItem(new Item.Properties(), 64));
 
 
     public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",

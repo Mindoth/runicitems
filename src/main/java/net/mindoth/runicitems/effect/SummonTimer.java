@@ -1,6 +1,6 @@
 package net.mindoth.runicitems.effect;
 
-import net.mindoth.runicitems.entity.summon.SummonedMinion;
+import net.mindoth.runicitems.entity.minion.SummonedMinion;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;

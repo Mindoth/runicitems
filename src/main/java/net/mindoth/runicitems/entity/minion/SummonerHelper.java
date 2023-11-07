@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.entity.summon;
+package net.mindoth.runicitems.entity.minion;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
-public class OwnerHelper {
+public class SummonerHelper {
 
     public static LivingEntity getAndCacheOwner(Level level, LivingEntity cachedOwner, UUID summonerUUID) {
         if ( cachedOwner != null && cachedOwner.isAlive() ) {

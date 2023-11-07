@@ -18,7 +18,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
-public class StormyCloudEntity extends FamiliarBaseEntity {
+public class StormyCloudEntity extends CloudBaseEntity {
 
     public StormyCloudEntity(EntityType<StormyCloudEntity> entityType, Level level) {
         super(entityType, level);
@@ -55,7 +55,7 @@ public class StormyCloudEntity extends FamiliarBaseEntity {
 
     @Override
     public void doTickEffects() {
-        if ( this.tickCount % 10 == 0 && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
+        if ( this.tickCount % 10 == 0 ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
             if ( nearest == null ) return;
             zapTarget(this, level, this.range, this.power);

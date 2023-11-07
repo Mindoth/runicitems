@@ -2,14 +2,11 @@ package net.mindoth.runicitems.event;
 
 import net.mindoth.runicitems.item.rune.*;
 import net.mindoth.runicitems.registries.RunicItemsItems;
-import net.mindoth.shadowizardlib.event.CommonEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.ArrayList;
@@ -38,10 +35,11 @@ public class SpellBuilder {
     public static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, float xRot, float yRot) {
         Item rune = getRune(itemHandler, slot);
 
-        if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) causeExplosion(owner, caster, itemHandler, slot, effects);
-        if ( rune instanceof ProjectileRuneItem ) shootMagic(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
-        if ( rune instanceof FamiliarRuneItem ) summonFamiliar(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
-        if ( rune instanceof MinionRuneItem ) summonMinion(owner, caster, itemHandler, slot, effects, rune);
+        if ( rune == RunicItemsItems.EXPLOSION_RUNE.get() ) causeExplosion(caster, effects);
+        else if ( rune == RunicItemsItems.GHOST_WALK_RUNE.get() ) startGhostWalk(owner, effects);
+        else if ( rune instanceof ProjectileRuneItem ) shootMagic(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+        else if ( rune instanceof CloudRuneItem) summonCloud(owner, caster, itemHandler, slot, effects, rune, xRot, yRot);
+        else if ( rune instanceof MinionRuneItem ) summonMinion(owner, caster, itemHandler, slot, effects, rune);
     }
 
     public static Item getRune(IItemHandler itemHandler, int slot) {
@@ -97,7 +95,7 @@ public class SpellBuilder {
         }
         if ( power > 0 ) {
             for ( int i = 0; i < power; i++ ) {
-                speed *= 1.5F;
+                speed *= 1.25F;
             }
         }
         else if ( power < 0 ) {
@@ -108,22 +106,7 @@ public class SpellBuilder {
         return speed;
     }
 
-    public static Integer getBounce(HashMap<Item, Integer> effects) {
-        int power = 0;
-        if ( effects.containsKey(RunicItemsItems.BOUNCE_RUNE.get()) ) {
-            if ( effects.get(RunicItemsItems.BOUNCE_RUNE.get()) != null ) {
-                power += effects.get(RunicItemsItems.BOUNCE_RUNE.get());
-            }
-        }
-        if ( effects.containsKey(RunicItemsItems.PERMABOUNCE_RUNE.get()) ) {
-            if ( effects.get(RunicItemsItems.PERMABOUNCE_RUNE.get()) != null ) {
-                power += 99999;
-            }
-        }
-        return power;
-    }
-
-    public static Integer getLife(HashMap<Item, Integer> effects) {
+    public static Integer getLife(HashMap<Item, Integer> effects, int life) {
         int power = 0;
         if ( effects.containsKey(RunicItemsItems.INCREASE_LIFE_RUNE.get()) ) {
             if ( effects.get(RunicItemsItems.INCREASE_LIFE_RUNE.get()) != null ) {
@@ -135,7 +118,17 @@ public class SpellBuilder {
                 power -= effects.get(RunicItemsItems.DECREASE_LIFE_RUNE.get());
             }
         }
-        return power * 40;
+        if ( power > 0 ) {
+            for ( int i = 0; i < power; i++ ) {
+                life *= 1.5F;
+            }
+        }
+        else if ( power < 0 ) {
+            for ( int i = 0; i > power; i-- ) {
+                life *= 0.5F;
+            }
+        }
+        return life;
     }
 
     public static Integer getRange(HashMap<Item, Integer> effects) {
@@ -153,20 +146,27 @@ public class SpellBuilder {
         return Math.max(power, 1);
     }
 
+    public static Integer getBounce(HashMap<Item, Integer> effects) {
+        int power = 0;
+        if ( effects.containsKey(RunicItemsItems.BOUNCE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.BOUNCE_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.BOUNCE_RUNE.get());
+            }
+        }
+        if ( effects.containsKey(RunicItemsItems.PERMABOUNCE_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.PERMABOUNCE_RUNE.get()) != null ) {
+                power += 99999;
+            }
+        }
+        return power;
+    }
+
     public static boolean getTrigger(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.TRIGGER_RUNE.get());
     }
 
     public static boolean getDeathTrigger(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.DEATH_TRIGGER_RUNE.get());
-    }
-
-    public static boolean getFire(HashMap<Item, Integer> effects) {
-        return effects.containsKey(RunicItemsItems.FIRE_RUNE.get());
-    }
-
-    public static boolean getIce(HashMap<Item, Integer> effects) {
-        return effects.containsKey(RunicItemsItems.ICE_RUNE.get());
     }
 
     public static boolean getGravity(HashMap<Item, Integer> effects) {

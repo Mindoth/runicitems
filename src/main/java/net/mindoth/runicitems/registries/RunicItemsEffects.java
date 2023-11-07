@@ -12,4 +12,5 @@ public class RunicItemsEffects {
     public static final DeferredRegister<MobEffect> MOB_EFFECT_DEFERRED_REGISTER = DeferredRegister.create(Registry.MOB_EFFECT_REGISTRY, RunicItems.MOD_ID);
 
     public static final RegistryObject<SummonTimer> BLAZE_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("blaze_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final RegistryObject<SummonTimer> SKELETON_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("skeleton_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
 }

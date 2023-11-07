@@ -28,14 +28,14 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.HashMap;
 
-public class FamiliarBaseEntity extends ThrowableProjectile {
+public class CloudBaseEntity extends ThrowableProjectile {
 
-    protected FamiliarBaseEntity(EntityType<? extends FamiliarBaseEntity> entityType, Level level) {
+    protected CloudBaseEntity(EntityType<? extends CloudBaseEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    protected FamiliarBaseEntity(EntityType<? extends FamiliarBaseEntity> pEntityType, Level pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                                   HashMap<Item, Integer> effects, Item rune) {
+    protected CloudBaseEntity(EntityType<? extends CloudBaseEntity> pEntityType, Level pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
+                              HashMap<Item, Integer> effects, Item rune) {
         super(pEntityType, owner, pLevel);
 
         this.owner = owner;
@@ -48,8 +48,6 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
         this.bounces = SpellBuilder.getBounce(effects);
-        this.fire = SpellBuilder.getFire(effects);
-        this.ice = SpellBuilder.getIce(effects);
         this.enemyPiercing = SpellBuilder.getEnemyPiercing(effects);
         this.blockPiercing = SpellBuilder.getBlockPiercing(effects);
         this.homing = SpellBuilder.getHoming(effects);
@@ -61,11 +59,10 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         this.baseLife = 100;
 
         if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) this.basePower += 1;
-        if ( rune == RunicItemsItems.MAGICAL_CLOUD_RUNE.get() ) this.baseLife = 160;
 
         this.power = SpellBuilder.getPower(effects, this.basePower);
         this.speed = SpellBuilder.getSpeed(effects, this.baseSpeed);
-        this.life = Math.max(10, baseLife + SpellBuilder.getLife(effects));
+        this.life = Math.max(10, baseLife + SpellBuilder.getLife(effects, this.baseLife));
     }
 
     protected LivingEntity owner;
@@ -77,8 +74,6 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
     protected boolean deathTrigger;
     protected int nextSpellSlot;
     protected int bounces;
-    protected boolean fire;
-    protected boolean ice;
     protected boolean enemyPiercing;
     protected boolean blockPiercing;
     protected boolean homing;
@@ -159,7 +154,7 @@ public class FamiliarBaseEntity extends ThrowableProjectile {
         doTickEffects();
         spawnParticles();
 
-        if ( this.homing && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
+        if ( this.homing && this.tickCount > 10 ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
             if ( nearest != null && this.speed != 0 ) {
                 double mX = getDeltaMovement().x();

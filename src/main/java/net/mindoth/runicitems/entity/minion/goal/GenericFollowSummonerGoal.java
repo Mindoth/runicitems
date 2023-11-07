@@ -1,8 +1,9 @@
-package net.mindoth.runicitems.entity.summon.goal;
+package net.mindoth.runicitems.entity.minion.goal;
 
+import net.mindoth.runicitems.entity.minion.SummonerGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
@@ -12,17 +13,14 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
-public class FollowSummonerGoal extends Goal {
-    public static final int TELEPORT_WHEN_DISTANCE_IS = 12;
-    private static final int MIN_HORIZONTAL_DISTANCE_FROM_PLAYER_WHEN_TELEPORTING = 2;
-    private static final int MAX_HORIZONTAL_DISTANCE_FROM_PLAYER_WHEN_TELEPORTING = 3;
-    private static final int MAX_VERTICAL_DISTANCE_FROM_PLAYER_WHEN_TELEPORTING = 1;
-    private final Mob minion;
-    private final LivingEntity summoner;
-    private LivingEntity owner;
+public class GenericFollowSummonerGoal extends Goal {
+
+    private final PathfinderMob entity;
+    private LivingEntity summoner;
     private final LevelReader level;
     private final double speedModifier;
     private final PathNavigation navigation;
@@ -31,18 +29,21 @@ public class FollowSummonerGoal extends Goal {
     private final float startDistance;
     private float oldWaterCost;
     private final boolean canFly;
+    private final SummonerGetter summonerGetter;
+    private final float teleportDistance;
 
-    public FollowSummonerGoal(LivingEntity summoner, Mob minion, double pSpeedModifier, float pStartDistance, float pStopDistance, boolean pCanFly) {
-        this.minion = minion;
-        this.summoner = summoner;
-        this.level = minion.level;
+    public GenericFollowSummonerGoal(PathfinderMob entity, SummonerGetter summonerGetter, double pSpeedModifier, float pStartDistance, float pStopDistance, boolean pCanFly, float teleportDistance) {
+        this.entity = entity;
+        this.summonerGetter = summonerGetter;
+        this.level = entity.level;
         this.speedModifier = pSpeedModifier;
-        this.navigation = minion.getNavigation();
+        this.navigation = entity.getNavigation();
         this.startDistance = pStartDistance;
         this.stopDistance = pStopDistance;
         this.canFly = pCanFly;
+        this.teleportDistance = teleportDistance * teleportDistance;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-        if (!(minion.getNavigation() instanceof GroundPathNavigation) && !(minion.getNavigation() instanceof FlyingPathNavigation)) {
+        if (!(entity.getNavigation() instanceof GroundPathNavigation) && !(entity.getNavigation() instanceof FlyingPathNavigation)) {
             throw new IllegalArgumentException("Unsupported mob type for FollowSummonerGoal");
         }
     }
@@ -52,18 +53,15 @@ public class FollowSummonerGoal extends Goal {
      * method as well.
      */
     public boolean canUse() {
-        LivingEntity livingentity = this.summoner;
+        LivingEntity livingentity = this.summonerGetter.get();
         if (livingentity == null) {
             return false;
-        }
-        else if (livingentity.isSpectator()) {
+        } else if (livingentity.isSpectator()) {
             return false;
-        }
-        else if (this.minion.distanceToSqr(livingentity) < (double)(this.startDistance * this.startDistance)) {
+        } else if (this.entity.distanceToSqr(livingentity) < (double) (this.startDistance * this.startDistance)) {
             return false;
-        }
-        else {
-            this.owner = livingentity;
+        } else {
+            this.summoner = livingentity;
             return true;
         }
     }
@@ -74,9 +72,8 @@ public class FollowSummonerGoal extends Goal {
     public boolean canContinueToUse() {
         if (this.navigation.isDone()) {
             return false;
-        }
-        else {
-            return !(this.minion.distanceToSqr(this.owner) <= (double)(this.stopDistance * this.stopDistance));
+        } else {
+            return !(this.entity.distanceToSqr(this.summoner) <= (double) (this.stopDistance * this.stopDistance));
         }
     }
 
@@ -85,41 +82,48 @@ public class FollowSummonerGoal extends Goal {
      */
     public void start() {
         this.timeToRecalcPath = 0;
-        this.oldWaterCost = this.minion.getPathfindingMalus(BlockPathTypes.WATER);
-        this.minion.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.oldWaterCost = this.entity.getPathfindingMalus(BlockPathTypes.WATER);
+        this.entity.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
     /**
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
     public void stop() {
-        this.owner = null;
+        this.summoner = null;
         this.navigation.stop();
-        this.minion.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
+        this.entity.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
     }
 
     /**
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        this.minion.getLookControl().setLookAt(this.owner, 10.0F, (float)this.minion.getMaxHeadXRot());
+        this.entity.getLookControl().setLookAt(this.summoner, 10.0F, (float) this.entity.getMaxHeadXRot());
         if (--this.timeToRecalcPath <= 0) {
             this.timeToRecalcPath = this.adjustedTickDelay(10);
-            if (!this.minion.isLeashed() && !this.minion.isPassenger()) {
-                if (this.minion.distanceToSqr(this.owner) >= 144.0D) {
-                    this.teleportToOwner();
+            if (!this.entity.isLeashed() && !this.entity.isPassenger()) {
+                if (this.entity.distanceToSqr(this.summoner) >= teleportDistance) {
+                    this.teleportToSummoner();
                 } else {
-                    this.navigation.moveTo(this.owner, this.speedModifier);
+                    if(canFly && !entity.isOnGround()){
+                        Vec3 vec3 = summoner.position();
+                        this.entity.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
+
+                    }else{
+                        this.navigation.moveTo(this.summoner, this.speedModifier);
+
+                    }
                 }
 
             }
         }
     }
 
-    private void teleportToOwner() {
-        BlockPos blockpos = this.owner.blockPosition();
+    private void teleportToSummoner() {
+        BlockPos blockpos = this.summoner.blockPosition();
 
-        for(int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             int j = this.randomIntInclusive(-3, 3);
             int k = this.randomIntInclusive(-1, 1);
             int l = this.randomIntInclusive(-3, 3);
@@ -132,12 +136,12 @@ public class FollowSummonerGoal extends Goal {
     }
 
     private boolean maybeTeleportTo(int pX, int pY, int pZ) {
-        if (Math.abs((double)pX - this.owner.getX()) < 2.0D && Math.abs((double)pZ - this.owner.getZ()) < 2.0D) {
+        if (Math.abs((double) pX - this.summoner.getX()) < 2.0D && Math.abs((double) pZ - this.summoner.getZ()) < 2.0D) {
             return false;
         } else if (!this.canTeleportTo(new BlockPos(pX, pY, pZ))) {
             return false;
         } else {
-            this.minion.moveTo((double)pX + 0.5D, (double)pY, (double)pZ + 0.5D, this.minion.getYRot(), this.minion.getXRot());
+            this.entity.moveTo((double) pX + 0.5D, (double) pY + (canFly && !entity.isOnGround() ? 3 : 0), (double) pZ + 0.5D, this.entity.getYRot(), this.entity.getXRot());
             this.navigation.stop();
             return true;
         }
@@ -152,13 +156,13 @@ public class FollowSummonerGoal extends Goal {
             if (!this.canFly && blockstate.getBlock() instanceof LeavesBlock) {
                 return false;
             } else {
-                BlockPos blockpos = pPos.subtract(this.minion.blockPosition());
-                return this.level.noCollision(this.minion, this.minion.getBoundingBox().move(blockpos));
+                BlockPos blockpos = pPos.subtract(this.entity.blockPosition());
+                return this.level.noCollision(this.entity, this.entity.getBoundingBox().move(blockpos));
             }
         }
     }
 
     private int randomIntInclusive(int pMin, int pMax) {
-        return this.minion.getRandom().nextInt(pMax - pMin + 1) + pMin;
+        return this.entity.getRandom().nextInt(pMax - pMin + 1) + pMin;
     }
 }

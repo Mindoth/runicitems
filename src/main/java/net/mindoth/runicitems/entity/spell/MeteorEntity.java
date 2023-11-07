@@ -3,6 +3,7 @@ package net.mindoth.runicitems.entity.spell;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -63,21 +64,23 @@ public class MeteorEntity extends ProjectileBaseEntity {
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 2.0f, 0.5f);
         ServerLevel level = (ServerLevel)this.level;
         for (int i = 0; i < this.power * 2; ++i) {
-            level.sendParticles(ParticleTypes.FLAME, this.getBoundingBox().getCenter().x, this.getBoundingBox().getCenter().y, this.getBoundingBox().getCenter().z, 1, 0, 0, 0, 0.5f);
-        }
-        for (int i = 0; i < this.power * 4; ++i) {
-            level.sendParticles(ParticleTypes.SMOKE, this.getBoundingBox().getCenter().x, this.getBoundingBox().getCenter().y, this.getBoundingBox().getCenter().z, 1, 0, 0, 0, 0.5f);
+            level.sendParticles(this.getParticle(), this.getBoundingBox().getCenter().x, this.getBoundingBox().getCenter().y, this.getBoundingBox().getCenter().z, 1, 0, 0, 0, 0.5f);
         }
     }
 
     @Override
     protected void spawnParticles() {
         ServerLevel level = (ServerLevel)this.level;
-        for (int i = 0; i < this.power / 2; ++i) {
+        for (int i = 0; i < 5; ++i) {
             level.sendParticles(ParticleTypes.FLAME, CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.90F * (this.random.nextBoolean() ? -1 : 1), this.getY() + this.random.nextDouble() * 0.90F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.90F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
         }
-        for (int i = 0; i < this.power; ++i) {
+        for (int i = 0; i < 10; ++i) {
             level.sendParticles(ParticleTypes.SMOKE, CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.90F * (this.random.nextBoolean() ? -1 : 1), this.getY() + this.random.nextDouble() * 0.90F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.90F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
         }
+    }
+
+    @Override
+    protected SimpleParticleType getParticle() {
+        return ParticleTypes.LAVA;
     }
 }

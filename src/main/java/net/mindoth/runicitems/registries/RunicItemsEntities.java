@@ -1,13 +1,13 @@
 package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
+import net.mindoth.runicitems.entity.minion.SkeletonMinionEntity;
 import net.mindoth.runicitems.entity.spell.*;
-import net.mindoth.runicitems.entity.summon.BlazeMinionEntity;
+import net.mindoth.runicitems.entity.minion.BlazeMinionEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -18,10 +18,6 @@ public class RunicItemsEntities {
     public static final RegistryObject<EntityType<MeteorEntity>> METEOR =
             ENTITIES.register("meteor", () -> registerEntity(EntityType.Builder.of(MeteorEntity::new, MobCategory.MISC)
                     .sized(1.0F, 1.0F).setCustomClientFactory(MeteorEntity::new), "meteor"));
-
-    public static final RegistryObject<EntityType<CometEntity>> COMET =
-            ENTITIES.register("comet", () -> registerEntity(EntityType.Builder.of(CometEntity::new, MobCategory.MISC)
-                    .sized(1.0F, 1.0F).setCustomClientFactory(CometEntity::new), "comet"));
 
     public static final RegistryObject<EntityType<WitherSkullEntity>> WITHER_SKULL =
             ENTITIES.register("ri_wither_skull", () -> registerEntity(EntityType.Builder.of(WitherSkullEntity::new, MobCategory.MISC)
@@ -41,6 +37,9 @@ public class RunicItemsEntities {
     public static final RegistryObject<EntityType<MagicalCloudEntity>> MAGICAL_CLOUD = ENTITIES.register("magical_cloud",
             () -> getDefaultSizeEntityType(MagicalCloudEntity::new));
 
+    public static final RegistryObject<EntityType<TornadoEntity>> TORNADO = ENTITIES.register("tornado",
+            () -> getDefaultSizeEntityType(TornadoEntity::new));
+
 
 
     public static final RegistryObject<EntityType<BlazeMinionEntity>> BLAZE_MINION =
@@ -49,13 +48,20 @@ public class RunicItemsEntities {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(RunicItems.MOD_ID, "blaze_minion").toString()));
 
+    public static final RegistryObject<EntityType<SkeletonMinionEntity>> SKELETON_MINION =
+            ENTITIES.register("skeleton_minion", () -> EntityType.Builder.<SkeletonMinionEntity>of(SkeletonMinionEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.99F)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(RunicItems.MOD_ID, "skeleton_minion").toString()));
+
 
 
     private static final EntityType registerEntity(EntityType.Builder builder, String entityName) {
         return (EntityType) builder.build(entityName);
     }
+    private RunicItemsEntities() {
 
-    private RunicItemsEntities() {}
+    }
     private static <T extends Entity> EntityType<T> getDefaultSizeEntityType(EntityType.EntityFactory<T> factory) {
         return getEntityType(factory, 0, 0);
     }

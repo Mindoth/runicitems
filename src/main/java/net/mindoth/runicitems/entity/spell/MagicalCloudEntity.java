@@ -6,7 +6,6 @@ import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +18,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
-public class MagicalCloudEntity extends FamiliarBaseEntity {
+public class MagicalCloudEntity extends CloudBaseEntity {
 
     public MagicalCloudEntity(EntityType<MagicalCloudEntity> entityType, Level level) {
         super(entityType, level);
@@ -37,7 +36,7 @@ public class MagicalCloudEntity extends FamiliarBaseEntity {
 
     @Override
     public void doTickEffects() {
-        if ( nextSpellSlot >= 0 && this.tickCount % 20 == 0 && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
+        if ( nextSpellSlot >= 0 && this.tickCount % 20 == 0 ) {
             if ( itemHandler.getStackInSlot(nextSpellSlot).getItem() != RunicItemsItems.MAGICAL_CLOUD_RUNE.get()  ) {
                 Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
                 if ( nearest != null ) {

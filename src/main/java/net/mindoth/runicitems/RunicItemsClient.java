@@ -10,6 +10,7 @@ import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.BlazeRenderer;
+import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -33,7 +34,6 @@ public class RunicItemsClient {
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RunicItemsLayers.BOOTS2_LAYER, Boots2Model::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.METEOR_LAYER, BlockSpellModel::createBodyLayer);
-        event.registerLayerDefinition(RunicItemsLayers.COMET_LAYER, BlockSpellModel::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.WITHER_SKULL_LAYER, CubeSpellModel::createBodyLayer);
     }
 
@@ -43,8 +43,9 @@ public class RunicItemsClient {
         event.registerEntityRenderer(RunicItemsEntities.STORMY_CLOUD.get(), StormyCloudRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.MAGICAL_CLOUD.get(), MagicalCloudRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.METEOR.get(), MeteorRenderer::new);
-        event.registerEntityRenderer(RunicItemsEntities.COMET.get(), CometRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.WITHER_SKULL.get(), WitherSkullRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.BLAZE_MINION.get(), BlazeRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.SKELETON_MINION.get(), SkeletonRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.TORNADO.get(), TornadoRenderer::new);
     }
 }

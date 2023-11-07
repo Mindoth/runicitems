@@ -48,8 +48,6 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
         this.bounces = SpellBuilder.getBounce(effects);
-        this.fire = SpellBuilder.getFire(effects);
-        this.ice = SpellBuilder.getIce(effects);
         this.enemyPiercing = SpellBuilder.getEnemyPiercing(effects);
         this.blockPiercing = SpellBuilder.getBlockPiercing(effects);
         this.homing = SpellBuilder.getHoming(effects);
@@ -65,15 +63,11 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
             this.basePower += 1;
             this.baseLife = 20;
         }
-        if ( rune == RunicItemsItems.METEOR_RUNE.get() || rune == RunicItemsItems.COMET_RUNE.get() ){
-            this.basePower += 9;
-            this.baseSpeed = 1.5F;
-        }
         if ( rune == RunicItemsItems.WITHER_SKULL_RUNE.get() ) this.basePower += 7;
 
         this.power = SpellBuilder.getPower(effects, this.basePower);
         this.speed = SpellBuilder.getSpeed(effects, this.baseSpeed);
-        this.life = Math.max(10, baseLife + SpellBuilder.getLife(effects));
+        this.life = Math.max(10, baseLife + SpellBuilder.getLife(effects, this.baseLife));
     }
 
     protected LivingEntity owner;
@@ -85,8 +79,6 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
     protected boolean deathTrigger;
     protected int nextSpellSlot;
     protected int bounces;
-    protected boolean fire;
-    protected boolean ice;
     protected boolean enemyPiercing;
     protected boolean blockPiercing;
     protected boolean homing;
@@ -167,7 +159,7 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
         doTickEffects();
         spawnParticles();
 
-        if ( this.homing && this.tickCount > Math.min(Math.max(10 / this.speed, 1), 40) ) {
+        if ( this.homing && this.tickCount > 10 ) {
             Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
             if ( nearest != null && this.speed != 0 ) {
                 double mX = getDeltaMovement().x();
@@ -218,7 +210,7 @@ public class ProjectileBaseEntity extends ThrowableProjectile {
 
     protected void spawnParticles() {
         ServerLevel level = (ServerLevel)this.level;
-        level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), getParticleHeight() + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
+        level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), getParticleHeight() + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
     }
 
     protected SimpleParticleType getParticle() {

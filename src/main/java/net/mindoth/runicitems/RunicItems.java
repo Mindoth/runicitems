@@ -1,7 +1,8 @@
 package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
-import net.mindoth.runicitems.entity.summon.BlazeMinionEntity;
+import net.mindoth.runicitems.entity.minion.BlazeMinionEntity;
+import net.mindoth.runicitems.entity.minion.SkeletonMinionEntity;
 import net.mindoth.runicitems.loot.RunicItemsLootModifiers;
 import net.mindoth.runicitems.registries.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,6 +43,7 @@ public class RunicItems {
         @SubscribeEvent
         public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
             event.put(RunicItemsEntities.BLAZE_MINION.get(), BlazeMinionEntity.setAttributes());
+            event.put(RunicItemsEntities.SKELETON_MINION.get(), SkeletonMinionEntity.setAttributes());
         }
     }
 }

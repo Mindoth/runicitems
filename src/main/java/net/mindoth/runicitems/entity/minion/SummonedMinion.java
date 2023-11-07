@@ -1,7 +1,6 @@
-package net.mindoth.runicitems.entity.summon;
+package net.mindoth.runicitems.entity.minion;
 
 import net.mindoth.runicitems.effect.SummonTimer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;

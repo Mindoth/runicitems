@@ -1,5 +1,6 @@
-package net.mindoth.runicitems.entity.summon;
+package net.mindoth.runicitems.entity.minion;
 
+import net.mindoth.runicitems.entity.minion.goal.*;
 import net.mindoth.runicitems.registries.RunicItemsEffects;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.minecraft.nbt.CompoundTag;
@@ -10,11 +11,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -41,26 +41,22 @@ public class BlazeMinionEntity extends Blaze implements SummonedMinion {
     }
 
     @Override
-    protected boolean shouldDropLoot() {
-        return false;
-    }
-
-    @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(4, new BlazeAttackGoal(this));
-        this.goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers());
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.goalSelector.addGoal(0, new BlazeAttackGoal(this));
+        this.goalSelector.addGoal(7, new MoveTowardsRestrictionGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
+
+        this.targetSelector.addGoal(2, new GenericSummonerHurtByTargetGoal(this, this::getSummoner));
+        this.targetSelector.addGoal(3, new GenericSummonerHurtTargetGoal(this, this::getSummoner));
+        this.targetSelector.addGoal(4, new GenericCopySummonerTargetGoal(this, this::getSummoner));
+        this.targetSelector.addGoal(5, (new GenericHurtByTargetGoal(this, (entity) -> entity == getSummoner())).setAlertOthers());
+        this.goalSelector.addGoal(6, new GenericFollowSummonerGoal(this, this::getSummoner, 1.0F, 16, 4, true, 32));
     }
 
     public static AttributeSupplier setAttributes() {
-        return Monster.createMonsterAttributes()
-                .add(Attributes.ATTACK_DAMAGE, 6.0D)
-                .add(Attributes.MOVEMENT_SPEED, (double)0.23F)
-                .add(Attributes.FOLLOW_RANGE, 48.0D).build();
+        return Monster.createMonsterAttributes().build();
     }
 
     @Override
@@ -70,7 +66,7 @@ public class BlazeMinionEntity extends Blaze implements SummonedMinion {
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
+        return SummonerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -95,13 +91,13 @@ public class BlazeMinionEntity extends Blaze implements SummonedMinion {
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
+        this.summonerUUID = SummonerHelper.deserializeOwner(compoundTag);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        OwnerHelper.serializeOwner(compoundTag, summonerUUID);
+        SummonerHelper.serializeOwner(compoundTag, summonerUUID);
     }
 
     @Override
@@ -111,12 +107,30 @@ public class BlazeMinionEntity extends Blaze implements SummonedMinion {
 
     @Override
     public void onUnSummon() {
-        if ( !level.isClientSide ) discard();
+        if ( !level.isClientSide ) {
+            this.spawnAnim();
+            discard();
+        }
     }
 
     @Override
     protected boolean shouldDespawnInPeaceful() {
         return false;
+    }
+
+    @Override
+    public boolean isOnFire() {
+        return this.isCharged();
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_FLAGS_ID, (byte)0);
+    }
+
+    private boolean isCharged() {
+        return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
     }
 
     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(BlazeMinionEntity.class, EntityDataSerializers.BYTE);

@@ -23,19 +23,21 @@
 
 
   "item.runicitems.empty_rune": "Empty Rune",
-  "item.runicitems.fire_rune": "Fire Rune",
+  "item.runicitems.storm_rune": "Storm Rune",
   "item.runicitems.ice_rune": "Ice Rune",
+  "item.runicitems.fire_rune": "Fire Rune",
 
   "item.runicitems.magic_spark_rune": "Magic Spark Rune",
   "item.runicitems.healing_bolt_rune": "Healing Bolt Rune",
   "item.runicitems.stormy_cloud_rune": "Stormy Cloud Rune",
   "item.runicitems.meteor_rune": "Meteor Rune",
-  "item.runicitems.comet_rune": "Comet Rune",
   "item.runicitems.wither_skull_rune": "Wither Skull Rune",
 
   "item.runicitems.explosion_rune": "Explosion Rune",
-  "item.runicitems.forge_spirit_rune": "Forge Spirit Rune",
   "item.runicitems.raise_dead_rune": "Raise Dead Rune",
+  "item.runicitems.forge_spirit_rune": "Forge Spirit Rune",
+  "item.runicitems.ghost_walk_rune": "Ghost Walk Rune",
+  "item.runicitems.tornado_rune": "Tornado Rune",
 
   "item.runicitems.trigger_rune": "Trigger Rune",
   "item.runicitems.death_trigger_rune": "Death Trigger Rune",
@@ -55,6 +57,10 @@
   "item.runicitems.homing_rune": "Homing Rune",
   "item.runicitems.increase_range_rune": "Increase Range Rune",
   "item.runicitems.decrease_range_rune": "Decrease Range Rune",
+
+
+  "entity.runicitems.blaze_minion": "Blaze Minion",
+  "entity.runicitems.skeleton_minion": "Skeleton Minion",
 
 
   "enchantment.runicitems.target_cracker": "Target Cracker",
