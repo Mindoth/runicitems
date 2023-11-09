@@ -4,7 +4,6 @@ import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,11 +14,21 @@ import net.minecraftforge.network.PlayMessages;
 
 import java.util.HashMap;
 
-public class HealingBoltEntity extends ProjectileBaseEntity {
+public class HealingBoltEntity extends AbstractProjectileEntity {
+
+    @Override
+    protected int getBasePower() {
+        return 2;
+    }
+
+    @Override
+    protected int getBaseLife() {
+        return 20;
+    }
 
     public HealingBoltEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.HEALING_BOLT.get(), level, owner, caster, itemHandler, slot, effects, rune);
+                            HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.HEALING_BOLT.get(), level, owner, caster, itemHandler, slot, effects);
     }
 
     public HealingBoltEntity(EntityType entityType, Level level) {

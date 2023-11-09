@@ -4,7 +4,6 @@ import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -16,11 +15,16 @@ import net.minecraftforge.network.PlayMessages;
 
 import java.util.HashMap;
 
-public class MagicSparkEntity extends ProjectileBaseEntity {
+public class MagicSparkEntity extends AbstractProjectileEntity {
+
+    @Override
+    protected int getBasePower() {
+        return 3;
+    }
 
     public MagicSparkEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.MAGIC_SPARK.get(), level, owner, caster, itemHandler, slot, effects, rune);
+                            HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.MAGIC_SPARK.get(), level, owner, caster, itemHandler, slot, effects);
     }
 
     public MagicSparkEntity(EntityType entityType, Level level) {

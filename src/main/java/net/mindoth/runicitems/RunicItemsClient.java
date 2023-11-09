@@ -47,5 +47,6 @@ public class RunicItemsClient {
         event.registerEntityRenderer(RunicItemsEntities.BLAZE_MINION.get(), BlazeRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.SKELETON_MINION.get(), SkeletonRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.TORNADO.get(), TornadoRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.UNSTABLE_CLOUD.get(), UnstableCloudRenderer::new);
     }
 }

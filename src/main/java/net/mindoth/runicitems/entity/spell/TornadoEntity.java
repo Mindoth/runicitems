@@ -11,8 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,15 +24,15 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.HashMap;
 import java.util.List;
 
-public class TornadoEntity extends CloudBaseEntity {
+public class TornadoEntity extends AbstractCloudEntity {
 
     public TornadoEntity(EntityType<TornadoEntity> entityType, Level level) {
         super(entityType, level);
     }
 
     public TornadoEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                         HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.TORNADO.get(), level, owner, caster, itemHandler, slot, effects, rune);
+                         HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.TORNADO.get(), level, owner, caster, itemHandler, slot, effects);
     }
 
     @Override

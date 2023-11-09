@@ -1,12 +1,8 @@
 package net.mindoth.runicitems.entity.spell;
 
-import net.mindoth.runicitems.event.SpellBuilder;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -22,11 +18,16 @@ import net.minecraftforge.network.PlayMessages;
 
 import java.util.HashMap;
 
-public class WitherSkullEntity extends ProjectileBaseEntity {
+public class WitherSkullEntity extends AbstractProjectileEntity {
+
+    @Override
+    protected int getBasePower() {
+        return 8;
+    }
 
     public WitherSkullEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.WITHER_SKULL.get(), level, owner, caster, itemHandler, slot, effects, rune);
+                            HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.WITHER_SKULL.get(), level, owner, caster, itemHandler, slot, effects);
     }
 
     public WitherSkullEntity(EntityType entityType, Level level) {

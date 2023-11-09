@@ -2,7 +2,6 @@ package net.mindoth.runicitems.entity.spell;
 
 import net.mindoth.runicitems.event.SpellBuilder;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
-import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -18,7 +17,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
-public class MagicalCloudEntity extends CloudBaseEntity {
+public class MagicalCloudEntity extends AbstractCloudEntity {
 
     public MagicalCloudEntity(EntityType<MagicalCloudEntity> entityType, Level level) {
         super(entityType, level);
@@ -30,28 +29,26 @@ public class MagicalCloudEntity extends CloudBaseEntity {
     private float lastYRot;
 
     public MagicalCloudEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                             HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.MAGICAL_CLOUD.get(), level, owner, caster, itemHandler, slot, effects, rune);
+                              HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.MAGICAL_CLOUD.get(), level, owner, caster, itemHandler, slot, effects);
     }
 
     @Override
     public void doTickEffects() {
-        if ( nextSpellSlot >= 0 && this.tickCount % 20 == 0 ) {
-            if ( itemHandler.getStackInSlot(nextSpellSlot).getItem() != RunicItemsItems.MAGICAL_CLOUD_RUNE.get()  ) {
-                Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
-                if ( nearest != null ) {
-                    Vec3 vec3 = CommonEvents.getEntityCenter(this);
-                    Vec3 pTarget = CommonEvents.getEntityCenter(nearest);
-                    double d0 = pTarget.x - vec3.x;
-                    double d1 = pTarget.y - vec3.y;
-                    double d2 = pTarget.z - vec3.z;
-                    double d3 = Math.sqrt(d0 * d0 + d2 * d2);
-                    this.lastXRot = Mth.wrapDegrees((float)(-(Mth.atan2(d1, d3) * (double)(180F / (float)Math.PI))));
-                    this.lastYRot = Mth.wrapDegrees((float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F);
-                }
-                if ( lastXRot != 0 && lastYRot != 0 ) {
-                    SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.lastXRot * -1, this.lastYRot * -1);
-                }
+        if ( this.tickCount % 40 == 0 ) {
+            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
+            if ( nearest != null ) {
+                Vec3 vec3 = CommonEvents.getEntityCenter(this);
+                Vec3 pTarget = CommonEvents.getEntityCenter(nearest);
+                double d0 = pTarget.x - vec3.x;
+                double d1 = pTarget.y - vec3.y;
+                double d2 = pTarget.z - vec3.z;
+                double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+                this.lastXRot = Mth.wrapDegrees((float)(-(Mth.atan2(d1, d3) * (double)(180F / (float)Math.PI))));
+                this.lastYRot = Mth.wrapDegrees((float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F);
+            }
+            if ( lastXRot != 0 && lastYRot != 0 ) {
+                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.lastXRot * -1, this.lastYRot * -1);
             }
         }
     }

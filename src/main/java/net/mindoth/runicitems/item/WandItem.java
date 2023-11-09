@@ -28,6 +28,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -47,7 +48,7 @@ public class WandItem extends Item {
     final WandType tier;
 
     //TODO doesn't work in multiplayer for some reason
-    @OnlyIn(Dist.CLIENT)
+    /*@OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
         ChatFormatting color;
@@ -61,11 +62,10 @@ public class WandItem extends Item {
                 .append(Component.literal("" + (stack.getMaxDamage() - stack.getDamageValue() - 1)).withStyle(color)));
 
         super.appendHoverText(stack, world, tooltip, flagIn);
-    }
+    }*/
 
     public static WandData getData(ItemStack stack) {
-        if ( !(stack.getItem() instanceof WandItem))
-            return null;
+        if ( !(stack.getItem() instanceof WandItem) ) return null;
         UUID uuid;
         CompoundTag tag = stack.getOrCreateTag();
         if ( !tag.contains("UUID") ) {
@@ -106,7 +106,7 @@ public class WandItem extends Item {
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
             if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-                if(!this.optional.isPresent())
+                if ( !this.optional.isPresent() )
                     this.optional = WandManager.get().getCapability(this.stack);
                 return this.optional.cast();
             }
@@ -116,35 +116,45 @@ public class WandItem extends Item {
     }
 
     @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        if ( !oldStack.isEmpty() || !newStack.isEmpty() ) {
+            if ( oldStack.getItem() == newStack.getItem() && !slotChanged && oldStack.getItem() instanceof WandItem && newStack.getItem() instanceof WandItem )
+                return false;
+        }
+        return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+    }
+
+    @Override
     @Nonnull
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
         ItemStack wand = playerIn.getItemInHand(handIn);
-        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof WandItem) {
-            WandData data = WandItem.getData(wand);
-            UUID uuid = data.getUuid();
+        if ( !worldIn.isClientSide && playerIn instanceof ServerPlayer && wand.getItem() instanceof WandItem ) {
 
-            data.updateAccessRecords(playerIn.getName().getString(), System.currentTimeMillis());
             if ( playerIn.isShiftKeyDown() ) {
-                NetworkHooks.openScreen(((ServerPlayer) playerIn), new SimpleMenuProvider( (windowId, playerInventory, playerEntity) -> new WandContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), wand.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
+                WandData data = WandItem.getData(wand);
+                if ( data.getUuid() != null ) {
+                    UUID uuid = data.getUuid();
+                    data.updateAccessRecords(playerIn.getName().getString(), System.currentTimeMillis());
+                    NetworkHooks.openScreen(((ServerPlayer) playerIn), new SimpleMenuProvider( (windowId, playerInventory, playerEntity) -> new WandContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), wand.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
+                }
             }
             else {
-                IItemHandler itemHandler = WandManager.get().getCapability(wand).resolve().get();
                 if ( !playerIn.getCooldowns().isOnCooldown(wand.getItem()) ) {
-                    if ( checkDurability(itemHandler, wand) ) {
-                        SpellBuilder.cast(playerIn, playerIn, itemHandler, 0, playerIn.getXRot(), playerIn.getYRot());
-                        drainDurability(getDrainAmount(itemHandler), wand, playerIn, handIn);
-                        addCooldown(playerIn, wand);
-                        return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
-                    }
-                    else {
-                        castFail(playerIn);
-                        addCooldown(playerIn, wand);
-                        return InteractionResultHolder.fail(playerIn.getItemInHand(handIn));
-                    }
+                    SpellBuilder.castFromWand(playerIn, wand);
+                    return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
+                }
+                else {
+                    castFail(playerIn);
+                    return InteractionResultHolder.fail(playerIn.getItemInHand(handIn));
                 }
             }
         }
         return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
+    }
+
+    private void castFail(Player player) {
+        player.displayClientMessage(Component.translatable("message.runicitems.failedcast"), true);
+        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1, 1);
     }
 
     @Override
@@ -155,42 +165,14 @@ public class WandItem extends Item {
         }
     }
 
-    public void castFail(Player player) {
-        player.displayClientMessage(Component.translatable("message.runicitems.failedcast"), true);
-        player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1, 1);
-    }
-
-    private static void addCooldown(Player player, ItemStack wand) {
+    private void addCooldown(Player player, ItemStack wand) {
         player.getCooldowns().addCooldown(wand.getItem(), getCooldown(wand.getItem()));
     }
 
-    private static int getCooldown(Item wand) {
+    private int getCooldown(Item wand) {
         if ( wand instanceof WandItem ) {
             return 20;
         }
         else return 0;
-    }
-
-    private static boolean checkDurability(IItemHandler itemHandler, ItemStack wand) {
-        return getDrainAmount(itemHandler) < (wand.getMaxDamage() - wand.getDamageValue());
-    }
-
-    private static int getDrainAmount(IItemHandler itemHandler) {
-        int drain = 0;
-        for (int i = 0; i < itemHandler.getSlots(); i++ ) {
-            if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
-                Item item = SpellBuilder.getRune(itemHandler, i);
-                if ( item instanceof RuneItem rune ) {
-                    drain += rune.getRuneDrain();
-                }
-            }
-        }
-        return drain;
-    }
-
-    private static void drainDurability(int amount, ItemStack wand, Player player, InteractionHand hand) {
-        for ( int i = 0; i < amount; i++ ) {
-            wand.hurtAndBreak(1, player, (holder) -> holder.broadcastBreakEvent(hand));
-        }
     }
 }

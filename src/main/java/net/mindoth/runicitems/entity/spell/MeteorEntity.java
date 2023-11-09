@@ -19,11 +19,16 @@ import net.minecraftforge.network.PlayMessages;
 
 import java.util.HashMap;
 
-public class MeteorEntity extends ProjectileBaseEntity {
+public class MeteorEntity extends AbstractProjectileEntity {
+
+    @Override
+    protected int getBasePower() {
+        return 10;
+    }
 
     public MeteorEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.METEOR.get(), level, owner, caster, itemHandler, slot, effects, rune);
+                            HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.METEOR.get(), level, owner, caster, itemHandler, slot, effects);
     }
 
     public MeteorEntity(EntityType entityType, Level level) {

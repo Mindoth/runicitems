@@ -22,14 +22,14 @@ public class RuneItem extends Item {
 
     private final int drain;
 
-    @OnlyIn(Dist.CLIENT)
+    /*@OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.translatable("tooltip.runicitems.rune_drain")
                 .append(Component.literal(": " + getRuneDrain()).withStyle(ChatFormatting.GRAY)));
 
         super.appendHoverText(stack, world, tooltip, flagIn);
-    }
+    }*/
 
     public int getRuneDrain() {
         return this.drain;

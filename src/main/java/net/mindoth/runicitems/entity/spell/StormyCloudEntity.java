@@ -1,7 +1,7 @@
 package net.mindoth.runicitems.entity.spell;
 
-import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.event.SpellBuilder;
+import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -18,38 +18,43 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
-public class StormyCloudEntity extends CloudBaseEntity {
+public class StormyCloudEntity extends AbstractCloudEntity {
 
     public StormyCloudEntity(EntityType<StormyCloudEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    public StormyCloudEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                             HashMap<Item, Integer> effects, Item rune) {
-        super(RunicItemsEntities.STORMY_CLOUD.get(), level, owner, caster, itemHandler, slot, effects, rune);
+    @Override
+    protected int getBasePower() {
+        return 2;
     }
 
-    protected void zapTarget(Entity player, Level pLevel, double size, int power) {
-        Entity target = SpellBuilder.getNearestEntity(player, pLevel, size);
+    public StormyCloudEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
+                             HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.STORMY_CLOUD.get(), level, owner, caster, itemHandler, slot, effects);
+    }
+
+    protected void zapTarget(Entity caster, Level pLevel, double size, int power) {
+        Entity target = SpellBuilder.getNearestEntity(caster, pLevel, size);
         if ( target == null ) return;
         target.hurt(DamageSource.MAGIC, power);
         ServerLevel level = (ServerLevel) pLevel;
-        double playerX = CommonEvents.getEntityCenter(player).x;
-        double playerY = CommonEvents.getEntityCenter(player).y;
-        double playerZ = CommonEvents.getEntityCenter(player).z;
+        double playerX = CommonEvents.getEntityCenter(caster).x;
+        double playerY = CommonEvents.getEntityCenter(caster).y;
+        double playerZ = CommonEvents.getEntityCenter(caster).z;
         double listedEntityX = CommonEvents.getEntityCenter(target).x();
         double listedEntityY = CommonEvents.getEntityCenter(target).y();
         double listedEntityZ = CommonEvents.getEntityCenter(target).z();
-        int particleInterval = (int)Math.round(player.distanceTo(target)) * 5;
+        int particleInterval = (int)Math.round(caster.distanceTo(target)) * 5;
         for ( int k = 1; k < (1 + particleInterval); k++ ) {
             double lineX = playerX * (1 - ((double) k / particleInterval)) + listedEntityX * ((double) k / particleInterval);
             double lineY = playerY * (1 - ((double) k / particleInterval)) + listedEntityY * ((double) k / particleInterval);
             double lineZ = playerZ * (1 - ((double) k / particleInterval)) + listedEntityZ * ((double) k / particleInterval);
             level.sendParticles(ParticleTypes.ELECTRIC_SPARK, lineX, lineY, lineZ, 1, 0, 0, 0, 0);
         }
-        pLevel.playSound(null, player.getBoundingBox().getCenter().x, player.getBoundingBox().getCenter().y, player.getBoundingBox().getCenter().z,
+        pLevel.playSound(null, caster.getBoundingBox().getCenter().x, caster.getBoundingBox().getCenter().y, caster.getBoundingBox().getCenter().z,
                 SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.1f, 2);
-        pLevel.playSound(null, player.getBoundingBox().getCenter().x, player.getBoundingBox().getCenter().y, player.getBoundingBox().getCenter().z,
+        pLevel.playSound(null, caster.getBoundingBox().getCenter().x, caster.getBoundingBox().getCenter().y, caster.getBoundingBox().getCenter().z,
                 SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 2, 1);
     }
 

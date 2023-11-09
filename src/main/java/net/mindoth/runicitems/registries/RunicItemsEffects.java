@@ -1,6 +1,7 @@
 package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
+import net.mindoth.runicitems.effect.GhostWalkEffect;
 import net.mindoth.runicitems.effect.SummonTimer;
 import net.minecraft.core.Registry;
 import net.minecraft.world.effect.MobEffect;
@@ -13,4 +14,5 @@ public class RunicItemsEffects {
 
     public static final RegistryObject<SummonTimer> BLAZE_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("blaze_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
     public static final RegistryObject<SummonTimer> SKELETON_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("skeleton_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final RegistryObject<GhostWalkEffect> GHOST_WALK = MOB_EFFECT_DEFERRED_REGISTER.register("ghost_walk", () -> new GhostWalkEffect(MobEffectCategory.BENEFICIAL, 3124687));
 }

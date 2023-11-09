@@ -1,16 +1,14 @@
 package net.mindoth.runicitems.entity.spell;
 
-import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.event.SpellBuilder;
-import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,24 +24,35 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CloudBaseEntity extends ThrowableProjectile {
+public class AbstractProjectileEntity extends ThrowableProjectile {
 
-    protected CloudBaseEntity(EntityType<? extends CloudBaseEntity> entityType, Level level) {
+    protected int getBasePower() {
+        return 1;
+    }
+
+    protected float getBaseSpeed() {
+        return 1.0F;
+    }
+
+    protected int getBaseLife() {
+        return 40;
+    }
+
+    protected AbstractProjectileEntity(EntityType<? extends AbstractProjectileEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    protected CloudBaseEntity(EntityType<? extends CloudBaseEntity> pEntityType, Level pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                              HashMap<Item, Integer> effects, Item rune) {
+    protected AbstractProjectileEntity(EntityType<? extends AbstractProjectileEntity> pEntityType, Level pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
+                                       HashMap<Item, Integer> effects) {
         super(pEntityType, owner, pLevel);
 
         this.owner = owner;
         this.caster = caster;
         this.itemHandler = itemHandler;
         this.slot = slot;
-        this.rune = rune;
-        this.nextSpellSlot = SpellBuilder.getNextSpellSlot(slot, itemHandler);
 
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
@@ -54,36 +63,25 @@ public class CloudBaseEntity extends ThrowableProjectile {
 
         this.range = SpellBuilder.getRange(effects);
 
-        this.basePower = 1;
-        this.baseSpeed = 0.125F;
-        this.baseLife = 100;
-
-        if ( rune == RunicItemsItems.STORMY_CLOUD_RUNE.get() ) this.basePower += 1;
-
-        this.power = SpellBuilder.getPower(effects, this.basePower);
-        this.speed = SpellBuilder.getSpeed(effects, this.baseSpeed);
-        this.life = Math.max(10, baseLife + SpellBuilder.getLife(effects, this.baseLife));
+        this.power = SpellBuilder.getPower(effects, getBasePower());
+        this.speed = SpellBuilder.getSpeed(effects, getBaseSpeed());
+        this.life = Math.max(10, SpellBuilder.getLife(effects, getBaseLife()));
     }
 
     protected LivingEntity owner;
     protected Entity caster;
     protected IItemHandler itemHandler;
     protected int slot;
-    protected Item rune;
     protected boolean trigger;
     protected boolean deathTrigger;
-    protected int nextSpellSlot;
     protected int bounces;
     protected boolean enemyPiercing;
     protected boolean blockPiercing;
     protected boolean homing;
     protected int range;
 
-    protected int basePower;
     protected int power;
-    protected float baseSpeed;
     protected float speed;
-    protected int baseLife;
     protected int life;
 
     @Override
@@ -93,7 +91,7 @@ public class CloudBaseEntity extends ThrowableProjectile {
         if ( result.getType() == HitResult.Type.ENTITY && ((EntityHitResult)result).getEntity() instanceof LivingEntity living ) {
             hurtTarget(living);
 
-            if ( trigger && nextSpellSlot >= 0 ) {
+            if ( trigger ) {
                 SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
             }
         }
@@ -105,7 +103,7 @@ public class CloudBaseEntity extends ThrowableProjectile {
             BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
             if ( !blockstate.getCollisionShape(this.level, traceResult.getBlockPos()).isEmpty() ) {
                 if ( !blockPiercing ) {
-                    if ( (trigger && nextSpellSlot >= 0) || bounces > 0 ) {
+                    if ( trigger || bounces > 0 ) {
                         Direction face = traceResult.getDirection();
                         blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
                         Vec3 motion = this.getDeltaMovement();
@@ -135,9 +133,9 @@ public class CloudBaseEntity extends ThrowableProjectile {
                         //This seems to work better with low velocity projectiles
                         shoot(motionX, motionY, motionZ, this.speed, 0);
                     }
-                    if ( trigger && nextSpellSlot >= 0 ) SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
+                    if ( trigger ) SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
                     if ( bounces > 0 ) this.bounces -= 1;
-                    else this.setDeltaMovement(0, 0, 0);
+                    else discard();
                 }
             }
             if ( !blockPiercing && this.getDeltaMovement().length() > 0 ) level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundSource.PLAYERS, 0.2f, 2);
@@ -166,12 +164,12 @@ public class CloudBaseEntity extends ThrowableProjectile {
                 Vec3 spellMotion = new Vec3(mX, mY, mZ);
                 double arc = 0.25D;
                 Vec3 lerpVec = new Vec3(spellMotion.x + lookVec.x * arc, spellMotion.y + lookVec.y * arc, spellMotion.z + lookVec.z * arc);
-                shoot(lerpVec.x, lerpVec.y, lerpVec.z, speed, 0);
+                shoot(lerpVec.x, lerpVec.y, lerpVec.z, this.speed, 0);
             }
         }
 
         if ( this.tickCount > life ) {
-            if ( deathTrigger && nextSpellSlot >= 0 ) {
+            if ( deathTrigger ) {
                 SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
             }
             this.discard();
@@ -181,22 +179,35 @@ public class CloudBaseEntity extends ThrowableProjectile {
     protected void hurtTarget(LivingEntity target) {
     }
 
+    protected void addEffects(LivingEntity target) {
+    }
+
+    protected void splashDamage() {
+        ArrayList<LivingEntity> list = SpellBuilder.getEntitiesAround(this, level, this.range);
+        for ( LivingEntity target : list ) {
+            target.hurt(DamageSource.indirectMagic(this, owner), power);
+            addEffects(target);
+        }
+        spawnSplashParticles();
+    }
+
+    protected void spawnSplashParticles() {
+    }
+
     protected void doTickEffects() {
+    }
+
+    protected double getParticleHeight() {
+        return this.getY();
     }
 
     protected void spawnParticles() {
         ServerLevel level = (ServerLevel)this.level;
-        for (int i = 0; i < 8; ++i) {
-            level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).y + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.10F * (this.random.nextBoolean() ? -1 : 1), 2, 0, 0, 0, 0);
-        }
+        level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), getParticleHeight() + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
     }
 
     protected SimpleParticleType getParticle() {
         return ParticleTypes.ASH;
-    }
-
-    public ResourceLocation getSpellTexture() {
-        return new ResourceLocation(RunicItems.MOD_ID, "textures/spells/clear.png");
     }
 
     @Override

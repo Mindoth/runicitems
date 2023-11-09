@@ -40,6 +40,9 @@ public class RunicItemsEntities {
     public static final RegistryObject<EntityType<TornadoEntity>> TORNADO = ENTITIES.register("tornado",
             () -> getDefaultSizeEntityType(TornadoEntity::new));
 
+    public static final RegistryObject<EntityType<UnstableCloudEntity>> UNSTABLE_CLOUD = ENTITIES.register("unstable_cloud",
+            () -> getDefaultSizeEntityType(UnstableCloudEntity::new));
+
 
 
     public static final RegistryObject<EntityType<BlazeMinionEntity>> BLAZE_MINION =
