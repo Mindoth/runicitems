@@ -1,9 +1,9 @@
 package net.mindoth.runicitems.entity.spell;
 
 import net.mindoth.runicitems.registries.RunicItemsEntities;
-import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,46 +14,45 @@ import net.minecraftforge.network.PlayMessages;
 
 import java.util.HashMap;
 
-public class HealingBoltEntity extends AbstractProjectileEntity {
+public class IcicleEntity extends AbstractProjectileEntity {
 
     @Override
     protected int getBasePower() {
-        return 2;
+        return 6;
     }
 
     @Override
-    protected int getBaseLife() {
-        return 20;
+    protected int getBaseEnemyPiercing() {
+        return 1;
     }
 
-    public HealingBoltEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                            HashMap<Item, Integer> effects) {
-        super(RunicItemsEntities.HEALING_BOLT.get(), level, owner, caster, itemHandler, slot, effects);
+    public IcicleEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
+                        HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.ICICLE.get(), level, owner, caster, itemHandler, slot, effects);
     }
 
-    public HealingBoltEntity(EntityType entityType, Level level) {
+    public IcicleEntity(EntityType entityType, Level level) {
         super(entityType, level);
     }
 
-    public HealingBoltEntity(PlayMessages.SpawnEntity spawnEntity, Level level) {
-        this(RunicItemsEntities.HEALING_BOLT.get(), level);
+    public IcicleEntity(PlayMessages.SpawnEntity spawnEntity, Level level) {
+        this(RunicItemsEntities.ICICLE.get(), level);
     }
 
     @Override
     protected void hurtTarget(LivingEntity target) {
         addEffects(target);
         if ( power > 0 ) {
-            target.heal(power);
+            target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
     }
 
     @Override
-    protected double getParticleHeight() {
-        return CommonEvents.getEntityCenter(this).y - 0.1D;
+    protected void addEffects(LivingEntity target) {
     }
 
     @Override
     protected SimpleParticleType getParticle() {
-        return ParticleTypes.HAPPY_VILLAGER;
+        return ParticleTypes.SNOWFLAKE;
     }
 }

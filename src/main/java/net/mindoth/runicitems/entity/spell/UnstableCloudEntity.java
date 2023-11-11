@@ -39,12 +39,9 @@ public class UnstableCloudEntity extends AbstractCloudEntity {
     protected void doTickEffects() {
         Level level = this.getLevel();
         Vec3 center = CommonEvents.getEntityCenter(this);
-        if ( this.tickCount % 30 != 0 ) return;
-        level.playSound(null, center.x, center.y, center.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS, 0.5F, 1.25F);
-        level.playSound(null, center.x, center.y, center.z, SoundEvents.HOE_TILL, SoundSource.PLAYERS, 1, 0.5F);
-        level.playSound(null, center.x, center.y, center.z, SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 1, 2);
-        if ( !(level instanceof ServerLevel serverLevel) ) return;
-        serverLevel.sendParticles(ParticleTypes.FIREWORK, center.x, center.y, center.z, 1, 0, 0, 0, (double)this.range / 6);
+        if ( this.tickCount % 5 != 0 ) return;
+        level.playSound(null, center.x, center.y, center.z, SoundEvents.HOE_TILL, SoundSource.PLAYERS, 0.75F, 0.5F);
+        level.playSound(null, center.x, center.y, center.z, SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 0.75F, 2);
     }
 
     @Override
@@ -61,6 +58,14 @@ public class UnstableCloudEntity extends AbstractCloudEntity {
         if ( !(level instanceof ServerLevel serverLevel) ) return;
         for ( int i = 0; i < 360; i++ ) {
             serverLevel.sendParticles(ParticleTypes.CRIT, center.x, center.y, center.z, 0, Math.cos(i), 0, Math.sin(i), 0.2D + this.range);
+        }
+    }
+
+    @Override
+    protected void spawnParticles() {
+        ServerLevel level = (ServerLevel)this.level;
+        for (int i = 0; i < 8; ++i) {
+            level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x, CommonEvents.getEntityCenter(this).y, CommonEvents.getEntityCenter(this).z, 1, 0, 0, 0, 1);
         }
     }
 

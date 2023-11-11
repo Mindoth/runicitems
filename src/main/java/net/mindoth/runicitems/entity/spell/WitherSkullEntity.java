@@ -45,9 +45,6 @@ public class WitherSkullEntity extends AbstractProjectileEntity {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
         explode();
-        if ( !enemyPiercing ) {
-            this.discard();
-        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -41,6 +42,10 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
         return 40;
     }
 
+    protected int getBaseEnemyPiercing() {
+        return 0;
+    }
+
     protected AbstractProjectileEntity(EntityType<? extends AbstractProjectileEntity> entityType, Level level) {
         super(entityType, level);
     }
@@ -57,7 +62,7 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
         this.bounces = SpellBuilder.getBounce(effects);
-        this.enemyPiercing = SpellBuilder.getEnemyPiercing(effects);
+        this.enemyPiercing = getBaseEnemyPiercing() + SpellBuilder.getEnemyPiercing(effects);
         this.blockPiercing = SpellBuilder.getBlockPiercing(effects);
         this.homing = SpellBuilder.getHoming(effects);
 
@@ -75,7 +80,7 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
     protected boolean trigger;
     protected boolean deathTrigger;
     protected int bounces;
-    protected boolean enemyPiercing;
+    protected int enemyPiercing;
     protected boolean blockPiercing;
     protected boolean homing;
     protected int range;
@@ -87,18 +92,15 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
     @Override
     protected void onHit(HitResult result) {
         if ( level.isClientSide ) return;
-
         if ( result.getType() == HitResult.Type.ENTITY && ((EntityHitResult)result).getEntity() instanceof LivingEntity living ) {
             hurtTarget(living);
-
-            if ( trigger ) {
-                SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
-            }
+            if ( trigger ) SpellBuilder.cast((Player)owner, this, itemHandler, slot + 1, this.getXRot(), this.getYRot());
+            if ( this.enemyPiercing > 0 ) this.enemyPiercing -= 1;
+            else this.discard();
         }
 
         if ( result.getType() == HitResult.Type.BLOCK ) {
             doBlockEffects(result);
-
             BlockHitResult traceResult = (BlockHitResult) result;
             BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
             if ( !blockstate.getCollisionShape(this.level, traceResult.getBlockPos()).isEmpty() ) {

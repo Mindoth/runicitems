@@ -1,9 +1,9 @@
 package net.mindoth.runicitems.spells;
 
 import net.mindoth.runicitems.entity.spell.AbstractProjectileEntity;
+import net.mindoth.runicitems.entity.spell.DeafeningBlastEntity;
 import net.mindoth.runicitems.entity.spell.MagicSparkEntity;
 import net.mindoth.runicitems.event.SpellBuilder;
-import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -13,7 +13,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
 
-public class MagicSparkSpell extends AbstractSpell {
+public class DeafeningBlastSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, Vec3 center, float xRot, float yRot) {
         Level level = caster.level;
@@ -37,11 +37,11 @@ public class MagicSparkSpell extends AbstractSpell {
     }
 
     protected static AbstractProjectileEntity getProjectile(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects) {
-        return new MagicSparkEntity(level, owner, caster, itemHandler, slot, effects);
+        return new DeafeningBlastEntity(level, owner, caster, itemHandler, slot, effects);
     }
 
     protected static float getSpeed() {
-        return 1.0F;
+        return 0.5F;
     }
 
     protected static void playSound(Level level, Vec3 center) {

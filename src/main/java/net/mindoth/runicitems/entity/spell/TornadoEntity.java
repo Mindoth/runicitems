@@ -72,9 +72,9 @@ public class TornadoEntity extends AbstractCloudEntity {
         double radiusIncreasement = maxRadius / maxHeight;
         for ( int l = 0; l < lines; l++ ) {
             for ( double y = 0; y < maxHeight; y += heightIncreasement ) {
-                double radius = y * radiusIncreasement + 0.5D;
-                double x = Math.cos(Math.toRadians((double)360 / lines * l + y * 25 - angle)) * radius;
-                double z = Math.sin(Math.toRadians((double)360 / lines * l + y * 25 - angle)) * radius;
+                double radius = y * radiusIncreasement + heightIncreasement;
+                double x = (Math.cos(Math.toRadians((double)360 / lines * l + y * 25 - angle)) * radius);
+                double z = (Math.sin(Math.toRadians((double)360 / lines * l + y * 25 - angle)) * radius);
                 ServerLevel level = (ServerLevel)this.level;
                 level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, blockUnder(this)), posX + x, posY + y, posZ + z,
                         0, 0, 1, 0, 1.0D);

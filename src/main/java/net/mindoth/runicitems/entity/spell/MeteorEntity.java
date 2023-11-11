@@ -46,9 +46,6 @@ public class MeteorEntity extends AbstractProjectileEntity {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
         splashDamage();
-        if ( !enemyPiercing ) {
-            this.discard();
-        }
     }
 
     @Override

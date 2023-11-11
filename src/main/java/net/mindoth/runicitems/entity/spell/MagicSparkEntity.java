@@ -41,9 +41,6 @@ public class MagicSparkEntity extends AbstractProjectileEntity {
         if ( power > 0 ) {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
         }
-        if ( !enemyPiercing ) {
-            this.discard();
-        }
     }
 
     @Override

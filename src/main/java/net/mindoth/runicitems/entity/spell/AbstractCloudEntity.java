@@ -75,7 +75,7 @@ public class AbstractCloudEntity extends ThrowableProjectile {
     protected boolean trigger;
     protected boolean deathTrigger;
     protected int bounces;
-    protected boolean enemyPiercing;
+    protected int enemyPiercing;
     protected boolean blockPiercing;
     protected boolean homing;
     protected int range;

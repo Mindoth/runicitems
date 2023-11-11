@@ -23,6 +23,10 @@ public class RunicItemsEntities {
             ENTITIES.register("ri_wither_skull", () -> registerEntity(EntityType.Builder.of(WitherSkullEntity::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F).setCustomClientFactory(WitherSkullEntity::new), "ri_wither_skull"));
 
+    public static final RegistryObject<EntityType<IcicleEntity>> ICICLE =
+            ENTITIES.register("icicle", () -> registerEntity(EntityType.Builder.of(IcicleEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F).setCustomClientFactory(IcicleEntity::new), "icicle"));
+
 
 
     public static final RegistryObject<EntityType<MagicSparkEntity>> MAGIC_SPARK = ENTITIES.register("magic_spark",
@@ -42,6 +46,9 @@ public class RunicItemsEntities {
 
     public static final RegistryObject<EntityType<UnstableCloudEntity>> UNSTABLE_CLOUD = ENTITIES.register("unstable_cloud",
             () -> getDefaultSizeEntityType(UnstableCloudEntity::new));
+
+    public static final RegistryObject<EntityType<DeafeningBlastEntity>> DEAFENING_BLAST = ENTITIES.register("deafening_blast",
+            () -> getBigEntityType(DeafeningBlastEntity::new));
 
 
 
@@ -70,6 +77,9 @@ public class RunicItemsEntities {
     }
     private static <T extends Entity> EntityType<T> getProjectileEntityType(EntityType.EntityFactory<T> factory) {
         return getEntityType(factory, 0.5F, 0.5F);
+    }
+    private static <T extends Entity> EntityType<T> getBigEntityType(EntityType.EntityFactory<T> factory) {
+        return getEntityType(factory, 1.0F, 1.0F);
     }
     private static <T extends Entity> EntityType<T> getEntityType(EntityType.EntityFactory<T> factory, float width, float height) {
         return getEntityType(factory, width, height, 128);

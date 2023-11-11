@@ -5,6 +5,8 @@ import net.mindoth.runicitems.client.gui.WandGui;
 import net.mindoth.runicitems.client.models.armor.Boots2Model;
 import net.mindoth.runicitems.client.models.spells.BlockSpellModel;
 import net.mindoth.runicitems.client.models.spells.CubeSpellModel;
+import net.mindoth.runicitems.client.models.spells.DeafeningBlastModel;
+import net.mindoth.runicitems.client.models.spells.IcicleSpellModel;
 import net.mindoth.runicitems.client.renderer.*;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
@@ -35,6 +37,8 @@ public class RunicItemsClient {
         event.registerLayerDefinition(RunicItemsLayers.BOOTS2_LAYER, Boots2Model::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.METEOR_LAYER, BlockSpellModel::createBodyLayer);
         event.registerLayerDefinition(RunicItemsLayers.WITHER_SKULL_LAYER, CubeSpellModel::createBodyLayer);
+        event.registerLayerDefinition(RunicItemsLayers.ICICLE_LAYER, IcicleSpellModel::createBodyLayer);
+        event.registerLayerDefinition(RunicItemsLayers.DEAFENING_BLAST_LAYER, DeafeningBlastModel::createBodyLayer);
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -48,5 +52,7 @@ public class RunicItemsClient {
         event.registerEntityRenderer(RunicItemsEntities.SKELETON_MINION.get(), SkeletonRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.TORNADO.get(), TornadoRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.UNSTABLE_CLOUD.get(), UnstableCloudRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.ICICLE.get(), IcicleRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.DEAFENING_BLAST.get(), DeafeningBlastRenderer::new);
     }
 }

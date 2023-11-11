@@ -47,10 +47,6 @@ public class SpellBuilder {
         }
     }
 
-    public static Item getRune(IItemHandler itemHandler, int slot) {
-        return itemHandler.getStackInSlot(slot).getItem();
-    }
-
     private static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, float xRot, float yRot) {
         final AbstractSpell spell = getSpell(effects);
         Vec3 center;
@@ -76,6 +72,9 @@ public class SpellBuilder {
         return new Vec3((double)(f3 * f4), (double)(-f5), (double)(f2 * f4));
     }
 
+    public static Item getRune(IItemHandler itemHandler, int slot) {
+        return itemHandler.getStackInSlot(slot).getItem();
+    }
 
     private static AbstractSpell getSpell(HashMap<Item, Integer> effects) {
         int ice = 0;
@@ -97,6 +96,8 @@ public class SpellBuilder {
                 fire += effects.get(RunicItemsItems.FIRE_RUNE.get());
             }
         }
+        if ( ice == 1 && storm == 1 && fire == 1 ) spell = new DeafeningBlastSpell();
+        if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IcicleSpell();
         if ( ice == 2 && storm == 1 && fire == 0 ) spell = new GhostWalkSpell();
         if ( ice == 1 && storm == 2 && fire == 0 ) spell = new TornadoSpell();
         if ( ice == 0 && storm == 1 && fire == 2 ) spell = new MeteorSpell();
@@ -222,6 +223,16 @@ public class SpellBuilder {
         return power;
     }
 
+    public static int getEnemyPiercing(HashMap<Item, Integer> effects) {
+        int power = 0;
+        if ( effects.containsKey(RunicItemsItems.ENEMY_PIERCING_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.ENEMY_PIERCING_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.ENEMY_PIERCING_RUNE.get());
+            }
+        }
+        return power;
+    }
+
     public static boolean getTrigger(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.TRIGGER_RUNE.get());
     }
@@ -232,10 +243,6 @@ public class SpellBuilder {
 
     public static boolean getGravity(HashMap<Item, Integer> effects) {
         return !effects.containsKey(RunicItemsItems.GRAVITY_RUNE.get());
-    }
-
-    public static boolean getEnemyPiercing(HashMap<Item, Integer> effects) {
-        return effects.containsKey(RunicItemsItems.ENEMY_PIERCING_RUNE.get());
     }
 
     public static boolean getBlockPiercing(HashMap<Item, Integer> effects) {
