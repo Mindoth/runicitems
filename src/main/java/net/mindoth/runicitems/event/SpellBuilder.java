@@ -98,12 +98,13 @@ public class SpellBuilder {
         }
         if ( ice == 1 && storm == 1 && fire == 1 ) spell = new DeafeningBlastSpell();
         if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IcicleSpell();
+        if ( ice == 0 && storm == 3 && fire == 0 ) spell = new UnstableCloudSpell();
+        if ( ice == 0 && storm == 0 && fire == 3 ) spell = new SunStrikeSpell();
         if ( ice == 2 && storm == 1 && fire == 0 ) spell = new GhostWalkSpell();
         if ( ice == 1 && storm == 2 && fire == 0 ) spell = new TornadoSpell();
+        if ( ice == 0 && storm == 2 && fire == 1 ) spell = new AlacritySpell();
         if ( ice == 0 && storm == 1 && fire == 2 ) spell = new MeteorSpell();
         if ( ice == 1 && storm == 0 && fire == 2 ) spell = new ForgeSpiritSpell();
-        if ( ice == 0 && storm == 2 && fire == 1 ) spell = new AlacritySpell();
-        if ( ice == 0 && storm == 3 && fire == 0 ) spell = new UnstableCloudSpell();
         return spell;
     }
 

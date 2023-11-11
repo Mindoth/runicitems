@@ -10,6 +10,7 @@ import net.mindoth.runicitems.client.models.spells.IcicleSpellModel;
 import net.mindoth.runicitems.client.renderer.*;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
+import net.mindoth.runicitems.registries.RunicItemsParticles;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.BlazeRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
@@ -26,6 +27,8 @@ public class RunicItemsClient {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(RunicItemsClient::clientSetup);
         modBus.addListener(RunicItemsClient::registerEntityRenderers);
+        RunicItemsParticles.PARTICLE_TYPES.register(modBus);
+
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(RunicItemsClient::registerLayerDefinitions));
     }
 

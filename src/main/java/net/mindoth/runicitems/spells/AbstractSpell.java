@@ -29,6 +29,7 @@ public abstract class AbstractSpell {
         if ( spell instanceof RaiseDeadSpell ) RaiseDeadSpell.shootMagic(owner, caster, effects, center);
         if ( spell instanceof IcicleSpell ) IcicleSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
         if ( spell instanceof DeafeningBlastSpell ) DeafeningBlastSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
+        //if ( spell instanceof SunStrikeSpell ) SunStrikeSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
     }
 
     protected static void playMagicSound(Level level, Vec3 center) {

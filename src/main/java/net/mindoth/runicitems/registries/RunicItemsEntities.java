@@ -79,7 +79,7 @@ public class RunicItemsEntities {
         return getEntityType(factory, 0.5F, 0.5F);
     }
     private static <T extends Entity> EntityType<T> getBigEntityType(EntityType.EntityFactory<T> factory) {
-        return getEntityType(factory, 1.0F, 1.0F);
+        return getEntityType(factory, 2.0F, 0.5F);
     }
     private static <T extends Entity> EntityType<T> getEntityType(EntityType.EntityFactory<T> factory, float width, float height) {
         return getEntityType(factory, width, height, 128);

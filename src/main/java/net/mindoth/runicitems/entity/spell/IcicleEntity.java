@@ -49,6 +49,8 @@ public class IcicleEntity extends AbstractProjectileEntity {
 
     @Override
     protected void addEffects(LivingEntity target) {
+        int ticksToAdd = (48 * this.power) - target.getTicksFrozen();
+        if ( ticksToAdd > 0 ) target.setTicksFrozen(ticksToAdd);
     }
 
     @Override

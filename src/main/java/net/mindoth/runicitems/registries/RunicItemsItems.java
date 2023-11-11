@@ -3,7 +3,7 @@ package net.mindoth.runicitems.registries;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.*;
 import net.mindoth.runicitems.item.rune.*;
-import net.mindoth.runicitems.itemgroup.RunicItemsItemGroup;
+import net.mindoth.runicitems.item.itemgroup.RunicItemsItemGroup;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;

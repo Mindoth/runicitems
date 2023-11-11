@@ -8,6 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -68,6 +69,7 @@ public class DeafeningBlastEntity extends AbstractProjectileEntity {
             dropItem(target.getItemBySlot(EquipmentSlot.OFFHAND), target instanceof Player);
             target.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
         }
+        target.knockback(((double)this.power / 3), this.getDeltaMovement().x * -1, this.getDeltaMovement().z * -1);
     }
 
     protected void dropItem(ItemStack pDroppedItem, boolean pIncludeThrowerName) {
@@ -75,12 +77,6 @@ public class DeafeningBlastEntity extends AbstractProjectileEntity {
         ItemEntity itementity = new ItemEntity(this.level, pos.x, this.getY(), pos.z, pDroppedItem);
         itementity.setPickUpDelay(40);
         if ( pIncludeThrowerName ) itementity.setThrower(this.getUUID());
-        float f8 = Mth.sin(this.getXRot() * ((float)Math.PI / 180F));
-        float f2 = Mth.cos(this.getXRot() * ((float)Math.PI / 180F));
-        float f3 = Mth.sin(this.getYRot() * ((float)Math.PI / 180F));
-        float f4 = Mth.cos(this.getYRot() * ((float)Math.PI / 180F));
-        float f5 = this.random.nextFloat() * ((float)Math.PI * 2F);
-        float f6 = 0.02F * this.random.nextFloat();
         itementity.setDeltaMovement(this.getDeltaMovement());
         this.level.addFreshEntity(itementity);
     }
@@ -105,7 +101,7 @@ public class DeafeningBlastEntity extends AbstractProjectileEntity {
             SimpleParticleType particle;
             if ( i == halver ) particle = ParticleTypes.END_ROD;
             else particle = this.getParticle();
-            level.sendParticles(particle, center.x + rotX, this.getY(), center.z + rotZ, 1, 0, 0, 0, 0);
+            level.sendParticles(particle, center.x + rotX, center.y, center.z + rotZ, 1, 0, 0, 0, 0);
         }
         for ( float i = halver; i > 0; i-- ) {
             float curve = /*-0.75F +*/ -(i * i) / var;
@@ -120,7 +116,7 @@ public class DeafeningBlastEntity extends AbstractProjectileEntity {
             SimpleParticleType particle;
             if ( i == halver ) particle = ParticleTypes.END_ROD;
             else particle = this.getParticle();
-            level.sendParticles(particle, center.x - rotX, this.getY(), center.z - rotZ, 1, 0, 0, 0, 0);
+            level.sendParticles(particle, center.x - rotX, center.y, center.z - rotZ, 1, 0, 0, 0, 0);
         }
     }
 

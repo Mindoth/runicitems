@@ -4,8 +4,11 @@ import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.entity.minion.BlazeMinionEntity;
 import net.mindoth.runicitems.entity.minion.SkeletonMinionEntity;
 import net.mindoth.runicitems.loot.RunicItemsLootModifiers;
+import net.mindoth.runicitems.particle.GlowFireParticle;
 import net.mindoth.runicitems.registries.*;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,12 +41,17 @@ public class RunicItems {
     }
 
     @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class SetMobAttributes {
+    public static class EventBusEvents {
 
         @SubscribeEvent
         public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
             event.put(RunicItemsEntities.BLAZE_MINION.get(), BlazeMinionEntity.setAttributes());
             event.put(RunicItemsEntities.SKELETON_MINION.get(), SkeletonMinionEntity.setAttributes());
+        }
+
+        @SubscribeEvent
+        public static void registerParticleFactories(final RegisterParticleProvidersEvent event) {
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_FIRE_PARTICLE.get(), GlowFireParticle.Provider::new);
         }
     }
 }

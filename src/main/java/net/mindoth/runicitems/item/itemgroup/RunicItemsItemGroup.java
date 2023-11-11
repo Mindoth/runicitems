@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.itemgroup;
+package net.mindoth.runicitems.item.itemgroup;
 
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.minecraft.world.item.CreativeModeTab;
