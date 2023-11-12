@@ -62,20 +62,6 @@ public class SpellBuilder {
         AbstractSpell.routeSpell(owner, caster, itemHandler, slot, effects, spell, center, xRot, yRot);
     }
 
-    private static Vec3 calculateViewVector(float pXRot, float pYRot) {
-        float f = pXRot * ((float)Math.PI / 180F);
-        float f1 = -pYRot * ((float)Math.PI / 180F);
-        float f2 = Mth.cos(f1);
-        float f3 = Mth.sin(f1);
-        float f4 = Mth.cos(f);
-        float f5 = Mth.sin(f);
-        return new Vec3((double)(f3 * f4), (double)(-f5), (double)(f2 * f4));
-    }
-
-    public static Item getRune(IItemHandler itemHandler, int slot) {
-        return itemHandler.getStackInSlot(slot).getItem();
-    }
-
     private static AbstractSpell getSpell(HashMap<Item, Integer> effects) {
         int ice = 0;
         int storm = 0;
@@ -97,15 +83,32 @@ public class SpellBuilder {
             }
         }
         if ( ice == 1 && storm == 1 && fire == 1 ) spell = new DeafeningBlastSpell();
-        if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IcicleSpell();
-        if ( ice == 0 && storm == 3 && fire == 0 ) spell = new UnstableCloudSpell();
-        if ( ice == 0 && storm == 0 && fire == 3 ) spell = new SunStrikeSpell();
+        //if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IcicleSpell();
+        if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IceProjectileSpell();
+        //if ( ice == 0 && storm == 3 && fire == 0 ) spell = new UnstableCloudSpell();
+        if ( ice == 0 && storm == 3 && fire == 0 ) spell = new StormProjectileSpell();
+        //if ( ice == 0 && storm == 0 && fire == 3 ) spell = new SunStrikeSpell();
+        if ( ice == 0 && storm == 0 && fire == 3 ) spell = new FireProjectileSpell();
         if ( ice == 2 && storm == 1 && fire == 0 ) spell = new GhostWalkSpell();
         if ( ice == 1 && storm == 2 && fire == 0 ) spell = new TornadoSpell();
         if ( ice == 0 && storm == 2 && fire == 1 ) spell = new AlacritySpell();
         if ( ice == 0 && storm == 1 && fire == 2 ) spell = new MeteorSpell();
         if ( ice == 1 && storm == 0 && fire == 2 ) spell = new ForgeSpiritSpell();
         return spell;
+    }
+
+    private static Vec3 calculateViewVector(float pXRot, float pYRot) {
+        float f = pXRot * ((float)Math.PI / 180F);
+        float f1 = -pYRot * ((float)Math.PI / 180F);
+        float f2 = Mth.cos(f1);
+        float f3 = Mth.sin(f1);
+        float f4 = Mth.cos(f);
+        float f5 = Mth.sin(f);
+        return new Vec3((double)(f3 * f4), (double)(-f5), (double)(f2 * f4));
+    }
+
+    public static Item getRune(IItemHandler itemHandler, int slot) {
+        return itemHandler.getStackInSlot(slot).getItem();
     }
 
     public static Integer getPower(HashMap<Item, Integer> effects, double basePower) {

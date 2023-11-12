@@ -15,6 +15,9 @@ public abstract class AbstractSpell {
 
     public static void routeSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, AbstractSpell spell, Vec3 center, float xRot, float yRot) {
         if ( spell instanceof MagicSparkSpell ) MagicSparkSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
+        if ( spell instanceof IceProjectileSpell ) IceProjectileSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
+        if ( spell instanceof StormProjectileSpell ) StormProjectileSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
+        if ( spell instanceof FireProjectileSpell ) FireProjectileSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
         if ( spell instanceof MeteorSpell ) MeteorSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
         if ( spell instanceof HealingBoltSpell ) HealingBoltSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
         if ( spell instanceof WitherSkullSpell ) WitherSkullSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
@@ -34,25 +37,41 @@ public abstract class AbstractSpell {
 
     protected static void playMagicSound(Level level, Vec3 center) {
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.5f, 1);
+                SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.5F, 1);
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5f, 2);
+                SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 2);
+    }
+
+    protected static void playStormSound(Level level, Vec3 center) {
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.5F, 1);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.35F, 2);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.WARDEN_STEP, SoundSource.PLAYERS, 2, 1);
     }
 
     protected static void playFireSound(Level level, Vec3 center) {
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.5f, 1);
+                SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.5F, 1);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.5F, 1);
     }
 
     protected static void playEvilSound(Level level, Vec3 center) {
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.5f, 1);
+                SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.5F, 1);
     }
 
     protected static void playMagicSummonSound(Level level, Vec3 center) {
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.25f, 2);
+                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 0.25F, 2);
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5f, 2);
+                SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 2);
+    }
+
+    protected static void playFireSummonSound(Level level, Vec3 center) {
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.5F, 1);
     }
 }

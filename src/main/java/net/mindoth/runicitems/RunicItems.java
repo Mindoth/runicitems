@@ -4,7 +4,7 @@ import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.entity.minion.BlazeMinionEntity;
 import net.mindoth.runicitems.entity.minion.SkeletonMinionEntity;
 import net.mindoth.runicitems.loot.RunicItemsLootModifiers;
-import net.mindoth.runicitems.particle.GlowFireParticle;
+import net.mindoth.runicitems.particle.GlowProjectile;
 import net.mindoth.runicitems.registries.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -51,7 +51,9 @@ public class RunicItems {
 
         @SubscribeEvent
         public static void registerParticleFactories(final RegisterParticleProvidersEvent event) {
-            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_FIRE_PARTICLE.get(), GlowFireParticle.Provider::new);
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_ICE_PARTICLE.get(), GlowProjectile.IceProvider::new);
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_STORM_PARTICLE.get(), GlowProjectile.StormProvider::new);
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_FIRE_PARTICLE.get(), GlowProjectile.FireProvider::new);
         }
     }
 }

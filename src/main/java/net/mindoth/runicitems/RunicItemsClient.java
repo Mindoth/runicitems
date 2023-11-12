@@ -45,6 +45,9 @@ public class RunicItemsClient {
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(RunicItemsEntities.ICE_PROJECTILE.get(), IceProjectileRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.STORM_PROJECTILE.get(), StormProjectileRenderer::new);
+        event.registerEntityRenderer(RunicItemsEntities.FIRE_PROJECTILE.get(), FireProjectileRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.MAGIC_SPARK.get(), MagicSparkRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.HEALING_BOLT.get(), HealingBoltRenderer::new);
         event.registerEntityRenderer(RunicItemsEntities.STORMY_CLOUD.get(), StormyCloudRenderer::new);

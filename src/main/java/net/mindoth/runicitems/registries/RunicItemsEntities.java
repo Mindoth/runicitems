@@ -50,6 +50,15 @@ public class RunicItemsEntities {
     public static final RegistryObject<EntityType<DeafeningBlastEntity>> DEAFENING_BLAST = ENTITIES.register("deafening_blast",
             () -> getBigEntityType(DeafeningBlastEntity::new));
 
+    public static final RegistryObject<EntityType<IceProjectileEntity>> ICE_PROJECTILE = ENTITIES.register("ice_projectile",
+            () -> getProjectileEntityType(IceProjectileEntity::new));
+
+    public static final RegistryObject<EntityType<StormProjectileEntity>> STORM_PROJECTILE = ENTITIES.register("storm_projectile",
+            () -> getProjectileEntityType(StormProjectileEntity::new));
+
+    public static final RegistryObject<EntityType<FireProjectileEntity>> FIRE_PROJECTILE = ENTITIES.register("fire_projectile",
+            () -> getProjectileEntityType(FireProjectileEntity::new));
+
 
 
     public static final RegistryObject<EntityType<BlazeMinionEntity>> BLAZE_MINION =
