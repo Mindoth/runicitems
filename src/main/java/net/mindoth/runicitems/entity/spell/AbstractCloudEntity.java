@@ -77,7 +77,7 @@ public class AbstractCloudEntity extends ThrowableProjectile {
     protected int bounces;
     protected int enemyPiercing;
     protected boolean blockPiercing;
-    protected boolean homing;
+    protected int homing;
     protected int range;
 
     protected int power;
@@ -152,8 +152,8 @@ public class AbstractCloudEntity extends ThrowableProjectile {
         doTickEffects();
         spawnParticles();
 
-        if ( this.homing && this.tickCount > 10 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
+        if ( this.homing > 0 && this.tickCount > 10 ) {
+            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.homing * 2);
             if ( nearest != null && this.speed != 0 ) {
                 double mX = getDeltaMovement().x();
                 double mY = getDeltaMovement().y();

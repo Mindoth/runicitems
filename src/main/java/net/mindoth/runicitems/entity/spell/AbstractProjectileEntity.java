@@ -82,7 +82,7 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
     protected int bounces;
     protected int enemyPiercing;
     protected boolean blockPiercing;
-    protected boolean homing;
+    protected int homing;
     protected int range;
 
     protected int power;
@@ -154,8 +154,8 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
         doTickEffects();
         spawnParticles();
 
-        if ( this.homing && this.tickCount > 10 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
+        if ( this.homing > 0 && this.tickCount > 10 ) {
+            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.homing * 2);
             if ( nearest != null && this.speed != 0 ) {
                 double mX = getDeltaMovement().x();
                 double mY = getDeltaMovement().y();
@@ -178,6 +178,9 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
         }
     }
 
+    protected void doTickEffects() {
+    }
+
     protected void hurtTarget(LivingEntity target) {
     }
 
@@ -196,14 +199,15 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
     protected void spawnSplashParticles() {
     }
 
-    protected void doTickEffects() {
-    }
-
     protected double getParticleHeight() {
         return this.getY();
     }
 
+    protected void spawnBonusParticles() {
+    }
+
     protected void spawnParticles() {
+        spawnBonusParticles();
         ServerLevel level = (ServerLevel)this.level;
         level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), getParticleHeight() + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), 1, 0, 0, 0, 0);
     }

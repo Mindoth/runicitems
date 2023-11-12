@@ -42,19 +42,19 @@ public class IceProjectileEntity extends AbstractProjectileEntity {
     }
 
     @Override
-    protected void spawnParticles() {
+    protected void spawnBonusParticles() {
         Vec3 vec3 = this.getDeltaMovement();
         double d5 = vec3.x;
         double d6 = vec3.y;
         double d1 = vec3.z;
-        for(int i = 0; i < 4; ++i) {
+        for ( int i = 0; i < 4; ++i ) {
             ServerLevel level = (ServerLevel)this.level;
-            level.sendParticles(this.getParticle(), this.getX() + d5 * (double)i / 4.0D, this.getY() + d6 * (double)i / 4.0D, this.getZ() + d1 * (double)i / 4.0D, 0, -d5, -d6 + 0.2D, -d1, 0);
+            level.sendParticles(RunicItemsParticles.GLOW_ICE_PARTICLE.get(), this.getX() + d5 * (double)i / 4.0D, this.getY() + d6 * (double)i / 4.0D, this.getZ() + d1 * (double)i / 4.0D, 0, -d5, -d6 + 0.2D, -d1, 0);
         }
     }
 
     @Override
     protected SimpleParticleType getParticle() {
-        return RunicItemsParticles.GLOW_ICE_PARTICLE.get();
+        return ParticleTypes.SNOWFLAKE;
     }
 }

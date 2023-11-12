@@ -237,6 +237,16 @@ public class SpellBuilder {
         return power;
     }
 
+    public static int getHoming(HashMap<Item, Integer> effects) {
+        int power = 0;
+        if ( effects.containsKey(RunicItemsItems.HOMING_RUNE.get()) ) {
+            if ( effects.get(RunicItemsItems.HOMING_RUNE.get()) != null ) {
+                power += effects.get(RunicItemsItems.HOMING_RUNE.get());
+            }
+        }
+        return power;
+    }
+
     public static boolean getTrigger(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.TRIGGER_RUNE.get());
     }
@@ -251,10 +261,6 @@ public class SpellBuilder {
 
     public static boolean getBlockPiercing(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.BLOCK_PIERCING_RUNE.get());
-    }
-
-    public static boolean getHoming(HashMap<Item, Integer> effects) {
-        return effects.containsKey(RunicItemsItems.HOMING_RUNE.get());
     }
 
     public static ArrayList<LivingEntity> getEntitiesAround(Entity caster, Level pLevel, double size) {

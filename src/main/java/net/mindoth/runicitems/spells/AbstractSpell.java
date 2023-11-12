@@ -53,7 +53,7 @@ public abstract class AbstractSpell {
 
     protected static void playFireSound(Level level, Vec3 center) {
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.5F, 1);
+                SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.4F, 1);
         level.playSound(null, center.x, center.y, center.z,
                 SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.5F, 1);
     }
