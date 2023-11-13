@@ -74,7 +74,7 @@ public class RunicItemsItems {
 
     //Runes
     public static final RegistryObject<Item> EMPTY_RUNE = ITEMS.register("empty_rune",
-            () -> new ComponentRuneItem(new Item.Properties(), 0));
+            () -> new RuneItem(new Item.Properties(), 0));
 
     public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
             () -> new ComponentRuneItem(new Item.Properties(), 0));
@@ -95,6 +95,9 @@ public class RunicItemsItems {
 
     public static final RegistryObject<Item> DEATH_TRIGGER_RUNE = ITEMS.register("death_trigger_rune",
             () -> new ModifierRuneItem(new Item.Properties(), 20));
+
+    public static final RegistryObject<Item> INVOKE_RUNE = ITEMS.register("invoke_rune",
+            () -> new ModifierRuneItem(new Item.Properties(), 64));
 
 
     public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",

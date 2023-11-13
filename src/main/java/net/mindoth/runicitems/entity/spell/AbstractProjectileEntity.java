@@ -176,6 +176,7 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
             }
             this.discard();
         }
+        if ( this.getDeltaMovement().equals(new Vec3(0, 0, 0)) ) this.discard();
     }
 
     protected void doTickEffects() {

@@ -19,4 +19,7 @@ public class RunicItemsParticles {
 
     public static final RegistryObject<SimpleParticleType> GLOW_FIRE_PARTICLE =
             PARTICLE_TYPES.register("glow_fire_particle", () -> new SimpleParticleType(true));
+
+    public static final RegistryObject<SimpleParticleType> DEAFENING_BLAST_PARTICLE =
+            PARTICLE_TYPES.register("deafening_blast_particle", () -> new SimpleParticleType(true));
 }

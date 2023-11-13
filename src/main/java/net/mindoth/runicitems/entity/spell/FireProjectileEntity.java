@@ -54,7 +54,14 @@ public class FireProjectileEntity extends AbstractProjectileEntity {
         }
     }
 
-    //TODO maybe have flame particles rise up?
+    @Override
+    protected void spawnParticles() {
+        spawnBonusParticles();
+        ServerLevel level = (ServerLevel)this.level;
+        if ( this.tickCount % 5 == 0 ) {
+            level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), getParticleHeight() + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), 0, 0, 0.1F, 0, 1);
+        }
+    }
 
     @Override
     protected SimpleParticleType getParticle() {

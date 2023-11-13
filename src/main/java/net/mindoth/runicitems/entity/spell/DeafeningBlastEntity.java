@@ -2,6 +2,7 @@ package net.mindoth.runicitems.entity.spell;
 
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
+import net.mindoth.runicitems.registries.RunicItemsParticles;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.core.particles.ParticleTypes;
@@ -87,37 +88,97 @@ public class DeafeningBlastEntity extends AbstractProjectileEntity {
         float step = 0.125F;
         float halver = width / step;
         float radians = Mth.DEG_TO_RAD * getYRot();
-        int var = 64;
+        int var = 128;
+
         for ( float i = 0; i < halver + 1; i++ ) {
-            float curve = /*-0.75F +*/ -(i * i) / var;
-            Vec3 direction = this.getDeltaMovement().normalize();
-            direction = direction.multiply(curve, curve, curve);
-            Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
             double offset = step * ((i + 4.0F) - width / step / 2);
-            double rotX = offset * width * Math.cos(radians);
-            double rotZ = -offset * width * Math.sin(radians);
-
-            ServerLevel level = (ServerLevel)this.level;
-            SimpleParticleType particle;
-            if ( i == halver ) particle = ParticleTypes.END_ROD;
-            else particle = this.getParticle();
-            level.sendParticles(particle, center.x + rotX, center.y, center.z + rotZ, 1, 0, 0, 0, 0);
+            if ( i == 0 ) {
+                for ( float j = -1.5F; j < 0.25F; j = j + 0.25F ) {
+                    float curve = -(i * i) / var + j;
+                    Vec3 direction = this.getDeltaMovement().normalize();
+                    direction = direction.multiply(curve, curve, curve);
+                    Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
+                    double rotX = offset * width * Math.cos(radians);
+                    double rotZ = -offset * width * Math.sin(radians);
+                    playParticles(center, rotX, rotZ, true);
+                }
+            }
+            else if ( i > 0 && i <= 2 ) {
+                for ( float j = -1; j < 0.25F; j = j + 0.25F ) {
+                    float curve = -(i * i) / var + j;
+                    Vec3 direction = this.getDeltaMovement().normalize();
+                    direction = direction.multiply(curve, curve, curve);
+                    Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
+                    double rotX = offset * width * Math.cos(radians);
+                    double rotZ = -offset * width * Math.sin(radians);
+                    playParticles(center, rotX, rotZ, true);
+                }
+            }
+            else if ( i == halver ) {
+                for ( float j = -0.5F; j < 0.25F; j = j + 0.25F ) {
+                    float curve = -(i * i) / var + j;
+                    Vec3 direction = this.getDeltaMovement().normalize();
+                    direction = direction.multiply(curve, curve, curve);
+                    Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
+                    double rotX = offset * width * Math.cos(radians);
+                    double rotZ = -offset * width * Math.sin(radians);
+                    playParticles(center, rotX, rotZ, true);
+                }
+            }
+            else {
+                float curve = -(i * i) / var;
+                Vec3 direction = this.getDeltaMovement().normalize();
+                direction = direction.multiply(curve, curve, curve);
+                Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
+                double rotX = offset * width * Math.cos(radians);
+                double rotZ = -offset * width * Math.sin(radians);
+                playParticles(center, rotX, rotZ, true);
+            }
         }
+
         for ( float i = halver; i > 0; i-- ) {
-            float curve = /*-0.75F +*/ -(i * i) / var;
-            Vec3 direction = this.getDeltaMovement().normalize();
-            direction = direction.multiply(curve, curve, curve);
-            Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
             double offset = step * ((i + 4.0F) - width / step / 2);
-            double rotX = offset * width * Math.cos(radians);
-            double rotZ = -offset * width * Math.sin(radians);
-
-            ServerLevel level = (ServerLevel)this.level;
-            SimpleParticleType particle;
-            if ( i == halver ) particle = ParticleTypes.END_ROD;
-            else particle = this.getParticle();
-            level.sendParticles(particle, center.x - rotX, center.y, center.z - rotZ, 1, 0, 0, 0, 0);
+            if ( i < 3 ) {
+                for ( float j = -1; j < 0.25F; j = j + 0.25F ) {
+                    float curve = -(i * i) / var + j;
+                    Vec3 direction = this.getDeltaMovement().normalize();
+                    direction = direction.multiply(curve, curve, curve);
+                    Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
+                    double rotX = offset * width * Math.cos(radians);
+                    double rotZ = -offset * width * Math.sin(radians);
+                    playParticles(center, rotX, rotZ, false);
+                }
+            }
+            else if ( i == halver ) {
+                for ( float j = -0.5F; j < 0.25F; j = j + 0.25F ) {
+                    float curve = -(i * i) / var + j;
+                    Vec3 direction = this.getDeltaMovement().normalize();
+                    direction = direction.multiply(curve, curve, curve);
+                    Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
+                    double rotX = offset * width * Math.cos(radians);
+                    double rotZ = -offset * width * Math.sin(radians);
+                    playParticles(center, rotX, rotZ, false);
+                }
+            }
+            else {
+                float curve = -(i * i) / var;
+                Vec3 direction = this.getDeltaMovement().normalize();
+                direction = direction.multiply(curve, curve, curve);
+                Vec3 center = CommonEvents.getEntityCenter(this).add(direction);
+                double rotX = offset * width * Math.cos(radians);
+                double rotZ = -offset * width * Math.sin(radians);
+                playParticles(center, rotX, rotZ, false);
+            }
         }
+    }
+
+
+    //TODO try arrow particle trail code?
+    private void playParticles(Vec3 center, double rotX, double rotZ, boolean mark) {
+        ServerLevel level = (ServerLevel)this.level;
+        if ( mark ) level.sendParticles(this.getParticle(), center.x + rotX, center.y, center.z + rotZ, 1, 0, 0, 0, 0);
+        else level.sendParticles(this.getParticle(), center.x - rotX, center.y, center.z - rotZ, 1, 0, 0, 0, 0);
+
     }
 
     public ResourceLocation getSpellTexture() {
@@ -126,6 +187,6 @@ public class DeafeningBlastEntity extends AbstractProjectileEntity {
 
     @Override
     protected SimpleParticleType getParticle() {
-        return ParticleTypes.SOUL_FIRE_FLAME;
+        return RunicItemsParticles.DEAFENING_BLAST_PARTICLE.get();
     }
 }

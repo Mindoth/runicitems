@@ -54,6 +54,7 @@ public class RunicItems {
             Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_ICE_PARTICLE.get(), GlowProjectile.IceProvider::new);
             Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_STORM_PARTICLE.get(), GlowProjectile.StormProvider::new);
             Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_FIRE_PARTICLE.get(), GlowProjectile.FireProvider::new);
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.DEAFENING_BLAST_PARTICLE.get(), GlowProjectile.DeafeningBlastProvider::new);
         }
     }
 }

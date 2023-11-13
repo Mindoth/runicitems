@@ -4,6 +4,7 @@ import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.item.WandItem;
 import net.mindoth.runicitems.item.rune.ComponentRuneItem;
 import net.mindoth.runicitems.item.rune.ModifierRuneItem;
+import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.runicitems.spells.*;
 import net.mindoth.shadowizardlib.event.CommonEvents;
@@ -32,16 +33,23 @@ public class SpellBuilder {
         HashMap<Item, Integer> effects = new HashMap<>();
         int componentCounter = 0;
         for ( int i = slot; i < itemHandler.getSlots(); i++ ) {
-            Item rune = getRune(itemHandler, i);
             if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
-                if ( rune instanceof ModifierRuneItem || rune instanceof ComponentRuneItem ) {
-                    effects.merge(rune, 1, Integer::sum);
-                    if ( rune instanceof ComponentRuneItem ) componentCounter += 1;
-                }
-                if ( componentCounter == 3 ) {
-                    doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
-                    effects.clear();
-                    break;
+                Item rune = getRune(itemHandler, i);
+                effects.merge(rune, 1, Integer::sum);
+                if ( rune instanceof ComponentRuneItem ) {
+                    if ( getInvoke(effects) ) {
+                        componentCounter += 1;
+                        if ( componentCounter == 3 ) {
+                            doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
+                            effects.clear();
+                            break;
+                        }
+                    }
+                    else {
+                        doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
+                        effects.clear();
+                        break;
+                    }
                 }
             }
         }
@@ -82,13 +90,13 @@ public class SpellBuilder {
                 fire += effects.get(RunicItemsItems.FIRE_RUNE.get());
             }
         }
+        if ( ice == 1 && storm == 0 && fire == 0 ) spell = new IceProjectileSpell();
+        if ( ice == 0 && storm == 1 && fire == 0 ) spell = new StormProjectileSpell();
+        if ( ice == 0 && storm == 0 && fire == 1 ) spell = new FireProjectileSpell();
         if ( ice == 1 && storm == 1 && fire == 1 ) spell = new DeafeningBlastSpell();
-        //if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IcicleSpell();
-        if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IceProjectileSpell();
-        //if ( ice == 0 && storm == 3 && fire == 0 ) spell = new UnstableCloudSpell();
-        if ( ice == 0 && storm == 3 && fire == 0 ) spell = new StormProjectileSpell();
-        //if ( ice == 0 && storm == 0 && fire == 3 ) spell = new SunStrikeSpell();
-        if ( ice == 0 && storm == 0 && fire == 3 ) spell = new FireProjectileSpell();
+        if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IcicleSpell();
+        if ( ice == 0 && storm == 3 && fire == 0 ) spell = new UnstableCloudSpell();
+        if ( ice == 0 && storm == 0 && fire == 3 ) spell = new SunStrikeSpell();
         if ( ice == 2 && storm == 1 && fire == 0 ) spell = new GhostWalkSpell();
         if ( ice == 1 && storm == 2 && fire == 0 ) spell = new TornadoSpell();
         if ( ice == 0 && storm == 2 && fire == 1 ) spell = new AlacritySpell();
@@ -231,7 +239,7 @@ public class SpellBuilder {
         int power = 0;
         if ( effects.containsKey(RunicItemsItems.ENEMY_PIERCING_RUNE.get()) ) {
             if ( effects.get(RunicItemsItems.ENEMY_PIERCING_RUNE.get()) != null ) {
-                power += effects.get(RunicItemsItems.ENEMY_PIERCING_RUNE.get());
+                power += effects.get(RunicItemsItems.ENEMY_PIERCING_RUNE.get()) * 99999;
             }
         }
         return power;
@@ -261,6 +269,10 @@ public class SpellBuilder {
 
     public static boolean getBlockPiercing(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.BLOCK_PIERCING_RUNE.get());
+    }
+
+    public static boolean getInvoke(HashMap<Item, Integer> effects) {
+        return effects.containsKey(RunicItemsItems.INVOKE_RUNE.get());
     }
 
     public static ArrayList<LivingEntity> getEntitiesAround(Entity caster, Level pLevel, double size) {

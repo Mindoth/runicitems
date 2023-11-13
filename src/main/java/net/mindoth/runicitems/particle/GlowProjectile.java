@@ -88,7 +88,7 @@ public class GlowProjectile extends TextureSheetParticle {
         }
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-            return new GlowProjectile(level, x, y, z, dx, dy, dz, 49F, 119F, 249F,0.5F, 10, this.sprites);
+            return new GlowProjectile(level, x, y, z, dx, dy, dz, 49F, 119F, 249F,0.4F, 10, this.sprites);
         }
     }
 
@@ -101,7 +101,7 @@ public class GlowProjectile extends TextureSheetParticle {
         }
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-            return new GlowProjectile(level, x, y, z, dx, dy, dz, 206F, 0F, 206F,0.5F, 10, this.sprites);
+            return new GlowProjectile(level, x, y, z, dx, dy, dz, 206F, 0F, 206F,0.4F, 10, this.sprites);
         }
     }
 
@@ -114,7 +114,20 @@ public class GlowProjectile extends TextureSheetParticle {
         }
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-            return new GlowProjectile(level, x, y, z, dx, dy, dz, 177F, 63F, 0F,0.5F, 10, this.sprites);
+            return new GlowProjectile(level, x, y, z, dx, dy, dz, 177F, 63F, 0F,0.4F, 10, this.sprites);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static class DeafeningBlastProvider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet sprites;
+
+        public DeafeningBlastProvider(SpriteSet spriteSet) {
+            this.sprites = spriteSet;
+        }
+
+        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
+            return new GlowProjectile(level, x, y, z, dx, dy, dz, 49F, 119F, 249F,0.4F, 5, this.sprites);
         }
     }
 }
