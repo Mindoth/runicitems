@@ -48,7 +48,7 @@ public class UnstableCloudEntity extends AbstractCloudEntity {
     protected void doDecayEffects() {
         Level level = this.getLevel();
         Vec3 center = CommonEvents.getEntityCenter(this);
-        ArrayList<LivingEntity> targets = SpellBuilder.getEntitiesAround(this, level, this.range);
+        ArrayList<LivingEntity> targets = CommonEvents.getEntitiesAround(this, level, this.range);
         for ( LivingEntity target : targets ) {
             target.hurt(DamageSource.MAGIC, power);
         }

@@ -155,7 +155,7 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
         spawnParticles();
 
         if ( this.homing > 0 && this.tickCount > 10 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.homing * 2);
+            Entity nearest = CommonEvents.getNearestEntity(this, level, this.homing * 2);
             if ( nearest != null && this.speed != 0 ) {
                 double mX = getDeltaMovement().x();
                 double mY = getDeltaMovement().y();
@@ -189,7 +189,7 @@ public class AbstractProjectileEntity extends ThrowableProjectile {
     }
 
     protected void splashDamage() {
-        ArrayList<LivingEntity> list = SpellBuilder.getEntitiesAround(this, level, this.range);
+        ArrayList<LivingEntity> list = CommonEvents.getEntitiesAround(this, level, this.range);
         for ( LivingEntity target : list ) {
             target.hurt(DamageSource.indirectMagic(this, owner), power);
             addEffects(target);

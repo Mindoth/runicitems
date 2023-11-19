@@ -36,7 +36,7 @@ public class MagicalCloudEntity extends AbstractCloudEntity {
     @Override
     public void doTickEffects() {
         if ( this.tickCount % 40 == 0 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
+            Entity nearest = CommonEvents.getNearestEntity(this, level, this.range);
             if ( nearest != null ) {
                 Vec3 vec3 = CommonEvents.getEntityCenter(this);
                 Vec3 pTarget = CommonEvents.getEntityCenter(nearest);

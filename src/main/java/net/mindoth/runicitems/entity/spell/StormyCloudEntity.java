@@ -35,7 +35,7 @@ public class StormyCloudEntity extends AbstractCloudEntity {
     }
 
     protected void zapTarget(Entity caster, Level pLevel, double size, int power) {
-        Entity target = SpellBuilder.getNearestEntity(caster, pLevel, size);
+        Entity target = CommonEvents.getNearestEntity(caster, pLevel, size);
         if ( target == null ) return;
         target.hurt(DamageSource.MAGIC, power);
         ServerLevel level = (ServerLevel) pLevel;
@@ -61,7 +61,7 @@ public class StormyCloudEntity extends AbstractCloudEntity {
     @Override
     public void doTickEffects() {
         if ( this.tickCount % 10 == 0 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.range);
+            Entity nearest = CommonEvents.getNearestEntity(this, level, this.range);
             if ( nearest == null ) return;
             zapTarget(this, level, this.range, this.power);
         }

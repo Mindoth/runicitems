@@ -153,7 +153,7 @@ public class AbstractCloudEntity extends ThrowableProjectile {
         spawnParticles();
 
         if ( this.homing > 0 && this.tickCount > 10 ) {
-            Entity nearest = SpellBuilder.getNearestEntity(this, level, this.homing * 2);
+            Entity nearest = CommonEvents.getNearestEntity(this, level, this.homing * 2);
             if ( nearest != null && this.speed != 0 ) {
                 double mX = getDeltaMovement().x();
                 double mY = getDeltaMovement().y();

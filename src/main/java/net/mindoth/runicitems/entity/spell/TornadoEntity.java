@@ -45,7 +45,7 @@ public class TornadoEntity extends AbstractCloudEntity {
             level.playSound(null, center.x, center.y, center.z,
                     SoundEvents.HORSE_BREATHE, SoundSource.PLAYERS, 2, 0.03F);
         }
-        List<LivingEntity> targets = SpellBuilder.getEntitiesAround(this, this.level, this.range);
+        List<LivingEntity> targets = CommonEvents.getEntitiesAround(this, this.level, this.range);
         for ( LivingEntity target : targets ) {
             double velY = target.getDeltaMovement().y;
             double dx = (center.x - target.position().x > 0 ? 0.5 : -0.5) - (center.x - target.position().x) * 0.125;

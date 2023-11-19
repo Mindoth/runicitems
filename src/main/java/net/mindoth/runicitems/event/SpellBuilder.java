@@ -3,22 +3,17 @@ package net.mindoth.runicitems.event;
 import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.item.WandItem;
 import net.mindoth.runicitems.item.rune.ComponentRuneItem;
-import net.mindoth.runicitems.item.rune.ModifierRuneItem;
-import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.runicitems.spells.*;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SpellBuilder {
@@ -273,26 +268,5 @@ public class SpellBuilder {
 
     public static boolean getInvoke(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.INVOKE_RUNE.get());
-    }
-
-    public static ArrayList<LivingEntity> getEntitiesAround(Entity caster, Level pLevel, double size) {
-        ArrayList<LivingEntity> targets = (ArrayList<LivingEntity>) pLevel.getEntitiesOfClass(LivingEntity.class, caster.getBoundingBox().inflate(size));
-        targets.removeIf(entry -> entry == caster || !(entry.isAttackable()) || !(entry.isAlive() || (entry instanceof Player && ((Player)entry).getAbilities().instabuild)));
-        return targets;
-    }
-
-    public static Entity getNearestEntity(Entity player, Level pLevel, double size) {
-        ArrayList<LivingEntity> targets = getEntitiesAround(player, pLevel, size);
-        LivingEntity target = null;
-        double lowestSoFar = Double.MAX_VALUE;
-        for ( LivingEntity closestSoFar : targets ) {
-            if ( !closestSoFar.isAlliedTo(player) ) {
-                double testDistance = player.distanceTo(closestSoFar);
-                if ( testDistance < lowestSoFar ) {
-                    target = closestSoFar;
-                }
-            }
-        }
-        return target;
     }
 }
