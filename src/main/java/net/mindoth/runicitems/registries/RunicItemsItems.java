@@ -4,6 +4,8 @@ import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.*;
 import net.mindoth.runicitems.item.rune.*;
 import net.mindoth.runicitems.item.itemgroup.RunicItemsItemGroup;
+import net.mindoth.runicitems.spells.TornadoSpell;
+import net.mindoth.runicitems.spells.WitherSkullSpell;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -76,15 +78,12 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> EMPTY_RUNE = ITEMS.register("empty_rune",
             () -> new RuneItem(new Item.Properties(), 0));
 
-    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
-            () -> new ComponentRuneItem(new Item.Properties(), 0));
 
-    public static final RegistryObject<Item> STORM_RUNE = ITEMS.register("storm_rune",
-            () -> new ComponentRuneItem(new Item.Properties(), 0));
+    public static final RegistryObject<Item> TORNADO_RUNE = ITEMS.register("tornado_rune",
+            () -> new SpellRuneItem(new Item.Properties(), 0, new TornadoSpell()));
 
-    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
-            () -> new ComponentRuneItem(new Item.Properties(), 0));
-
+    public static final RegistryObject<Item> WITHER_SKULL_RUNE = ITEMS.register("wither_skull_rune",
+            () -> new SpellRuneItem(new Item.Properties(), 0, new WitherSkullSpell()));
 
 
     public static final RegistryObject<Item> DISTANCE_CAST_RUNE = ITEMS.register("distance_cast_rune",
@@ -95,9 +94,6 @@ public class RunicItemsItems {
 
     public static final RegistryObject<Item> DEATH_TRIGGER_RUNE = ITEMS.register("death_trigger_rune",
             () -> new ModifierRuneItem(new Item.Properties(), 20));
-
-    public static final RegistryObject<Item> INVOKE_RUNE = ITEMS.register("invoke_rune",
-            () -> new ModifierRuneItem(new Item.Properties(), 64));
 
 
     public static final RegistryObject<Item> INCREASE_POWER_RUNE = ITEMS.register("increase_power_rune",

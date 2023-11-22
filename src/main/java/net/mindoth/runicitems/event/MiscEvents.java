@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
-public class CommonEvents {
+public class MiscEvents {
 
     @SubscribeEvent
     public static void weaponsOnMobs(EntityJoinLevelEvent event) {

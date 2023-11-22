@@ -2,7 +2,8 @@ package net.mindoth.runicitems.event;
 
 import net.mindoth.runicitems.inventory.WandData;
 import net.mindoth.runicitems.item.WandItem;
-import net.mindoth.runicitems.item.rune.ComponentRuneItem;
+import net.mindoth.runicitems.item.rune.ModifierRuneItem;
+import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.runicitems.spells.*;
 import net.mindoth.shadowizardlib.event.CommonEvents;
@@ -26,88 +27,33 @@ public class SpellBuilder {
 
     public static void cast(Player owner, Entity caster, IItemHandler itemHandler, int slot, float xRot, float yRot) {
         HashMap<Item, Integer> effects = new HashMap<>();
-        int componentCounter = 0;
         for ( int i = slot; i < itemHandler.getSlots(); i++ ) {
             if ( !itemHandler.getStackInSlot(i).isEmpty() ) {
                 Item rune = getRune(itemHandler, i);
-                effects.merge(rune, 1, Integer::sum);
-                if ( rune instanceof ComponentRuneItem ) {
-                    if ( getInvoke(effects) ) {
-                        componentCounter += 1;
-                        if ( componentCounter == 3 ) {
-                            doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
-                            effects.clear();
-                            break;
-                        }
-                    }
-                    else {
-                        doSpell(owner, caster, itemHandler, i, effects, xRot, yRot);
-                        effects.clear();
-                        break;
-                    }
+                if ( rune instanceof ModifierRuneItem ) {
+                    effects.merge(rune, 1, Integer::sum);
+                }
+                else if ( rune instanceof SpellRuneItem ) {
+                    doSpell(owner, caster, itemHandler, i, effects, (SpellRuneItem)rune, xRot, yRot);
+                    break;
                 }
             }
         }
     }
 
-    private static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, float xRot, float yRot) {
-        final AbstractSpell spell = getSpell(effects);
+    private static void doSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, SpellRuneItem rune, float xRot, float yRot) {
+        final AbstractSpell spell = rune.spell;
         Vec3 center;
         int distance = SpellBuilder.getDistance(effects);
         if ( distance > 0 ) {
             int adjuster = 1;
             if ( caster != owner ) adjuster = -1;
-            Vec3 direction = calculateViewVector(xRot * adjuster, yRot * adjuster).normalize();
+            Vec3 direction = CommonEvents.calculateViewVector(xRot * adjuster, yRot * adjuster).normalize();
             direction = direction.multiply(distance, distance, distance);
             center = caster.getEyePosition().add(direction);
         }
-        else center = CommonEvents.getEntityCenter(caster);
+        else center = new Vec3(CommonEvents.getEntityCenter(caster).x, CommonEvents.getEntityCenter(caster).y + 0.25F, CommonEvents.getEntityCenter(caster).z);
         AbstractSpell.routeSpell(owner, caster, itemHandler, slot, effects, spell, center, xRot, yRot);
-    }
-
-    private static AbstractSpell getSpell(HashMap<Item, Integer> effects) {
-        int ice = 0;
-        int storm = 0;
-        int fire = 0;
-        AbstractSpell spell = new ExplosionSpell();
-        if ( effects.containsKey(RunicItemsItems.ICE_RUNE.get()) ) {
-            if ( effects.get(RunicItemsItems.ICE_RUNE.get()) != null ) {
-                ice += effects.get(RunicItemsItems.ICE_RUNE.get());
-            }
-        }
-        if ( effects.containsKey(RunicItemsItems.STORM_RUNE.get()) ) {
-            if ( effects.get(RunicItemsItems.STORM_RUNE.get()) != null ) {
-                storm += effects.get(RunicItemsItems.STORM_RUNE.get());
-            }
-        }
-        if ( effects.containsKey(RunicItemsItems.FIRE_RUNE.get()) ) {
-            if ( effects.get(RunicItemsItems.FIRE_RUNE.get()) != null ) {
-                fire += effects.get(RunicItemsItems.FIRE_RUNE.get());
-            }
-        }
-        if ( ice == 1 && storm == 0 && fire == 0 ) spell = new IceProjectileSpell();
-        if ( ice == 0 && storm == 1 && fire == 0 ) spell = new StormProjectileSpell();
-        if ( ice == 0 && storm == 0 && fire == 1 ) spell = new FireProjectileSpell();
-        if ( ice == 1 && storm == 1 && fire == 1 ) spell = new DeafeningBlastSpell();
-        if ( ice == 3 && storm == 0 && fire == 0 ) spell = new IcicleSpell();
-        if ( ice == 0 && storm == 3 && fire == 0 ) spell = new UnstableCloudSpell();
-        if ( ice == 0 && storm == 0 && fire == 3 ) spell = new SunStrikeSpell();
-        if ( ice == 2 && storm == 1 && fire == 0 ) spell = new GhostWalkSpell();
-        if ( ice == 1 && storm == 2 && fire == 0 ) spell = new TornadoSpell();
-        if ( ice == 0 && storm == 2 && fire == 1 ) spell = new AlacritySpell();
-        if ( ice == 0 && storm == 1 && fire == 2 ) spell = new MeteorSpell();
-        if ( ice == 1 && storm == 0 && fire == 2 ) spell = new ForgeSpiritSpell();
-        return spell;
-    }
-
-    private static Vec3 calculateViewVector(float pXRot, float pYRot) {
-        float f = pXRot * ((float)Math.PI / 180F);
-        float f1 = -pYRot * ((float)Math.PI / 180F);
-        float f2 = Mth.cos(f1);
-        float f3 = Mth.sin(f1);
-        float f4 = Mth.cos(f);
-        float f5 = Mth.sin(f);
-        return new Vec3((double)(f3 * f4), (double)(-f5), (double)(f2 * f4));
     }
 
     public static Item getRune(IItemHandler itemHandler, int slot) {
@@ -264,9 +210,5 @@ public class SpellBuilder {
 
     public static boolean getBlockPiercing(HashMap<Item, Integer> effects) {
         return effects.containsKey(RunicItemsItems.BLOCK_PIERCING_RUNE.get());
-    }
-
-    public static boolean getInvoke(HashMap<Item, Integer> effects) {
-        return effects.containsKey(RunicItemsItems.INVOKE_RUNE.get());
     }
 }

@@ -24,12 +24,8 @@ public class DeafeningBlastSpell extends AbstractSpell {
         playSound(level, center);
 
         int adjuster;
-        if ( caster != owner ) {
-            adjuster = -1;
-        }
-        else {
-            adjuster = 1;
-        }
+        if ( caster != owner ) adjuster = -1;
+        else adjuster = 1;
         projectile.setPos(new Vec3(center.x, center.y, center.z));
         projectile.shootFromRotation(caster, xRot * adjuster, yRot * adjuster, 0F, SpellBuilder.getSpeed(effects, speed), 1.0F);
         level.addFreshEntity(projectile);

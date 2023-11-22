@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "runicitems:items/invoke_rune"
+    "layer0": "runicitems:items/tornado_rune"
   }
 }

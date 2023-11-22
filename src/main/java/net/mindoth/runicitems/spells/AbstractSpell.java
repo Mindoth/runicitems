@@ -14,25 +14,8 @@ import java.util.HashMap;
 public abstract class AbstractSpell {
 
     public static void routeSpell(Player owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, AbstractSpell spell, Vec3 center, float xRot, float yRot) {
-        if ( spell instanceof MagicSparkSpell ) MagicSparkSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof IceProjectileSpell ) IceProjectileSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof StormProjectileSpell ) StormProjectileSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof FireProjectileSpell ) FireProjectileSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof MeteorSpell ) MeteorSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof HealingBoltSpell ) HealingBoltSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
         if ( spell instanceof WitherSkullSpell ) WitherSkullSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof StormyCloudSpell ) StormyCloudSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof MagicalCloudSpell ) MagicalCloudSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
         if ( spell instanceof TornadoSpell ) TornadoSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof UnstableCloudSpell ) UnstableCloudSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof ExplosionSpell ) ExplosionSpell.shootMagic(owner, effects, center);
-        if ( spell instanceof GhostWalkSpell ) GhostWalkSpell.shootMagic(owner, caster, effects);
-        if ( spell instanceof AlacritySpell ) AlacritySpell.shootMagic(owner, caster, effects);
-        if ( spell instanceof ForgeSpiritSpell ) ForgeSpiritSpell.shootMagic(owner, caster, effects, center);
-        if ( spell instanceof RaiseDeadSpell ) RaiseDeadSpell.shootMagic(owner, caster, effects, center);
-        if ( spell instanceof IcicleSpell ) IcicleSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        if ( spell instanceof DeafeningBlastSpell ) DeafeningBlastSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
-        //if ( spell instanceof SunStrikeSpell ) SunStrikeSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
     }
 
     protected static void playMagicSound(Level level, Vec3 center) {

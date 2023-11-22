@@ -25,7 +25,6 @@ public class AlacritySpell extends AbstractSpell {
         int amplifier = Math.round(SpellBuilder.getPower(effects, 0)) - 1;
         playMagicSound(level, center);
         MobEffectInstance buff = new MobEffectInstance(MobEffects.DIG_SPEED, life, amplifier, false, false, true);
-        owner.addEffect(buff);
         doParticleEffects(level, owner);
 
         if ( caster == owner ) {

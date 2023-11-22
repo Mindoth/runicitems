@@ -24,15 +24,10 @@ public class UnstableCloudSpell extends AbstractSpell {
         if ( SpellBuilder.getSpeed(effects, speed) == 0.25F ) speed = Float.MIN_VALUE;
         playSound(level, center);
 
-        float lower = 0.25F;
         int adjuster;
-        if ( caster != owner ) {
-            adjuster = -1;
-        }
-        else {
-            adjuster = 1;
-        }
-        cloud.setPos(new Vec3(center.x, center.y + lower, center.z));
+        if ( caster != owner ) adjuster = -1;
+        else adjuster = 1;
+        cloud.setPos(new Vec3(center.x, center.y, center.z));
         cloud.shootFromRotation(caster, xRot * adjuster, yRot * adjuster, 0F, SpellBuilder.getSpeed(effects, speed), 0);
         if ( SpellBuilder.getSpeed(effects, speed) == 0.25F ) cloud.setDeltaMovement(0, 0, 0);
         level.addFreshEntity(cloud);
