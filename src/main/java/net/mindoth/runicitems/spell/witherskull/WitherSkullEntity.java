@@ -1,0 +1,71 @@
+package net.mindoth.runicitems.spell.witherskull;
+
+import net.mindoth.runicitems.registries.RunicItemsEntities;
+import net.mindoth.runicitems.spell.abstractspell.AbstractProjectileEntity;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.PlayMessages;
+
+import java.util.HashMap;
+
+public class WitherSkullEntity extends AbstractProjectileEntity {
+
+    @Override
+    protected int getBasePower() {
+        return 8;
+    }
+
+    public WitherSkullEntity(Level level, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
+                            HashMap<Item, Integer> effects) {
+        super(RunicItemsEntities.WITHER_SKULL.get(), level, owner, caster, itemHandler, slot, effects);
+    }
+
+    public WitherSkullEntity(EntityType entityType, Level level) {
+        super(entityType, level);
+    }
+
+    public WitherSkullEntity(PlayMessages.SpawnEntity spawnEntity, Level level) {
+        this(RunicItemsEntities.WITHER_SKULL.get(), level);
+    }
+
+    @Override
+    protected void hurtTarget(LivingEntity target) {
+        addEffects(target);
+        if ( power > 0 ) {
+            target.hurt(DamageSource.indirectMagic(this, owner), power);
+        }
+        explode();
+    }
+
+    @Override
+    protected void addEffects(LivingEntity target) {
+        target.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 1));
+    }
+
+    @Override
+    protected void doBlockEffects(HitResult result) {
+        if ( !blockPiercing ) {
+            explode();
+        }
+    }
+
+    private void explode() {
+        level.explode(null, DamageSource.MAGIC, null, this.getX(), this.getY(), this.getZ(), 1, false, Explosion.BlockInteraction.NONE);
+    }
+
+    @Override
+    protected SimpleParticleType getParticle() {
+        return ParticleTypes.SMOKE;
+    }
+}

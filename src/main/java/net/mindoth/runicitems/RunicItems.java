@@ -1,11 +1,17 @@
 package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
+import net.mindoth.runicitems.entity.minion.BlazeMinionEntity;
+import net.mindoth.runicitems.entity.minion.SkeletonMinionEntity;
 import net.mindoth.runicitems.loot.RunicItemsLootModifiers;
-import net.mindoth.runicitems.registries.RunicItemsEnchantments;
-import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.runicitems.particle.GlowProjectile;
+import net.mindoth.runicitems.registries.*;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -27,7 +33,28 @@ public class RunicItems {
 
     private void addRegistries(final IEventBus modEventBus) {
         RunicItemsItems.ITEMS.register(modEventBus);
+        RunicItemsEntities.ENTITIES.register(modEventBus);
         RunicItemsEnchantments.ENCHANTMENTS.register(modEventBus);
         RunicItemsLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(modEventBus);
+        RunicItemsContainers.CONTAINERS.register(modEventBus);
+        RunicItemsEffects.MOB_EFFECT_DEFERRED_REGISTER.register(modEventBus);
+    }
+
+    @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class EventBusEvents {
+
+        @SubscribeEvent
+        public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
+            event.put(RunicItemsEntities.BLAZE_MINION.get(), BlazeMinionEntity.setAttributes());
+            event.put(RunicItemsEntities.SKELETON_MINION.get(), SkeletonMinionEntity.setAttributes());
+        }
+
+        @SubscribeEvent
+        public static void registerParticleFactories(final RegisterParticleProvidersEvent event) {
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_ICE_PARTICLE.get(), GlowProjectile.IceProvider::new);
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_STORM_PARTICLE.get(), GlowProjectile.StormProvider::new);
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.GLOW_FIRE_PARTICLE.get(), GlowProjectile.FireProvider::new);
+            Minecraft.getInstance().particleEngine.register(RunicItemsParticles.DEAFENING_BLAST_PARTICLE.get(), GlowProjectile.DeafeningBlastProvider::new);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package net.mindoth.runicitems.client.models.armor;
 
+import net.mindoth.shadowizardlib.client.models.ArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -7,13 +8,12 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class Boots2Model<T extends Entity> extends ArmorModel {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "boots2_armor"), "main");
-
-    public Boots2Model(ModelPart part) {
-        super(part);
+    public Boots2Model(ModelPart part, EquipmentSlot slot) {
+        super(part, slot);
     }
 
     public static LayerDefinition createBodyLayer() {

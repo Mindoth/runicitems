@@ -1,24 +1,76 @@
 {
-  "item.runicitems.mallet": "Mallet",
+  "itemGroup.runic_items_tab": "Runic Items",
+
+  "message.runicitems.failedcast": "Unable to cast Spell",
+
   "item.runicitems.stone_tablet": "\u00A75Secrets of Life and Death\u00A7r",
+  "item.runicitems.mallet": "Mallet",
   "item.runicitems.archer_boots": "Archer Boots",
   "item.runicitems.fighter_boots": "Fighter Boots",
   "item.runicitems.wizard_boots": "Wizard Boots",
   "item.runicitems.eagle_boots": "Eagle Boots",
   "item.runicitems.warrior_boots": "Warrior Boots",
   "item.runicitems.sorcerer_boots": "Sorcerer Boots",
-  "item.runicitems.ancient_staff": "Ancient Staff",
 
-  "enchantment.runicitems.freezing": "Freezing",
+
+  "item.runicitems.spell_book": "Spell Book",
+  "item.runicitems.staff": "Staff",
+  "item.runicitems.tier1_wand": "Crude Wand",
+  "item.runicitems.tier2_wand": "Basic Wand",
+  "item.runicitems.tier3_wand": "Improved Wand",
+  "item.runicitems.tier4_wand": "Celestial Wand",
+  "item.runicitems.tier5_wand": "Masterful Wand",
+  "item.runicitems.tier6_wand": "Arcane Wand",
+  "item.runicitems.tier7_wand": "Mythical Wand",
+
+
+  "item.runicitems.empty_rune": "Empty Rune",
+  "item.runicitems.storm_rune": "Storm Rune",
+  "item.runicitems.ice_rune": "Ice Rune",
+  "item.runicitems.fire_rune": "Fire Rune",
+
+  "item.runicitems.icicle_rune": "Icicle Rune",
+  "item.runicitems.wither_skull_rune": "Wither Skull Rune",
+  "item.runicitems.tornado_rune": "Tornado Rune",
+
+  "item.runicitems.trigger_rune": "Trigger Rune",
+  "item.runicitems.death_trigger_rune": "Death Trigger Rune",
+  "item.runicitems.magical_cloud_rune": "Magical Cloud Rune",
+
+  "item.runicitems.increase_power_rune": "Increase Power Rune",
+  "item.runicitems.decrease_power_rune": "Decrease Power Rune",
+  "item.runicitems.bounce_rune": "Bounce Rune",
+  "item.runicitems.gravity_rune": "Gravity Rune",
+  "item.runicitems.increase_speed_rune": "Increase Speed Rune",
+  "item.runicitems.decrease_speed_rune": "Decrease Speed Rune",
+  "item.runicitems.increase_life_rune": "Increase Life Rune",
+  "item.runicitems.decrease_life_rune": "Decrease Life Rune",
+  "item.runicitems.enemy_piercing_rune": "Enemy Piercing Rune",
+  "item.runicitems.block_piercing_rune": "Block Piercing Rune",
+  "item.runicitems.permabounce_rune": "Permabounce Rune",
+  "item.runicitems.homing_rune": "Homing Rune",
+  "item.runicitems.increase_range_rune": "Increase Range Rune",
+  "item.runicitems.decrease_range_rune": "Decrease Range Rune",
+  "item.runicitems.distance_cast_rune": "Distance Cast Rune",
+
+
+  "entity.runicitems.blaze_minion": "Blaze Minion",
+  "entity.runicitems.skeleton_minion": "Skeleton Minion",
+
+
   "enchantment.runicitems.target_cracker": "Target Cracker",
-  "enchantment.runicitems.radius": "Radius",
-  "enchantment.runicitems.ice_barrage": "Ice Barrage",
-  "enchantment.runicitems.blood_barrage": "Blood Barrage",
+
+
+  "effect.runicitems.ghost_walk": "Ghost Walk",
+
 
   "tooltip.runicitems.archer_boots": "\u00A77Increases Projectile Damage\u00A7r",
   "tooltip.runicitems.fighter_boots": "\u00A77Increases Melee Damage\u00A7r",
   "tooltip.runicitems.wizard_boots": "\u00A77Increases Magic Damage\u00A7r",
   "tooltip.runicitems.eagle_boots": "\u00A77Greatly Increases Projectile Damage\u00A7r",
   "tooltip.runicitems.warrior_boots": "\u00A77Greatly Increases Melee Damage\u00A7r",
-  "tooltip.runicitems.sorcerer_boots": "\u00A77Greatly Increases Magic Damage\u00A7r"
+  "tooltip.runicitems.sorcerer_boots": "\u00A77Greatly Increases Magic Damage\u00A7r",
+
+  "tooltip.runicitems.rune_drain": "\u00A77Drain\u00A7r",
+  "tooltip.runicitems.wand_charge": "\u00A77Current charge\u00A7r"
 }
