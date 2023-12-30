@@ -1,78 +1,85 @@
 package net.mindoth.runicitems.particle;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Random;
-
-@OnlyIn(Dist.CLIENT)
 public class ParticleGlow extends SpriteTexturedParticle {
-    public float colorR = 0;
-    public float colorG = 0;
-    public float colorB = 0;
-    public float initScale = 0;
-    public float initAlpha = 0;
+    public float colorR;
+    public float colorG;
+    public float colorB;
+    public float initScale;
+    public float initX;
+    public float initY;
+    public float initZ;
+    public float destX;
+    public float destY;
+    public float destZ;
 
-    public boolean disableDepthTest;
-    public ParticleGlow(ClientWorld worldIn, double x, double y, double z, double vx, double vy, double vz, float r, float g, float b, float a, float scale, int lifetime, IAnimatedSprite sprite, boolean disableDepthTest) {
-        super(worldIn, x,y,z,0,0,0);
+    protected ParticleGlow(ClientWorld level, double x, double y, double z, double vx, double vy, double vz, float r, float g, float b, float scale, int lifetime, IAnimatedSprite sprite) {
+        super(level, x, y, z, 0, 0, 0);
         this.colorR = r;
         this.colorG = g;
         this.colorB = b;
-        if (this.colorR > 1.0){
-            this.colorR = this.colorR/255.0f;
+        if (this.colorR > 1.0) {
+            this.colorR = this.colorR / 255.0F;
         }
-        if (this.colorG > 1.0){
-            this.colorG = this.colorG/255.0f;
+        if (this.colorG > 1.0) {
+            this.colorG = this.colorG / 255.0F;
         }
-        if (this.colorB > 1.0){
-            this.colorB = this.colorB/255.0f;
+        if (this.colorB > 1.0) {
+            this.colorB = this.colorB / 255.0F;
         }
         this.setColor(colorR, colorG, colorB);
-        this.lifetime = (int)((float)lifetime*0.5f);
-        this.quadSize = 0;
+        this.lifetime = lifetime;
+        this.quadSize = scale;
         this.initScale = scale;
-        this.xd = vx*2.0f;
-        this.yd = vy*2.0f;
-        this.zd = vz*2.0f;
-        this.initAlpha = a;
+        this.xd = 0;
+        this.yd = 0;
+        this.zd = 0;
+        this.initX = (float) x;
+        this.initY = (float) y;
+        this.initZ = (float) z;
+        this.destX = (float) vx;
+        this.destY = (float) vy;
+        this.destZ = (float) vz;
+        this.roll = 2.0f * (float) Math.PI;
         this.pickSprite(sprite);
-        this.disableDepthTest = disableDepthTest;
     }
+
     @Override
     public IParticleRenderType getRenderType() {
-        return this.disableDepthTest ? RenderTypes.EMBER_RENDER_NO_MASK : RenderTypes.EMBER_RENDER;
+        return ParticleRenderTypes.EMBER_RENDER;
     }
 
-
     @Override
-    public int getLightColor(float pTicks){
+    public int getLightColor(float pTicks) {
         return 255;
     }
 
-
     @Override
-    public void tick(){
+    public void tick() {
         super.tick();
-
-        if (new Random().nextInt(6) == 0){
-            this.age++;
-        }
-        float lifeCoeff = (float)this.age/(float)this.lifetime;
-        this.quadSize = initScale-initScale*lifeCoeff;
-        this.alpha = initAlpha*(1.0f-lifeCoeff);
-        this.oRoll = roll;
-        roll += 1.0f;
+        this.alpha = (-(1/(float)lifetime) * age + 1);
     }
-
-
 
     @Override
     public boolean isAlive() {
-        return this.age < this.lifetime;
+        return this.age < lifetime;
     }
+
+    /*@OnlyIn(Dist.CLIENT)
+    public static class GlowProvider implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite sprites;
+
+        public GlowProvider(IAnimatedSprite spriteSet) {
+            this.sprites = spriteSet;
+        }
+
+        public Particle createParticle(BasicParticleType particleType, ClientWorld level, double x, double y, double z, double dx, double dy, double dz) {
+            return new ParticleGlow(level, x, y, z, dx, dy, dz, 49F, 119F, 249F ,0.4F, 10, this.sprites);
+        }
+    }*/
 }

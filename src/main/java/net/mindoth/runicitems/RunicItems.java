@@ -1,7 +1,6 @@
 package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
-import net.mindoth.runicitems.loot.RunicItemsLootModifiers;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsEntities;

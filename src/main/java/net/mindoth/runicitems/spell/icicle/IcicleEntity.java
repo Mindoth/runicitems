@@ -5,13 +5,10 @@ import net.mindoth.runicitems.particle.ParticleColor;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.registries.RunicItemsParticles;
 import net.mindoth.runicitems.spell.abstractspell.AbstractProjectileEntity;
-import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -62,11 +59,12 @@ public class IcicleEntity extends AbstractProjectileEntity {
         double d1 = vec3.z;
         for ( int i = 0; i < 4; ++i ) {
             ServerWorld level = (ServerWorld)this.level;
-            level.sendParticles(GlowParticleData.createData(this.getParticleColor()), this.getX() + d5 * (double)i / 4.0D, this.getY() + d6 * (double)i / 4.0D, this.getZ() + d1 * (double)i / 4.0D, 0, -d5, -d6 + 0.2D, -d1, 0);
+            level.sendParticles(GlowParticleData.createData(getParticleColor()), this.getX() + d5 * (double)i / 4.0D, this.getY() + d6 * (double)i / 4.0D, this.getZ() + d1 * (double)i / 4.0D, 0, -d5, -d6 + 0.2D, -d1, 0);
         }
     }
 
-    public ParticleColor getParticleColor(){
-        return new ParticleColor(255, 100, 232);
+    @Override
+    protected ParticleColor getParticleColor(){
+        return new ParticleColor(49F, 119F, 249F);
     }
 }

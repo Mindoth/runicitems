@@ -5,6 +5,14 @@ import java.util.Random;
 
 public class ParticleColor {
 
+    public static ParticleColor defaultParticleColor(){
+        return new ParticleColor(255, 25, 180);
+    }
+
+    public static ParticleColor.IntWrapper defaultParticleColorWrapper(){
+        return new ParticleColor.IntWrapper(255, 25, 180);
+    }
+
     private final float r;
     private final float g;
     private final float b;
@@ -61,7 +69,7 @@ public class ParticleColor {
 
     public static ParticleColor deserialize(String string){
         if(string == null || string.isEmpty())
-            return ParticleUtil.defaultParticleColor();
+            return defaultParticleColor();
         String[] arr = string.split(",");
         return new ParticleColor(Integer.parseInt(arr[0].trim()), Integer.parseInt(arr[1].trim()), Integer.parseInt(arr[2].trim()));
     }
@@ -100,7 +108,7 @@ public class ParticleColor {
         }
 
         public static @Nonnull ParticleColor.IntWrapper deserialize(String string){
-            ParticleColor.IntWrapper color = ParticleUtil.defaultParticleColorWrapper();
+            ParticleColor.IntWrapper color = defaultParticleColorWrapper();
             if(string == null || string.isEmpty())
                 return color;
 

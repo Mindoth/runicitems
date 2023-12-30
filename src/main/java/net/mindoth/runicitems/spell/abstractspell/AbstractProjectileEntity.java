@@ -11,6 +11,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.Item;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
@@ -219,6 +222,10 @@ public class AbstractProjectileEntity extends ThrowableEntity {
 
     protected BasicParticleType getParticle() {
         return ParticleTypes.ASH;
+    }
+
+    protected ParticleColor getParticleColor(){
+        return new ParticleColor(255, 25, 180);
     }
 
     @Override
