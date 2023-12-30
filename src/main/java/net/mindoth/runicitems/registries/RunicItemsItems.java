@@ -1,47 +1,62 @@
 package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
-import net.mindoth.runicitems.item.*;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
+import net.mindoth.runicitems.item.armor.*;
+import net.mindoth.runicitems.item.itemgroup.RunicItemsItemGroup;
+import net.mindoth.runicitems.item.rune.SpellRuneItem;
+import net.mindoth.runicitems.item.spellbook.SpellbookItem;
+import net.mindoth.runicitems.item.spellbook.SpellbookType;
+import net.mindoth.runicitems.item.weapon.MalletItem;
+import net.mindoth.runicitems.item.weapon.StaffItem;
+import net.mindoth.runicitems.spell.icicle.IcicleSpell;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public class RunicItemsItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RunicItems.MOD_ID);
 
-    public static final RegistryObject<Item> MALLET = ITEMS.register("mallet",
-            () -> new MalletItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(500)));
-
+    //Misc
     public static final RegistryObject<Item> STONE_TABLET = ITEMS.register("stone_tablet",
-            () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1)));
+            () -> new Item(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB).stacksTo(1)));
 
+
+    //Weapons
+    public static final RegistryObject<Item> MALLET = ITEMS.register("mallet",
+            () -> new MalletItem(new Item.Properties().durability(500)));
+
+
+    //Boots
     public static final RegistryObject<Item> ARCHER_BOOTS = ITEMS.register("archer_boots",
-            () -> new ArcherBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlot.FEET,
-                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+            () -> new ArcherBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlotType.FEET, new Item.Properties()));
 
     public static final RegistryObject<Item> FIGHTER_BOOTS = ITEMS.register("fighter_boots",
-            () -> new FighterBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlot.FEET,
-                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+            () -> new FighterBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlotType.FEET, new Item.Properties()));
 
     public static final RegistryObject<Item> WIZARD_BOOTS = ITEMS.register("wizard_boots",
-            () -> new WizardBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlot.FEET,
-                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+            () -> new WizardBoots(BootsItem.MaterialBoots.BOOTS, EquipmentSlotType.FEET, new Item.Properties()));
 
     public static final RegistryObject<Item> EAGLE_BOOTS = ITEMS.register("eagle_boots",
-            () -> new EagleBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
-                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+            () -> new EagleBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlotType.FEET, new Item.Properties()));
 
     public static final RegistryObject<Item> WARRIOR_BOOTS = ITEMS.register("warrior_boots",
-            () -> new WarriorBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
-                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+            () -> new WarriorBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlotType.FEET, new Item.Properties()));
 
     public static final RegistryObject<Item> SORCERER_BOOTS = ITEMS.register("sorcerer_boots",
-            () -> new SorcererBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlot.FEET,
-                    new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).durability(0)));
+            () -> new SorcererBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlotType.FEET, new Item.Properties()));
 
-    public static final RegistryObject<Item> ANCIENT_STAFF = ITEMS.register("ancient_staff",
-            () -> new AncientStaffItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).durability(500)));
+
+    //Magic
+    public static final RegistryObject<Item> SPELLBOOK = ITEMS.register("spellbook",
+            () -> new SpellbookItem(SpellbookType.SPELLBOOK, 0));
+
+    public static final RegistryObject<Item> STAFF = ITEMS.register("staff",
+            () -> new StaffItem(new Item.Properties()));
+
+
+    //Runes
+    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
+            () -> new SpellRuneItem(new Item.Properties(), new IcicleSpell()));
 }

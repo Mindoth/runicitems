@@ -5,10 +5,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class RunicItemsCommonConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
-    public static final ForgeConfigSpec.ConfigValue<Integer> BARRAGE_POWER_SCALE;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> FREEZE_AI;
-    public static final ForgeConfigSpec.ConfigValue<Float> ARCHERBOOTS_CHANCE;
-    public static final ForgeConfigSpec.ConfigValue<Float> FIGHTERBOOTS_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Double> ARCHERBOOTS_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Double> FIGHTERBOOTS_CHANCE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> WIZARDBOOTS_TRADE;
     public static final ForgeConfigSpec.ConfigValue<Integer> ARCHERBOOTS_BONUS;
     public static final ForgeConfigSpec.ConfigValue<Integer> FIGHTERBOOTS_BONUS;
@@ -16,23 +14,17 @@ public class RunicItemsCommonConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> EAGLEBOOTS_BONUS;
     public static final ForgeConfigSpec.ConfigValue<Integer> WARRIORBOOTS_BONUS;
     public static final ForgeConfigSpec.ConfigValue<Integer> SORCERERBOOTS_BONUS;
-    public static final ForgeConfigSpec.ConfigValue<Float> TABLET_CHANCE;
-    public static final ForgeConfigSpec.ConfigValue<Float> MALLET_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Double> TABLET_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Double> MALLET_CHANCE;
 
     static {
         BUILDER.push("Configs for Runic Items");
 
-        BARRAGE_POWER_SCALE = BUILDER.comment("By how much should the Barrage spells' power be multiplied (Default = 1)")
-                .define("Barrage Power Multiplier", 1);
-
-        FREEZE_AI = BUILDER.comment("Should Ice Barrage freeze mobs' AI? Wont work on Ender Dragon, Wither or Elder Guardian (Default = false)")
-                .define("Barrage Freeze AI", false);
-
         ARCHERBOOTS_CHANCE = BUILDER.comment("Chance of finding Archer Boots in a buried treasure (Default = 0.2 = 20%)")
-                .define("Archer Boots Chance", 0.2f);
+                .define("Archer Boots Chance", 0.2);
 
         FIGHTERBOOTS_CHANCE = BUILDER.comment("Chance of getting Fighter Boots as a drop from a Ravager (Default = 0.25 = 25%)")
-                .define("Fighter Boots Chance", 0.25f);
+                .define("Fighter Boots Chance", 0.25);
 
         WIZARDBOOTS_TRADE = BUILDER.comment("Should the Cleric Villager be able to trade you Wizard Boots? (Default = true)")
                 .define("Wizard Boots Trade", true);
@@ -56,10 +48,10 @@ public class RunicItemsCommonConfig {
                 .define("Sorcerer Boots Bonus", 6);
 
         TABLET_CHANCE = BUILDER.comment("Chance of getting the Secrets of Life and Death as a drop from an Evoker instead of a Totem of Undying (Default = 0.1 = 10%)")
-                .define("Tablet Chance", 0.1f);
+                .define("Tablet Chance", 0.1);
 
         MALLET_CHANCE = BUILDER.comment("Chance of a Wither Skeleton to spawn holding a Mallet (Default = 0.15 = 15%)")
-                .define("Mallet Chance", 0.15f);
+                .define("Mallet Chance", 0.15);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

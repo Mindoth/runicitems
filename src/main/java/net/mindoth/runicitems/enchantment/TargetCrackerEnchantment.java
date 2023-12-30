@@ -1,13 +1,13 @@
 package net.mindoth.runicitems.enchantment;
 
-import net.mindoth.runicitems.item.MalletItem;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.mindoth.runicitems.item.weapon.MalletItem;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 
 public class TargetCrackerEnchantment extends Enchantment {
-    public TargetCrackerEnchantment(Rarity rarityIn, EnchantmentCategory typeIn, EquipmentSlot... slots) {
+    public TargetCrackerEnchantment(Rarity rarityIn, EnchantmentType typeIn, EquipmentSlotType... slots) {
         super(rarityIn, typeIn, slots);
     }
 

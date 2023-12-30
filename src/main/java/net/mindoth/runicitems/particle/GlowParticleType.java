@@ -1,0 +1,15 @@
+package net.mindoth.runicitems.particle;
+
+import com.mojang.serialization.Codec;
+import net.minecraft.particles.ParticleType;
+
+public class GlowParticleType extends ParticleType<ColorParticleTypeData> {
+    public GlowParticleType() {
+        super(false, ColorParticleTypeData.DESERIALIZER);
+    }
+
+    @Override
+    public Codec<ColorParticleTypeData> codec() {
+        return ColorParticleTypeData.CODEC;
+    }
+}
