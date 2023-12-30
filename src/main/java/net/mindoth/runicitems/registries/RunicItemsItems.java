@@ -8,7 +8,7 @@ import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookType;
 import net.mindoth.runicitems.item.weapon.MalletItem;
 import net.mindoth.runicitems.item.weapon.StaffItem;
-import net.mindoth.runicitems.spell.icicle.IcicleSpell;
+import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -57,6 +57,6 @@ public class RunicItemsItems {
 
 
     //Runes
-    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
-            () -> new SpellRuneItem(new Item.Properties(), new IcicleSpell()));
+    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
+            () -> new SpellRuneItem(new Item.Properties(), new FireballSpell()));
 }

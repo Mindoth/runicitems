@@ -1,7 +1,9 @@
 package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.event.SpellBuilder;
+import net.mindoth.runicitems.particle.GlowParticleData;
 import net.mindoth.runicitems.particle.ParticleColor;
+import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -25,6 +27,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
 
@@ -54,18 +57,23 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         return 0;
     }
 
-    protected AbstractProjectileEntity(EntityType<? extends AbstractProjectileEntity> entityType, World level) {
+    public AbstractProjectileEntity(EntityType<? extends AbstractProjectileEntity> entityType, World level) {
         super(entityType, level);
     }
 
-    protected AbstractProjectileEntity(EntityType<? extends AbstractProjectileEntity> pEntityType, World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                                       HashMap<Item, Integer> effects) {
-        super(pEntityType, owner, pLevel);
+    public AbstractProjectileEntity(FMLPlayMessages.SpawnEntity spawnEntity, World level) {
+        this(RunicItemsEntities.PROJECTILE.get(), level);
+    }
+
+    public AbstractProjectileEntity(World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
+                                       HashMap<Item, Integer> effects, ParticleColor details) {
+        super(RunicItemsEntities.PROJECTILE.get(), owner, pLevel);
 
         this.owner = owner;
         this.caster = caster;
         this.itemHandler = itemHandler;
         this.slot = slot;
+        this.details = details;
 
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
@@ -85,6 +93,7 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     protected Entity caster;
     protected IItemHandler itemHandler;
     protected int slot;
+    protected ParticleColor details;
     protected boolean trigger;
     protected boolean deathTrigger;
     protected int bounces;
@@ -96,6 +105,22 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     protected int power;
     protected float speed;
     protected int life;
+
+    protected void doTickEffects() {
+    }
+
+    protected void hurtTarget(LivingEntity target) {
+        addEffects(target);
+        if ( power > 0 ) {
+            target.hurt(DamageSource.indirectMagic(this, owner), power);
+        }
+    }
+
+    protected void addEffects(LivingEntity target) {
+    }
+
+    protected void doBlockEffects(RayTraceResult result) {
+    }
 
     @Override
     protected void onHit(RayTraceResult result) {
@@ -153,9 +178,6 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         }
     }
 
-    protected void doBlockEffects(RayTraceResult result) {
-    }
-
     @Override
     public void tick() {
         super.tick();
@@ -186,46 +208,16 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         if ( this.getDeltaMovement().equals(new Vector3d(0, 0, 0)) ) this.remove();
     }
 
-    protected void doTickEffects() {
-    }
-
-    protected void hurtTarget(LivingEntity target) {
-    }
-
-    protected void addEffects(LivingEntity target) {
-    }
-
-    protected void splashDamage() {
-        ArrayList<LivingEntity> list = CommonEvents.getEntitiesAround(this, level, this.range);
-        for ( LivingEntity target : list ) {
-            target.hurt(DamageSource.indirectMagic(this, owner), power);
-            addEffects(target);
-        }
-        spawnSplashParticles();
-    }
-
-    protected void spawnSplashParticles() {
-    }
-
-    protected double getParticleHeight() {
-        return this.getY();
-    }
-
-    protected void spawnBonusParticles() {
-    }
-
     protected void spawnParticles() {
-        spawnBonusParticles();
-        ServerWorld level = (ServerWorld)this.level;
-        level.sendParticles(this.getParticle(), CommonEvents.getEntityCenter(this).x + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), getParticleHeight() + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), CommonEvents.getEntityCenter(this).z + this.random.nextDouble() * 0.20F * (this.random.nextBoolean() ? -1 : 1), 0, 0, 0, 0, 0);
-    }
-
-    protected BasicParticleType getParticle() {
-        return ParticleTypes.ASH;
-    }
-
-    protected ParticleColor getParticleColor(){
-        return new ParticleColor(255, 25, 180);
+        Vector3d vec3 = this.getDeltaMovement();
+        Vector3d center = CommonEvents.getEntityCenter(this);
+        double d5 = vec3.x;
+        double d6 = vec3.y;
+        double d1 = vec3.z;
+        for ( int i = 0; i < 4; ++i ) {
+            ServerWorld level = (ServerWorld)this.level;
+            level.sendParticles(GlowParticleData.createData(this.details), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, -d5, -d6 + 0.2D, -d1, 0);
+        }
     }
 
     @Override

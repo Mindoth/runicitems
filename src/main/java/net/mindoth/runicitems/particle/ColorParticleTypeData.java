@@ -16,11 +16,13 @@ public class ColorParticleTypeData implements IParticleData {
                     Codec.FLOAT.fieldOf("r").forGetter(d -> d.color.getRed()),
                     Codec.FLOAT.fieldOf("g").forGetter(d -> d.color.getGreen()),
                     Codec.FLOAT.fieldOf("b").forGetter(d -> d.color.getBlue()),
+                    Codec.FLOAT.fieldOf("scale").forGetter(d -> d.scale),
                     Codec.BOOL.fieldOf("disableDepthTest").forGetter(d-> d.disableDepthTest)
             )
             .apply(instance, ColorParticleTypeData::new));
 
     public ParticleColor color;
+    public float scale;
     public boolean disableDepthTest;
 
 
@@ -36,8 +38,9 @@ public class ColorParticleTypeData implements IParticleData {
             return new ColorParticleTypeData(type, ParticleColor.deserialize(buffer.readUtf()), buffer.readBoolean());
         }
     };
-    public ColorParticleTypeData(float r, float g, float b){
-        this.color = new ParticleColor(r, g, b);
+    public ColorParticleTypeData(float r, float g, float b, float scale){
+        this.color = new ParticleColor(r, g, b, scale);
+        this.scale = scale;
         this.type = RunicItemsParticles.GLOW_TYPE;
         this.disableDepthTest = false;
     }
@@ -48,8 +51,8 @@ public class ColorParticleTypeData implements IParticleData {
         this.disableDepthTest = disableDepthTest;
     }
 
-    public ColorParticleTypeData(float r, float g, float b, boolean disableDepthTest){
-        this(r,g,b);
+    public ColorParticleTypeData(float r, float g, float b, float scale, boolean disableDepthTest){
+        this(r,g,b,scale);
         this.disableDepthTest = disableDepthTest;
     }
 

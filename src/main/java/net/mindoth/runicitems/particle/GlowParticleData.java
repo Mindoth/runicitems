@@ -16,7 +16,7 @@ public class GlowParticleData implements IParticleFactory<ColorParticleTypeData>
     }
 
     public Particle createParticle(ColorParticleTypeData data, ClientWorld level, double x, double y, double z, double dx, double dy, double dz) {
-        return new ParticleGlow(level, x, y, z, dx, dy, dz, data.color.getRed(), data.color.getGreen(), data.color.getBlue(),0.4F, 10, this.sprites);
+        return new ParticleGlow(level, x, y, z, dx, dy, dz, data.color.getRed(), data.color.getGreen(), data.color.getBlue(), data.color.getScale(), 10, this.sprites);
     }
 
     public static IParticleData createData(ParticleColor color) {

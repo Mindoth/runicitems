@@ -1,6 +1,6 @@
 package net.mindoth.runicitems.spell.abstractspell;
 
-import net.mindoth.runicitems.spell.icicle.IcicleSpell;
+import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 public abstract class AbstractSpell {
 
     public static void routeSpell(PlayerEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
-        if ( spell instanceof IcicleSpell ) IcicleSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
+        if ( spell instanceof FireballSpell) FireballSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
     }
 
     protected static void playMagicSound(World level, Vector3d center) {
