@@ -26,7 +26,7 @@ public class RunicItemsParticles {
 
     @SuppressWarnings("resource")
     @SubscribeEvent
-    public static void registerFactories(ParticleFactoryRegisterEvent evt) {
+    public static void registerFactories(ParticleFactoryRegisterEvent event) {
         Minecraft.getInstance().particleEngine.register(GLOW_TYPE, GlowParticleData::new);
     }
 }

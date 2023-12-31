@@ -18,7 +18,7 @@ public class FireballSpell extends AbstractSpell {
     public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, slot, effects, new ParticleColor(177F, 63F, 0F,1.6F));
+        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, slot, effects);
         projectile.setNoGravity(SpellBuilder.getGravity(effects));
         float speed = getSpeed();
         playSound(level, center);
@@ -32,7 +32,7 @@ public class FireballSpell extends AbstractSpell {
     }
 
     protected static float getSpeed() {
-        return 0.6F;
+        return 0.8F;
     }
 
     protected static void playSound(World level, Vector3d center) {

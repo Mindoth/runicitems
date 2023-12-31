@@ -12,7 +12,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class RunicItemsEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, RunicItems.MOD_ID);
 
-
     public static final RegistryObject<EntityType<AbstractProjectileEntity>> PROJECTILE
             = registerEntity(EntityType.Builder.<AbstractProjectileEntity>of(AbstractProjectileEntity::new,
             EntityClassification.MISC).sized(0.5F, 0.5F).setCustomClientFactory(AbstractProjectileEntity::new), "projectile");

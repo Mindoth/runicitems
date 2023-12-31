@@ -10,8 +10,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -35,11 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AbstractProjectileEntity extends ThrowableEntity {
-
-    @Override
-    protected float getGravity() {
-        return 0.01F;
-    }
 
     protected int getBasePower() {
         return 1;
@@ -66,14 +65,13 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     }
 
     public AbstractProjectileEntity(World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                                       HashMap<Item, Integer> effects, ParticleColor details) {
+                                    HashMap<Item, Integer> effects) {
         super(RunicItemsEntities.PROJECTILE.get(), owner, pLevel);
 
         this.owner = owner;
         this.caster = caster;
         this.itemHandler = itemHandler;
         this.slot = slot;
-        this.details = details;
 
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
@@ -93,7 +91,6 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     protected Entity caster;
     protected IItemHandler itemHandler;
     protected int slot;
-    protected ParticleColor details;
     protected boolean trigger;
     protected boolean deathTrigger;
     protected int bounces;
@@ -105,9 +102,6 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     protected int power;
     protected float speed;
     protected int life;
-
-    protected void doTickEffects() {
-    }
 
     protected void hurtTarget(LivingEntity target) {
         addEffects(target);
@@ -164,7 +158,6 @@ public class AbstractProjectileEntity extends ThrowableEntity {
                         else if (face == Direction.DOWN) {
                             motionY = -motionY;
                         }
-                        //this.setDeltaMovement(motionX, motionY, motionZ);
 
                         //This seems to work better with low velocity projectiles
                         shoot(motionX, motionY, motionZ, this.speed, 0);
@@ -181,9 +174,15 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     @Override
     public void tick() {
         super.tick();
+        Vector3d vec3 = this.getDeltaMovement();
+        Vector3d center = CommonEvents.getEntityCenter(this);
+        double d5 = vec3.x;
+        double d6 = vec3.y;
+        double d1 = vec3.z;
+        for ( int i = 0; i < 4; ++i ) {
+            level.addParticle(GlowParticleData.createData(getParticleColor()), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, -d5, -d6 + 0.2D, -d1);
+        }
         if ( level.isClientSide ) return;
-        doTickEffects();
-        spawnParticles();
 
         if ( this.homing > 0 && this.tickCount > 10 ) {
             Entity nearest = CommonEvents.getNearestEntity(this, level, this.homing * 2);
@@ -208,20 +207,50 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         if ( this.getDeltaMovement().equals(new Vector3d(0, 0, 0)) ) this.remove();
     }
 
-    protected void spawnParticles() {
-        Vector3d vec3 = this.getDeltaMovement();
-        Vector3d center = CommonEvents.getEntityCenter(this);
-        double d5 = vec3.x;
-        double d6 = vec3.y;
-        double d1 = vec3.z;
-        for ( int i = 0; i < 4; ++i ) {
-            ServerWorld level = (ServerWorld)this.level;
-            level.sendParticles(GlowParticleData.createData(this.details), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, -d5, -d6 + 0.2D, -d1, 0);
-        }
+    @Override
+    protected float getGravity() {
+        return 0.01F;
+    }
+
+    public static final DataParameter<Integer> RED = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
+    public static final DataParameter<Integer> GREEN = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
+    public static final DataParameter<Integer> BLUE = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
+
+    public ParticleColor getParticleColor(){
+        return new ParticleColor(49, 119, 249);
+    }
+
+    public ParticleColor.IntWrapper getParticleColorWrapper() {
+        return new ParticleColor.IntWrapper(entityData.get(RED), entityData.get(GREEN), entityData.get(BLUE));
+    }
+
+    public void setColor(ParticleColor.IntWrapper colors){
+        entityData.set(RED, colors.r);
+        entityData.set(GREEN, colors.g);
+        entityData.set(BLUE, colors.b);
+    }
+
+    @Override
+    public void load(CompoundNBT compound) {
+        super.load(compound);
+        entityData.set(RED, compound.getInt("red"));
+        entityData.set(GREEN, compound.getInt("green"));
+        entityData.set(BLUE, compound.getInt("blue"));
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putInt("red", entityData.get(RED));
+        compound.putInt("green", entityData.get(GREEN));
+        compound.putInt("blue", entityData.get(BLUE));
     }
 
     @Override
     protected void defineSynchedData() {
+        this.entityData.define(RED, 255);
+        this.entityData.define(GREEN, 25);
+        this.entityData.define(BLUE, 180);
     }
 
     @Override

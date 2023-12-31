@@ -61,7 +61,7 @@ public class SpellBuilder {
 
     public static Integer getPower(HashMap<Item, Integer> effects, double basePower) {
         int power = 0;
-        basePower += 1;
+        basePower += 15;
         /*if ( effects.containsKey(RunicItemsItems.INCREASE_POWER_RUNE.get()) ) {
             if ( effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get()) != null ) {
                 power += effects.get(RunicItemsItems.INCREASE_POWER_RUNE.get());

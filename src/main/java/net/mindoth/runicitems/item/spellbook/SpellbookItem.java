@@ -1,5 +1,6 @@
 package net.mindoth.runicitems.item.spellbook;
 
+import net.mindoth.runicitems.event.SpellBuilder;
 import net.mindoth.runicitems.item.itemgroup.RunicItemsItemGroup;
 import net.mindoth.runicitems.item.spellbook.gui.SpellbookContainer;
 import net.mindoth.runicitems.item.spellbook.inventory.SpellbookData;
@@ -95,9 +96,18 @@ public class SpellbookItem extends Item {
             if ( data.getUuid() != null ) {
                 UUID uuid = data.getUuid();
                 data.updateAccessRecords(player.getName().getString(), System.currentTimeMillis());
-                NetworkHooks.openGui(((ServerPlayerEntity) player), new SimpleNamedContainerProvider( (windowId, playerInventory, playerEntity) -> new SpellbookContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), spellbook.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
+                if ( player.isCrouching() ) {
+                    NetworkHooks.openGui(((ServerPlayerEntity) player), new SimpleNamedContainerProvider( (windowId, playerInventory, playerEntity) -> new SpellbookContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), spellbook.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
+                }
+                else {
+                    SpellBuilder.castFromWand(player, spellbook);
+                }
             }
         }
         return ActionResult.pass(player.getItemInHand(handIn));
+    }
+
+    public int getUseDuration(ItemStack pStack) {
+        return 72000;
     }
 }
