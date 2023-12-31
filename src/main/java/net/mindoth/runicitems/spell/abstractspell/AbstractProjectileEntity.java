@@ -1,27 +1,23 @@
 package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.event.SpellBuilder;
-import net.mindoth.runicitems.particle.GlowParticleData;
-import net.mindoth.runicitems.particle.ParticleColor;
+import net.mindoth.runicitems.client.particle.GlowParticleData;
+import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -30,12 +26,10 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AbstractProjectileEntity extends ThrowableEntity {
@@ -65,13 +59,14 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     }
 
     public AbstractProjectileEntity(World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot,
-                                    HashMap<Item, Integer> effects) {
+                                    HashMap<Item, Integer> effects, ParticleColor.IntWrapper color) {
         super(RunicItemsEntities.PROJECTILE.get(), owner, pLevel);
 
         this.owner = owner;
         this.caster = caster;
         this.itemHandler = itemHandler;
         this.slot = slot;
+        setColor(color);
 
         this.trigger = SpellBuilder.getTrigger(effects);
         this.deathTrigger = SpellBuilder.getDeathTrigger(effects);
@@ -174,37 +169,40 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     @Override
     public void tick() {
         super.tick();
-        Vector3d vec3 = this.getDeltaMovement();
-        Vector3d center = CommonEvents.getEntityCenter(this);
-        double d5 = vec3.x;
-        double d6 = vec3.y;
-        double d1 = vec3.z;
-        for ( int i = 0; i < 4; ++i ) {
-            level.addParticle(GlowParticleData.createData(getParticleColor()), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, -d5, -d6 + 0.2D, -d1);
-        }
-        if ( level.isClientSide ) return;
-
-        if ( this.homing > 0 && this.tickCount > 10 ) {
-            Entity nearest = CommonEvents.getNearestEntity(this, level, this.homing * 2);
-            if ( nearest != null && this.speed != 0 ) {
-                double mX = getDeltaMovement().x();
-                double mY = getDeltaMovement().y();
-                double mZ = getDeltaMovement().z();
-                Vector3d spellPos = new Vector3d(getX(), getY(), getZ());
-                Vector3d targetPos = new Vector3d(CommonEvents.getEntityCenter(nearest).x, CommonEvents.getEntityCenter(nearest).y, CommonEvents.getEntityCenter(nearest).z);
-                Vector3d lookVec = targetPos.subtract(spellPos);
-                Vector3d spellMotion = new Vector3d(mX, mY, mZ);
-                double arc = 0.25D;
-                Vector3d lerpVec = new Vector3d(spellMotion.x + lookVec.x * arc, spellMotion.y + lookVec.y * arc, spellMotion.z + lookVec.z * arc);
-                shoot(lerpVec.x, lerpVec.y, lerpVec.z, this.speed, 0);
+        if ( level.isClientSide ) {
+            ClientWorld world = (ClientWorld)this.level;
+            Vector3d vec3 = this.getDeltaMovement();
+            Vector3d center = CommonEvents.getEntityCenter(this);
+            double d5 = vec3.x;
+            double d6 = vec3.y;
+            double d1 = vec3.z;
+            for ( int i = 0; i < 4; ++i ) {
+                world.addParticle(GlowParticleData.createData(getParticleColor()), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
             }
         }
+        if ( !level.isClientSide ) {
+            if ( this.homing > 0 && this.tickCount > 10 ) {
+                Entity nearest = CommonEvents.getNearestEntity(this, level, this.homing * 2);
+                if ( nearest != null && this.speed != 0 ) {
+                    double mX = getDeltaMovement().x();
+                    double mY = getDeltaMovement().y();
+                    double mZ = getDeltaMovement().z();
+                    Vector3d spellPos = new Vector3d(getX(), getY(), getZ());
+                    Vector3d targetPos = new Vector3d(CommonEvents.getEntityCenter(nearest).x, CommonEvents.getEntityCenter(nearest).y, CommonEvents.getEntityCenter(nearest).z);
+                    Vector3d lookVec = targetPos.subtract(spellPos);
+                    Vector3d spellMotion = new Vector3d(mX, mY, mZ);
+                    double arc = 0.25D;
+                    Vector3d lerpVec = new Vector3d(spellMotion.x + lookVec.x * arc, spellMotion.y + lookVec.y * arc, spellMotion.z + lookVec.z * arc);
+                    shoot(lerpVec.x, lerpVec.y, lerpVec.z, this.speed, 0);
+                }
+            }
 
-        if ( this.tickCount > life ) {
-            if ( deathTrigger ) SpellBuilder.cast((PlayerEntity)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
-            this.remove();
+            if ( this.tickCount > life ) {
+                if ( deathTrigger ) SpellBuilder.cast((PlayerEntity)owner, this, itemHandler, slot + 1, this.xRot, this.yRot);
+                this.remove();
+            }
+            if ( this.getDeltaMovement().equals(new Vector3d(0, 0, 0)) ) this.remove();
         }
-        if ( this.getDeltaMovement().equals(new Vector3d(0, 0, 0)) ) this.remove();
     }
 
     @Override
@@ -216,15 +214,15 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     public static final DataParameter<Integer> GREEN = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
     public static final DataParameter<Integer> BLUE = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
 
-    public ParticleColor getParticleColor(){
-        return new ParticleColor(49, 119, 249);
+    public ParticleColor getParticleColor() {
+        return new ParticleColor(entityData.get(RED), entityData.get(GREEN), entityData.get(BLUE));
     }
 
     public ParticleColor.IntWrapper getParticleColorWrapper() {
         return new ParticleColor.IntWrapper(entityData.get(RED), entityData.get(GREEN), entityData.get(BLUE));
     }
 
-    public void setColor(ParticleColor.IntWrapper colors){
+    public void setColor(ParticleColor.IntWrapper colors) {
         entityData.set(RED, colors.r);
         entityData.set(GREEN, colors.g);
         entityData.set(BLUE, colors.b);

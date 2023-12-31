@@ -1,5 +1,6 @@
 package net.mindoth.runicitems.spell.abstractspell;
 
+import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.minecraft.entity.Entity;
@@ -16,12 +17,20 @@ import java.util.HashMap;
 public abstract class AbstractSpell {
 
     public static void routeSpell(PlayerEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
-        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
+        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot, getSpellColor(2));
         if ( spell instanceof BlizzardSpell ) {
             for ( int i = 0; i < 3; i++ ) {
-                BlizzardSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot);
+                BlizzardSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot, getSpellColor(0));
             }
         }
+    }
+
+    protected static ParticleColor.IntWrapper getSpellColor(int element) {
+        ParticleColor.IntWrapper returnColor = null;
+        if ( element == 0 ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
+        if ( element == 1 ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);
+        if ( element == 2 ) returnColor = new ParticleColor.IntWrapper(177, 63, 0);
+        return returnColor;
     }
 
     public boolean isChannel() {

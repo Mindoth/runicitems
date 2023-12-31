@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.particle;
+package net.mindoth.runicitems.client.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;

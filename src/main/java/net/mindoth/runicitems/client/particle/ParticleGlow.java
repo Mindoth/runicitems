@@ -1,11 +1,10 @@
-package net.mindoth.runicitems.particle;
+package net.mindoth.runicitems.client.particle;
 
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+import java.util.Random;
+
 public class ParticleGlow extends SpriteTexturedParticle {
     public float colorR = 0;
     public float colorG = 0;
@@ -19,13 +18,13 @@ public class ParticleGlow extends SpriteTexturedParticle {
         this.colorR = r;
         this.colorG = g;
         this.colorB = b;
-        if (this.colorR > 1.0){
+        if ( this.colorR > 1.0 ) {
             this.colorR = this.colorR/255.0f;
         }
-        if (this.colorG > 1.0){
+        if ( this.colorG > 1.0 ) {
             this.colorG = this.colorG/255.0f;
         }
-        if (this.colorB > 1.0){
+        if ( this.colorB > 1.0 ) {
             this.colorB = this.colorB/255.0f;
         }
         this.setColor(colorR, colorG, colorB);
@@ -53,7 +52,15 @@ public class ParticleGlow extends SpriteTexturedParticle {
     @Override
     public void tick() {
         super.tick();
-        this.alpha = (-(1/(float)lifetime) * age + 1);
+
+        if (new Random().nextInt(6) == 0){
+            this.age++;
+        }
+        float lifeCoeff = (float)this.age/(float)this.lifetime;
+        this.quadSize = initScale-initScale*lifeCoeff;
+        this.alpha = initAlpha*(1.0f-lifeCoeff);
+        this.oRoll = roll;
+        roll += 1.0f;
     }
 
     @Override

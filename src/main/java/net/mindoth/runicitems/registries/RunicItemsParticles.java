@@ -1,9 +1,9 @@
 package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
-import net.mindoth.runicitems.particle.ColorParticleTypeData;
-import net.mindoth.runicitems.particle.GlowParticleData;
-import net.mindoth.runicitems.particle.GlowParticleType;
+import net.mindoth.runicitems.client.particle.ColorParticleTypeData;
+import net.mindoth.runicitems.client.particle.GlowParticleData;
+import net.mindoth.runicitems.client.particle.GlowParticleType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;

@@ -1,7 +1,7 @@
 package net.mindoth.runicitems.spell.fireball;
 
+import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.runicitems.event.SpellBuilder;
-import net.mindoth.runicitems.particle.ParticleColor;
 import net.mindoth.runicitems.spell.abstractspell.AbstractProjectileEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.minecraft.entity.Entity;
@@ -15,10 +15,11 @@ import java.util.HashMap;
 
 public class FireballSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, Vector3d center, float xRot, float yRot) {
+    public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects,
+                                  Vector3d center, float xRot, float yRot, ParticleColor.IntWrapper color) {
         World level = caster.level;
 
-        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, slot, effects);
+        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, slot, effects, color);
         projectile.setNoGravity(SpellBuilder.getGravity(effects));
         float speed = getSpeed();
         playSound(level, center);

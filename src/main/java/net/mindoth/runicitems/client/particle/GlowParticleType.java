@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.particle;
+package net.mindoth.runicitems.client.particle;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.particles.ParticleType;

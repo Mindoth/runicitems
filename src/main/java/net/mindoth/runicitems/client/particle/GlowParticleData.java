@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.particle;
+package net.mindoth.runicitems.client.particle;
 
 import net.mindoth.runicitems.registries.RunicItemsParticles;
 import net.minecraft.client.particle.IAnimatedSprite;
@@ -17,7 +17,7 @@ public class GlowParticleData implements IParticleFactory<ColorParticleTypeData>
 
     @Override
     public Particle createParticle(ColorParticleTypeData data, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        return new ParticleGlow(worldIn, x,y,z,xSpeed, ySpeed, zSpeed, data.color.getRed(), data.color.getGreen(), data.color.getBlue(), 1.0F, 0.4F, 36, this.spriteSet, data.disableDepthTest);
+        return new ParticleGlow(worldIn, x,y,z,xSpeed, ySpeed, zSpeed, data.color.getRed(), data.color.getGreen(), data.color.getBlue(), 1.0F, 0.5F, 36, this.spriteSet, data.disableDepthTest);
     }
 
     public static IParticleData createData(ParticleColor color) {

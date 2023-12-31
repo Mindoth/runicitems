@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.particle;
+package net.mindoth.runicitems.client.particle;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -38,14 +38,14 @@ public class ParticleColor {
     }
 
 
-    public static ParticleColor fromInt(int color){
+    public static ParticleColor fromInt(int color) {
         int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;
         int b = (color >> 0) & 0xFF;
         return new ParticleColor(r,g,b);
     }
 
-    public float getRed(){return r;}
+    public float getRed() {return r;}
 
     public float getGreen() {
         return g;
@@ -59,7 +59,7 @@ public class ParticleColor {
         return color;
     }
 
-    public String serialize(){
+    public String serialize() {
         return "" + this.r + "," + this.g +","+this.b;
     }
 
@@ -67,14 +67,14 @@ public class ParticleColor {
         return new IntWrapper(this);
     }
 
-    public static ParticleColor deserialize(String string){
-        if(string == null || string.isEmpty())
+    public static ParticleColor deserialize(String string) {
+        if ( string == null || string.isEmpty() )
             return defaultParticleColor();
         String[] arr = string.split(",");
         return new ParticleColor(Integer.parseInt(arr[0].trim()), Integer.parseInt(arr[1].trim()), Integer.parseInt(arr[2].trim()));
     }
 
-    public static class IntWrapper{
+    public static class IntWrapper {
         public int r;
         public int g;
         public int b;
@@ -91,16 +91,16 @@ public class ParticleColor {
             this.b = (int) (color.getBlue() * 255.0);
         }
 
-        public ParticleColor toParticleColor(){
+        public ParticleColor toParticleColor() {
             return new ParticleColor(r,g,b);
         }
 
-        public String serialize(){
+        public String serialize() {
             return "" + this.r + "," + this.g +","+this.b;
         }
 
-        public void makeVisible(){
-            if(r + g + b < 20){
+        public void makeVisible() {
+            if ( r + g + b < 20 ) {
                 b += 10;
                 g += 10;
                 r += 10;
@@ -109,14 +109,14 @@ public class ParticleColor {
 
         public static @Nonnull ParticleColor.IntWrapper deserialize(String string){
             ParticleColor.IntWrapper color = defaultParticleColorWrapper();
-            if(string == null || string.isEmpty())
+            if ( string == null || string.isEmpty() )
                 return color;
 
-            try{
+            try {
                 String[] arr = string.split(",");
                 color = new ParticleColor.IntWrapper(Integer.parseInt(arr[0].trim()), Integer.parseInt(arr[1].trim()), Integer.parseInt(arr[2].trim()));
                 return color;
-            }catch (Exception ignored){ }
+            } catch (Exception ignored){ }
             return color;
         }
     }
