@@ -16,32 +16,53 @@ import java.util.HashMap;
 
 public abstract class AbstractSpell {
 
-    public static void routeSpell(PlayerEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
-        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot, getSpellColor(2));
-        if ( spell instanceof BlizzardSpell ) {
-            for ( int i = 0; i < 3; i++ ) {
-                BlizzardSpell.shootMagic(owner, caster, itemHandler, slot, effects, center, xRot, yRot, getSpellColor(0));
-            }
-        }
+    public static void routeSpell(PlayerEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
+        if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot, "frost");
+        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot, "fire");
     }
 
-    protected static ParticleColor.IntWrapper getSpellColor(int element) {
-        ParticleColor.IntWrapper returnColor = null;
-        if ( element == 0 ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
-        if ( element == 1 ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);
-        if ( element == 2 ) returnColor = new ParticleColor.IntWrapper(177, 63, 0);
-        return returnColor;
+    public int getLife() {
+        return 120;
+    }
+
+    public float getPower() {
+        return 1.0F;
+    }
+
+    public float getSpeed() {
+        return 0.0F;
+    }
+
+    public int getDistance() {
+        return 0;
+    }
+
+    public boolean getGravity() {
+        return true;
+    }
+
+    public int getCooldown() {
+        return 20;
     }
 
     public boolean isChannel() {
         return false;
     }
 
+
+
     protected static void playMagicSound(World level, Vector3d center) {
         level.playSound(null, center.x, center.y, center.z,
                 SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 0.5F, 1);
         level.playSound(null, center.x, center.y, center.z,
                 SoundEvents.ENCHANTMENT_TABLE_USE, SoundCategory.PLAYERS, 0.5F, 2);
+    }
+
+    protected static void playWindSound(World level, Vector3d center) {
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.02F);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.03F);
     }
 
     protected static void playStormSound(World level, Vector3d center) {

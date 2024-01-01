@@ -7,7 +7,6 @@ import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookType;
 import net.mindoth.runicitems.item.weapon.MalletItem;
-import net.mindoth.runicitems.item.weapon.StaffItem;
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -51,14 +50,11 @@ public class RunicItemsItems {
 
     //Magic
     public static final RegistryObject<Item> SPELLBOOK = ITEMS.register("spellbook",
-            () -> new SpellbookItem(SpellbookType.SPELLBOOK, 0));
-
-    public static final RegistryObject<Item> STAFF = ITEMS.register("staff",
-            () -> new StaffItem(new Item.Properties()));
+            () -> new SpellbookItem(SpellbookType.SPELLBOOK));
 
 
     //Runes
-    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune",
+    public static final RegistryObject<Item> FROST_RUNE = ITEMS.register("frost_rune",
             () -> new SpellRuneItem(new Item.Properties(), new BlizzardSpell()));
 
     public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",

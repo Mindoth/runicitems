@@ -1,34 +1,32 @@
 package net.mindoth.runicitems.spell.blizzard;
 
-import net.mindoth.runicitems.client.particle.ParticleColor;
-import net.mindoth.runicitems.event.SpellBuilder;
+import net.mindoth.runicitems.client.particle.GlowParticleData;
 import net.mindoth.runicitems.spell.abstractspell.AbstractProjectileEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.IItemHandler;
-
-import java.util.HashMap;
 
 public class BlizzardSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, int slot, HashMap<Item, Integer> effects,
-                                  Vector3d center, float xRot, float yRot, ParticleColor.IntWrapper color) {
+    public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell,
+                                  Vector3d center, float xRot, float yRot, String color) {
         World level = caster.level;
 
-        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, slot, effects, color);
-        projectile.setNoGravity(SpellBuilder.getGravity(effects));
-        float speed = getSpeed();
+        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, spell, color);
+        projectile.setNoGravity(!spell.getGravity());
 
         int adjuster;
         if ( caster != owner ) adjuster = -1;
         else adjuster = 1;
         setPos(level, caster, projectile);
-        projectile.shootFromRotation(caster, 0F * adjuster, 0F * adjuster, 0F, SpellBuilder.getSpeed(effects, speed), 1.0F);
+        projectile.shootFromRotation(caster, 0F * adjuster, 0F * adjuster, 0F, spell.getSpeed(), 1.0F);
         projectile.setDeltaMovement(0F, -0.6F, 0F);
         level.addFreshEntity(projectile);
     }
@@ -53,14 +51,54 @@ public class BlizzardSpell extends AbstractSpell {
             posY = CommonEvents.blockHeight(level, caster, range, error, 7) + randY;
             posZ = CommonEvents.getPoint(caster, range, error, true).z + randZ;
         }
-        projectile.setPos(posX, posY, posZ);
+        Vector3d spawnPos = new Vector3d(posX, posY, posZ);
+        projectile.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
+        if ( !level.isClientSide ) {
+            ServerWorld world = (ServerWorld)level;
+            float randSpread = (float)((Math.random() * (0.25F - (-0.25F))) + (-0.25F));
+            for ( int i = 0; i < 4; ++i ) {
+                world.sendParticles(ParticleTypes.CLOUD, spawnPos.x + randSpread, spawnPos.y + randSpread, spawnPos.z + randSpread, 0, 0, 0, 0, 0);
+            }
+        }
+        if ( caster.tickCount % 5 == 0 ) playSound(level, new Vector3d(spawnPos.x, spawnPos.y, spawnPos.z));
     }
 
+    @Override
+    public int getLife() {
+        return 120;
+    }
+
+    @Override
+    public float getPower() {
+        return 8.0F;
+    }
+
+    @Override
+    public float getSpeed() {
+        return 0.0F;
+    }
+
+    @Override
+    public int getDistance() {
+        return 0;
+    }
+
+    @Override
+    public boolean getGravity() {
+        return true;
+    }
+
+    @Override
+    public int getCooldown() {
+        return 20;
+    }
+
+    @Override
     public boolean isChannel() {
         return true;
     }
 
-    protected static float getSpeed() {
-        return 0.0F;
+    protected static void playSound(World level, Vector3d center) {
+        playWindSound(level, center);
     }
 }
