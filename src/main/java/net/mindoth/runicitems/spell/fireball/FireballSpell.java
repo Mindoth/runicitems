@@ -1,6 +1,5 @@
 package net.mindoth.runicitems.spell.fireball;
 
-import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.runicitems.spell.abstractspell.AbstractProjectileEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.minecraft.entity.Entity;
@@ -12,10 +11,10 @@ import net.minecraftforge.items.IItemHandler;
 public class FireballSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot, String color) {
+                                  Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, spell, color);
+        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, spell, "fire", 0.6F);
         projectile.setNoGravity(!spell.getGravity());
         playSound(level, center);
 

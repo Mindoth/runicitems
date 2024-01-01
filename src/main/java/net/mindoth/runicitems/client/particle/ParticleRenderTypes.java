@@ -13,6 +13,30 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import org.lwjgl.opengl.GL11;
 
 public class ParticleRenderTypes {
+    static final IParticleRenderType RUNIC_RENDER = new IParticleRenderType() {
+        @Override
+        public void begin(BufferBuilder buffer, TextureManager textureManager) {
+            RenderSystem.disableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.alphaFunc(516, 0.3F);
+            RenderSystem.enableCull();
+            textureManager.bind(AtlasTexture.LOCATION_PARTICLES);
+            RenderSystem.depthMask(false);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE.value);
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE);
+        }
+
+        @Override
+        public void end(Tessellator tessellator) {
+            tessellator.end();
+        }
+
+        @Override
+        public String toString() {
+            return "runic_items:em_rend";
+        }
+    };
+
     static final IParticleRenderType EMBER_RENDER = new IParticleRenderType() {
         @Override
         public void begin(BufferBuilder buffer, TextureManager textureManager) {
@@ -68,7 +92,7 @@ public class ParticleRenderTypes {
 
         @Override
         public String toString() {
-            return "ars_nouveau:em_rend_no_mask";
+            return "runic_items:em_rend_no_mask";
         }
     };
 }

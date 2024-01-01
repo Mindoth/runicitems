@@ -1,10 +1,8 @@
 package net.mindoth.runicitems.spell.blizzard;
 
-import net.mindoth.runicitems.client.particle.GlowParticleData;
 import net.mindoth.runicitems.spell.abstractspell.AbstractProjectileEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.shadowizardlib.event.CommonEvents;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particles.ParticleTypes;
@@ -16,17 +14,13 @@ import net.minecraftforge.items.IItemHandler;
 public class BlizzardSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot, String color) {
+                                  Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, spell, color);
+        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, spell, "frost", 0.3F);
         projectile.setNoGravity(!spell.getGravity());
 
-        int adjuster;
-        if ( caster != owner ) adjuster = -1;
-        else adjuster = 1;
         setPos(level, caster, projectile);
-        projectile.shootFromRotation(caster, 0F * adjuster, 0F * adjuster, 0F, spell.getSpeed(), 1.0F);
         projectile.setDeltaMovement(0F, -0.6F, 0F);
         level.addFreshEntity(projectile);
     }
@@ -53,13 +47,6 @@ public class BlizzardSpell extends AbstractSpell {
         }
         Vector3d spawnPos = new Vector3d(posX, posY, posZ);
         projectile.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
-        if ( !level.isClientSide ) {
-            ServerWorld world = (ServerWorld)level;
-            float randSpread = (float)((Math.random() * (0.25F - (-0.25F))) + (-0.25F));
-            for ( int i = 0; i < 4; ++i ) {
-                world.sendParticles(ParticleTypes.CLOUD, spawnPos.x + randSpread, spawnPos.y + randSpread, spawnPos.z + randSpread, 0, 0, 0, 0, 0);
-            }
-        }
         if ( caster.tickCount % 5 == 0 ) playSound(level, new Vector3d(spawnPos.x, spawnPos.y, spawnPos.z));
     }
 

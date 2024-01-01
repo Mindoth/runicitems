@@ -53,7 +53,7 @@ public class SpellbookItem extends Item {
             PlayerEntity player = (PlayerEntity)event.getEntityLiving();
             ItemStack spellbook = event.getItem();
             final AbstractSpell spell = getSpell(spellbook);
-            cast(player, getSpellData(spellbook), spell);
+            if ( player.tickCount % 5 == 0 ) cast(player, getSpellData(spellbook), spell);
         }
     }
 

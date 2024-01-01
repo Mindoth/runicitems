@@ -1,7 +1,7 @@
 package net.mindoth.runicitems.spell.abstractspell;
 
-import net.mindoth.runicitems.client.particle.GlowParticleData;
 import net.mindoth.runicitems.client.particle.ParticleColor;
+import net.mindoth.runicitems.client.particle.EmberParticleData;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.block.BlockState;
@@ -42,18 +42,19 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         this(RunicItemsEntities.PROJECTILE.get(), level);
     }
 
-    public AbstractProjectileEntity(World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, String color) {
+    public AbstractProjectileEntity(World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, String element, float scale) {
         super(RunicItemsEntities.PROJECTILE.get(), owner, pLevel);
 
-        setColor(getSpellColor(color));
         this.owner = owner;
         this.caster = caster;
         this.itemHandler = itemHandler;
         this.spell = spell;
 
-        this.element = color;
+        this.element = element;
+        this.scale = scale;
         this.power = this.spell.getPower();
         this.life = this.spell.getLife();
+        setColor(getSpellColor(this.element), this.scale);
     }
 
     protected LivingEntity owner;
@@ -62,6 +63,7 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     protected AbstractSpell spell;
 
     protected String element;
+    protected float scale;
     protected float power;
     protected float life;
 
@@ -97,13 +99,13 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         super.tick();
         if ( level.isClientSide ) {
             ClientWorld world = (ClientWorld)this.level;
-            Vector3d vec3 = this.getDeltaMovement();
             Vector3d center = CommonEvents.getEntityCenter(this);
+            Vector3d vec3 = this.getDeltaMovement();
             double d5 = vec3.x;
             double d6 = vec3.y;
             double d1 = vec3.z;
             for ( int i = 0; i < 4; ++i ) {
-                world.addParticle(GlowParticleData.createData(getParticleColor()), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
+                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
             }
         }
         if ( !level.isClientSide ) {
@@ -111,6 +113,14 @@ public class AbstractProjectileEntity extends ThrowableEntity {
                 this.remove();
             }
         }
+    }
+
+    protected static ParticleColor.IntWrapper getSpellColor(String element) {
+        ParticleColor.IntWrapper returnColor = null;
+        if ( element.equals("frost") ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
+        if ( element.equals("storm") ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);
+        if ( element.equals("fire") ) returnColor = new ParticleColor.IntWrapper(177, 63, 0);
+        return returnColor;
     }
 
     protected void playHitSound() {
@@ -125,32 +135,20 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         }
     }
 
-
-
-    protected static ParticleColor.IntWrapper getSpellColor(String element) {
-        ParticleColor.IntWrapper returnColor = null;
-        if ( element.equals("frost") ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
-        if ( element.equals("storm") ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);
-        if ( element.equals("fire") ) returnColor = new ParticleColor.IntWrapper(177, 63, 0);
-        return returnColor;
-    }
-
     public static final DataParameter<Integer> RED = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
     public static final DataParameter<Integer> GREEN = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
     public static final DataParameter<Integer> BLUE = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
+    public static final DataParameter<Float> SIZE = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.FLOAT);
 
     public ParticleColor getParticleColor() {
         return new ParticleColor(entityData.get(RED), entityData.get(GREEN), entityData.get(BLUE));
     }
 
-    public ParticleColor.IntWrapper getParticleColorWrapper() {
-        return new ParticleColor.IntWrapper(entityData.get(RED), entityData.get(GREEN), entityData.get(BLUE));
-    }
-
-    public void setColor(ParticleColor.IntWrapper colors) {
+    public void setColor(ParticleColor.IntWrapper colors, float size) {
         entityData.set(RED, colors.r);
         entityData.set(GREEN, colors.g);
         entityData.set(BLUE, colors.b);
+        entityData.set(SIZE, size);
     }
 
     @Override
@@ -159,6 +157,7 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         entityData.set(RED, compound.getInt("red"));
         entityData.set(GREEN, compound.getInt("green"));
         entityData.set(BLUE, compound.getInt("blue"));
+        entityData.set(SIZE, compound.getFloat("size"));
     }
 
     @Override
@@ -167,6 +166,7 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         compound.putInt("red", entityData.get(RED));
         compound.putInt("green", entityData.get(GREEN));
         compound.putInt("blue", entityData.get(BLUE));
+        compound.putFloat("size", entityData.get(SIZE));
     }
 
     @Override
@@ -174,6 +174,7 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         this.entityData.define(RED, 255);
         this.entityData.define(GREEN, 25);
         this.entityData.define(BLUE, 180);
+        this.entityData.define(SIZE, 0.3F);
     }
 
     @Override
