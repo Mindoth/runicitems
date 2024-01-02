@@ -86,13 +86,15 @@ public class SpellbookItem extends Item {
                             spellbook.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
                 }
                 else {
-                    final AbstractSpell spell = getSpell(spellbook);
-                    if ( spell.isChannel() ) {
-                        player.startUsingItem(handIn);
-                    }
-                    else {
-                        cast(player, getSpellData(spellbook), spell);
-                        addCooldown(player, spellbook.getItem(), spell);
+                    if ( getRune(getSpellData(spellbook), 0).getItem() instanceof SpellRuneItem ) {
+                        final AbstractSpell spell = getSpell(spellbook);
+                        if ( spell.isChannel() ) {
+                            player.startUsingItem(handIn);
+                        }
+                        else {
+                            cast(player, getSpellData(spellbook), spell);
+                            addCooldown(player, spellbook.getItem(), spell);
+                        }
                     }
                 }
             }
