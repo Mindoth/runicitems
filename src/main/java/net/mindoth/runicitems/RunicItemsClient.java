@@ -1,6 +1,7 @@
 package net.mindoth.runicitems;
 
-import net.mindoth.runicitems.item.spellbook.gui.SpellBookGui;
+import net.mindoth.runicitems.client.keybinds.RunicItemsKeyBinds;
+import net.mindoth.runicitems.client.gui.GuiSpellBook;
 import net.mindoth.runicitems.registries.RunicItemsContainers;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellRenderer;
@@ -18,7 +19,8 @@ public class RunicItemsClient {
     }
 
     public static void clientSetup(FMLClientSetupEvent event) {
-        ScreenManager.register(RunicItemsContainers.SPELLBOOK_CONTAINER.get(), SpellBookGui::new);
+        RunicItemsKeyBinds.register(event);
+        ScreenManager.register(RunicItemsContainers.SPELLBOOK_CONTAINER.get(), GuiSpellBook::new);
         RenderingRegistry.registerEntityRenderingHandler(RunicItemsEntities.PROJECTILE.get(), AbstractSpellRenderer::new);
     }
 }

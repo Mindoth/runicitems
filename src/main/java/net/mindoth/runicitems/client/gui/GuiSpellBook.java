@@ -1,19 +1,18 @@
-package net.mindoth.runicitems.item.spellbook.gui;
+package net.mindoth.runicitems.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.mindoth.runicitems.item.spellbook.SpellbookType;
+import net.mindoth.runicitems.item.spellbook.gui.SpellbookContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
 
-public class SpellBookGui extends ContainerScreen<SpellbookContainer> {
-    public SpellBookGui(SpellbookContainer container, PlayerInventory playerInventory, ITextComponent name) {
+public class GuiSpellBook extends ContainerScreen<SpellbookContainer> {
+    public GuiSpellBook(SpellbookContainer container, PlayerInventory playerInventory, ITextComponent name) {
         super(container, playerInventory, name);
 
         SpellbookType tier = container.getTier();

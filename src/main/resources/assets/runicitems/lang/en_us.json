@@ -2,6 +2,10 @@
   "itemGroup.runic_items_tab": "Runic Items",
 
 
+  "key.category.runicitems": "Runic Items",
+  "key.runicitems.spell_selector": "Spell Selector",
+
+
   "item.runicitems.stone_tablet": "\u00A75Secrets of Life and Death\u00A7r",
 
   "item.runicitems.mallet": "Mallet",
@@ -22,6 +26,9 @@
 
 
   "enchantment.runicitems.target_cracker": "Target Cracker",
+
+
+  "tooltip.runicitems.empty": "Empty",
 
 
   "tooltip.runicitems.archer_boots": "\u00A77Increases Projectile Damage\u00A7r",

@@ -2,6 +2,7 @@ package net.mindoth.runicitems.item.spellbook;
 
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.itemgroup.RunicItemsItemGroup;
+import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.gui.SpellbookContainer;
 import net.mindoth.runicitems.item.spellbook.inventory.SpellbookData;
@@ -34,6 +35,8 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
@@ -78,7 +81,9 @@ public class SpellbookItem extends Item {
                 UUID uuid = data.getUuid();
                 data.updateAccessRecords(player.getName().getString(), System.currentTimeMillis());
                 if ( player.isCrouching() ) {
-                    NetworkHooks.openGui(((ServerPlayerEntity) player), new SimpleNamedContainerProvider( (windowId, playerInventory, playerEntity) -> new SpellbookContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()), spellbook.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
+                    NetworkHooks.openGui(((ServerPlayerEntity) player), new SimpleNamedContainerProvider(
+                            (windowId, playerInventory, playerEntity) -> new SpellbookContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()),
+                            spellbook.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
                 }
                 else {
                     final AbstractSpell spell = getSpell(spellbook);
@@ -123,6 +128,12 @@ public class SpellbookItem extends Item {
         return itemHandler.getStackInSlot(slot).getItem();
     }
 
+    public static List<Item> getSpellbookContents(IItemHandler itemHandler) {
+        ArrayList<Item> runeList = new ArrayList<>();
+        for ( int i = 0; i < itemHandler.getSlots(); ++i ) runeList.add(itemHandler.getStackInSlot(i).getItem());
+        return runeList;
+    }
+
     public static AbstractSpell getSpell(ItemStack spellbook) {
         return ((SpellRuneItem)getRune(getSpellData(spellbook), 0)).spell;
     }
@@ -144,15 +155,14 @@ public class SpellbookItem extends Item {
     }
 
     public static SpellbookData getData(ItemStack stack) {
-        if (!(stack.getItem() instanceof SpellbookItem))
-            return null;
+        if ( !(stack.getItem() instanceof SpellbookItem) ) return null;
         UUID uuid;
         CompoundNBT tag = stack.getOrCreateTag();
-        if (!tag.contains("UUID")) {
+        if ( !tag.contains("UUID") ) {
             uuid = UUID.randomUUID();
             tag.putUUID("UUID", uuid);
-        } else
-            uuid = tag.getUUID("UUID");
+        }
+        else uuid = tag.getUUID("UUID");
         return SpellbookManager.get().getOrCreateSpellbook(uuid, ((SpellbookItem) stack.getItem()).tier);
     }
 
