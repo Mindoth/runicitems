@@ -56,7 +56,7 @@ public class GuiSpellSelector extends Screen {
         this.selectedItem = -1;
 
         for ( int i = 0; i < this.itemHandler.getSlots(); i++ ) {
-            if ( !this.itemHandler.getStackInSlot(i).isEmpty() ) itemList.add(this.itemHandler.getStackInSlot(i).getItem());
+            if ( !this.itemHandler.getStackInSlot(i).isEmpty() ) this.itemList.add(this.itemHandler.getStackInSlot(i).getItem());
         }
     }
 
@@ -136,7 +136,8 @@ public class GuiSpellSelector extends Screen {
         RenderSystem.enableTexture();
 
         if ( hasMouseOver && mousedOverSlot != -1 ) {
-            String name = new TranslationTextComponent("item.runicitems." + this.itemList.get(mousedOverSlot).getItem()).getString();
+            String name = new TranslationTextComponent("tooltip.runicitems.empty").getString();
+            if ( !this.itemList.isEmpty() ) name = new TranslationTextComponent("item.runicitems." + this.itemList.get(mousedOverSlot).getItem()).getString();
             drawCenteredString(ms, font, name, width / 2, (height - font.lineHeight) / 2, 16777215);
         }
 
@@ -150,7 +151,7 @@ public class GuiSpellSelector extends Screen {
             float posY = y - ((float)magnifier / 2) + itemRadius * (float)Math.sin(middle);
 
             String resourceIcon;
-            if ( this.itemList.get(i) instanceof SpellRuneItem ) resourceIcon = this.itemList.get(i).getRegistryName().getPath();
+            if ( !this.itemList.isEmpty() && this.itemList.get(i) instanceof SpellRuneItem ) resourceIcon = this.itemList.get(i).getRegistryName().getPath();
             else resourceIcon = "";
 
             RenderSystem.disableRescaleNormal();
