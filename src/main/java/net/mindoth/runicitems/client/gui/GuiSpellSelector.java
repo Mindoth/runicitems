@@ -6,6 +6,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
+import net.mindoth.runicitems.network.PacketSelectSpellbookSlot;
+import net.mindoth.runicitems.network.RunicItemsNetwork;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,7 +17,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -29,85 +31,43 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class GuiSpellSelector extends Screen {
 
     private static final float PRECISION = 5.0F;
-    private boolean closing;
+    private final boolean closing;
     final float OPEN_ANIMATION_LENGTH = 0.5F;
     private float totalTime;
     private float prevTick;
     private float extraTick;
-    private IItemHandler itemHandler;
+    private final IItemHandler itemHandler;
+    private final CompoundNBT nbt;
     private int selectedItem;
-    private int itemAmount;
-    private final List<Item> radialMenuItems = Lists.newArrayList();
+    private final List<Item> itemList = Lists.newArrayList();
 
-    public GuiSpellSelector(IItemHandler itemHandler) {
+    public GuiSpellSelector(IItemHandler itemHandler, CompoundNBT nbt) {
         super(new StringTextComponent(""));
         this.itemHandler = itemHandler;
+        this.nbt = nbt;
         this.closing = false;
         this.minecraft = Minecraft.getInstance();
         this.selectedItem = -1;
 
-        for ( int i = 0; i < itemHandler.getSlots(); i++ ) {
-            if ( !this.itemHandler.getStackInSlot(i).isEmpty() ) radialMenuItems.add(this.itemHandler.getStackInSlot(i).getItem());
+        for ( int i = 0; i < this.itemHandler.getSlots(); i++ ) {
+            if ( !this.itemHandler.getStackInSlot(i).isEmpty() ) itemList.add(this.itemHandler.getStackInSlot(i).getItem());
         }
-        this.itemAmount = this.radialMenuItems.size();
     }
 
     @Override
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
         if ( this.selectedItem != -1 ) {
-            /*SpellBook.setMode(tag, selectedItem);
-            Networking.INSTANCE.sendToServer(new PacketSetBookMode(tag));*/
+            SpellbookItem.setSlot(nbt, this.selectedItem);
+            RunicItemsNetwork.CHANNEL.sendToServer(new PacketSelectSpellbookSlot(nbt));
             minecraft.player.closeContainer();
         }
         return true;
-    }
-
-    @SubscribeEvent
-    public static void overlayEvent(RenderGameOverlayEvent.Pre event) {
-        if ( Minecraft.getInstance().screen instanceof GuiSpellSelector ) {
-            if ( event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS ) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void updateInputEvent(InputUpdateEvent event) {
-        if ( Minecraft.getInstance().screen instanceof GuiSpellSelector ) {
-            GameSettings settings = Minecraft.getInstance().options;
-            MovementInput eInput = event.getMovementInput();
-            eInput.up = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyUp.getKey().getValue());
-            eInput.down = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyDown.getKey().getValue());
-            eInput.left = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyLeft.getKey().getValue());
-            eInput.right = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyRight.getKey().getValue());
-
-            eInput.forwardImpulse = eInput.up == eInput.down ? 0.0F : (eInput.up ? 1.0F : -1.0F);
-            eInput.leftImpulse = eInput.left == eInput.right ? 0.0F : (eInput.left ? 1.0F : -1.0F);
-            eInput.jumping = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyJump.getKey().getValue());
-            eInput.shiftKeyDown = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyShift.getKey().getValue());
-            if ( Minecraft.getInstance().player.isMovingSlowly() ) {
-                eInput.leftImpulse = (float)((double)eInput.leftImpulse * 0.3D);
-                eInput.forwardImpulse = (float)((double)eInput.forwardImpulse * 0.3D);
-            }
-        }
-    }
-
-    @Override
-    public void tick() {
-        if ( itemHandler == null ) {
-            Minecraft.getInstance().setScreen(null);
-            return;
-        }
-        if ( totalTime != OPEN_ANIMATION_LENGTH ) {
-            extraTick++;
-        }
     }
 
     @Override
@@ -127,7 +87,8 @@ public class GuiSpellSelector extends Screen {
         float itemRadius = (radiusIn + radiusOut) * 0.5F;
         int x = width / 2;
         int y = height / 2;
-        int numberOfSlices = Math.max(1, this.itemAmount);
+
+        int numberOfSlices = Math.max(1, this.itemList.size());
 
         double a = Math.toDegrees(Math.atan2(mouseY - y, mouseX - x));
         double d = Math.sqrt(Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2));
@@ -149,12 +110,12 @@ public class GuiSpellSelector extends Screen {
         int mousedOverSlot = -1;
 
         if ( !closing ) {
-            selectedItem = -1;
+            this.selectedItem = -1;
             for ( int i = 0; i < numberOfSlices; i++ ) {
                 float s = (((i - 0.5F) / (float) numberOfSlices) + 0.25F) * 360;
                 float e = (((i + 0.5F) / (float) numberOfSlices) + 0.25F) * 360;
                 if ( a >= s && a < e && d >= radiusIn && d < radiusOut ) {
-                    selectedItem = i;
+                    this.selectedItem = i;
                     break;
                 }
             }
@@ -163,10 +124,10 @@ public class GuiSpellSelector extends Screen {
         for ( int i = 0; i < numberOfSlices; i++ ) {
             float s = (((i - 0.5F) / (float) numberOfSlices) + 0.25F) * 360;
             float e = (((i + 0.5F) / (float) numberOfSlices) + 0.25F) * 360;
-            if ( selectedItem == i ) {
+            if ( this.selectedItem == i ) {
                 drawSlice(buffer, x, y, numberOfSlices, radiusIn, radiusOut, s, e, 63, 161, 191, 60);
                 hasMouseOver = true;
-                mousedOverSlot = selectedItem;
+                mousedOverSlot = this.selectedItem;
             }
             else drawSlice(buffer, x, y, 10, radiusIn, radiusOut, s, e, 0, 0, 0, 64);
         }
@@ -175,10 +136,7 @@ public class GuiSpellSelector extends Screen {
         RenderSystem.enableTexture();
 
         if ( hasMouseOver && mousedOverSlot != -1 ) {
-            //int adjusted = (mousedOverSlot + 6) % numberOfSlices;
-            //adjusted = adjusted == 0 ? numberOfSlices : adjusted;
-            //String name = new TranslationTextComponent("tooltip.runicitems.empty").getString();
-            String name = new TranslationTextComponent("item.runicitems." + radialMenuItems.get(mousedOverSlot)).getString();
+            String name = new TranslationTextComponent("item.runicitems." + this.itemList.get(mousedOverSlot).getItem()).getString();
             drawCenteredString(ms, font, name, width / 2, (height - font.lineHeight) / 2, 16777215);
         }
 
@@ -187,15 +145,14 @@ public class GuiSpellSelector extends Screen {
 
         for ( int i = 0; i < numberOfSlices; i++ ) {
             int magnifier = 24;
-            //TODO FIX THE ITEMS ON WHEEL
             float middle = ((i / (float)numberOfSlices) + 0.25F) * 2 * (float)Math.PI;
             float posX = x - ((float)magnifier / 2) + itemRadius * (float)Math.cos(middle);
             float posY = y - ((float)magnifier / 2) + itemRadius * (float)Math.sin(middle);
 
-            String resourceIcon = "";
-            if ( radialMenuItems.get(i) instanceof SpellRuneItem ) {
-                resourceIcon = radialMenuItems.get(i).getRegistryName().getPath();
-            }
+            String resourceIcon;
+            if ( this.itemList.get(i) instanceof SpellRuneItem ) resourceIcon = this.itemList.get(i).getRegistryName().getPath();
+            else resourceIcon = "";
+
             RenderSystem.disableRescaleNormal();
             RenderHelper.turnOff();
             RenderSystem.disableLighting();
@@ -204,17 +161,7 @@ public class GuiSpellSelector extends Screen {
                 drawItemTexture(new ResourceLocation(RunicItems.MOD_ID, "textures/items/" + resourceIcon + ".png"),
                         (int)posX, (int)posY, 0, 0, magnifier, magnifier, magnifier, magnifier, ms);
             }
-            //ItemStack stack = new ItemStack(Blocks.DIRT);
-            //if ( !itemHandler.getStackInSlot(i).isEmpty() ) this.itemRenderer.renderGuiItemDecorations(font, stack, (int) posX + 5, (int) posY, String.valueOf(itemHandler.getStackInSlot(i).getCount()));
         }
-
-
-        if ( mousedOverSlot != -1 ) {
-            int adjusted = (mousedOverSlot + 6) % numberOfSlices;
-            adjusted = adjusted == 0 ? numberOfSlices : adjusted;
-            selectedItem = adjusted;
-        }
-
     }
 
     private void drawSlice(BufferBuilder buffer, float x, float y, float z, float radiusIn, float radiusOut, float startAngle, float endAngle,
@@ -255,6 +202,47 @@ public class GuiSpellSelector extends Screen {
             return true;
         }
         return super.keyPressed(key, scanCode, modifiers);
+    }
+
+    @SubscribeEvent
+    public static void overlayEvent(RenderGameOverlayEvent.Pre event) {
+        if ( Minecraft.getInstance().screen instanceof GuiSpellSelector ) {
+            if ( event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS ) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @Override
+    public void tick() {
+        if ( itemHandler == null ) {
+            Minecraft.getInstance().setScreen(null);
+            return;
+        }
+        if ( totalTime != OPEN_ANIMATION_LENGTH ) {
+            extraTick++;
+        }
+    }
+
+    @SubscribeEvent
+    public static void updateInputEvent(InputUpdateEvent event) {
+        if ( Minecraft.getInstance().screen instanceof GuiSpellSelector ) {
+            GameSettings settings = Minecraft.getInstance().options;
+            MovementInput eInput = event.getMovementInput();
+            eInput.up = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyUp.getKey().getValue());
+            eInput.down = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyDown.getKey().getValue());
+            eInput.left = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyLeft.getKey().getValue());
+            eInput.right = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyRight.getKey().getValue());
+
+            eInput.forwardImpulse = eInput.up == eInput.down ? 0.0F : (eInput.up ? 1.0F : -1.0F);
+            eInput.leftImpulse = eInput.left == eInput.right ? 0.0F : (eInput.left ? 1.0F : -1.0F);
+            eInput.jumping = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyJump.getKey().getValue());
+            eInput.shiftKeyDown = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), settings.keyShift.getKey().getValue());
+            if ( Minecraft.getInstance().player.isMovingSlowly() ) {
+                eInput.leftImpulse = (float)((double)eInput.leftImpulse * 0.3D);
+                eInput.forwardImpulse = (float)((double)eInput.forwardImpulse * 0.3D);
+            }
+        }
     }
 
     public static void drawItemTexture(ResourceLocation resourceLocation, int x, int y, int u, int v, int w, int h, int fileWidth, int fileHeight, MatrixStack stack) {

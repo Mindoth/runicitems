@@ -42,6 +42,8 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
 public class SpellbookItem extends Item {
 
+    public static final String SLOT_TAG = "slot";
+
     public SpellbookItem(SpellbookType tier) {
         super(new Item.Properties().tab(RunicItemsItemGroup.RUNIC_ITEMS_TAB).stacksTo(1));
         this.tier = tier;
@@ -71,10 +73,16 @@ public class SpellbookItem extends Item {
         }
     }
 
+    public static void setSlot(CompoundNBT nbt, int slot) {
+        nbt.putInt(SpellbookItem.SLOT_TAG, slot);
+    }
+
     @Override
     @Nonnull
     public ActionResult<ItemStack> use(World level, PlayerEntity player, @Nonnull Hand handIn) {
         ItemStack spellbook = player.getItemInHand(handIn);
+        if ( !spellbook.hasTag() ) setSlot(spellbook.getOrCreateTag(), 0);
+
         if ( !level.isClientSide && player instanceof ServerPlayerEntity && spellbook.getItem() instanceof SpellbookItem ) {
             SpellbookData data = SpellbookItem.getData(spellbook);
             if ( data.getUuid() != null ) {
@@ -86,7 +94,7 @@ public class SpellbookItem extends Item {
                             spellbook.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
                 }
                 else {
-                    if ( getRune(getSpellData(spellbook), 0).getItem() instanceof SpellRuneItem ) {
+                    if ( getRune(getSpellData(spellbook), spellbook.getTag().getInt(SLOT_TAG)).getItem() instanceof SpellRuneItem ) {
                         final AbstractSpell spell = getSpell(spellbook);
                         if ( spell.isChannel() ) {
                             player.startUsingItem(handIn);
@@ -130,14 +138,8 @@ public class SpellbookItem extends Item {
         return itemHandler.getStackInSlot(slot).getItem();
     }
 
-    public static List<Item> getSpellbookContents(IItemHandler itemHandler) {
-        ArrayList<Item> runeList = new ArrayList<>();
-        for ( int i = 0; i < itemHandler.getSlots(); ++i ) runeList.add(itemHandler.getStackInSlot(i).getItem());
-        return runeList;
-    }
-
     public static AbstractSpell getSpell(ItemStack spellbook) {
-        return ((SpellRuneItem)getRune(getSpellData(spellbook), 0)).spell;
+        return ((SpellRuneItem)getRune(getSpellData(spellbook), spellbook.getTag().getInt(SLOT_TAG))).spell;
     }
 
     public static void addCooldown(PlayerEntity player,  Item spellbook, AbstractSpell spell) {

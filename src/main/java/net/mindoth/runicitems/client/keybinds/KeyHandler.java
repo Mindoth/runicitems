@@ -33,7 +33,7 @@ public class KeyHandler {
                 return;
             }
             if ( stack.getItem() instanceof SpellbookItem && stack.hasTag() && MINECRAFT.screen == null ) {
-                MINECRAFT.setScreen(new GuiSpellSelector(SpellbookItem.getSpellData(stack)));
+                MINECRAFT.setScreen(new GuiSpellSelector(SpellbookItem.getSpellData(stack), stack.getTag()));
             }
         }
     }

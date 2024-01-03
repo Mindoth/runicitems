@@ -1,15 +1,14 @@
 package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
-import net.mindoth.runicitems.registries.RunicItemsContainers;
-import net.mindoth.runicitems.registries.RunicItemsEnchantments;
-import net.mindoth.runicitems.registries.RunicItemsEntities;
-import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.runicitems.network.RunicItemsNetwork;
+import net.mindoth.runicitems.registries.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -31,5 +30,10 @@ public class RunicItems {
         RunicItemsEntities.ENTITIES.register(modEventBus);
         RunicItemsEnchantments.ENCHANTMENTS.register(modEventBus);
         RunicItemsContainers.CONTAINERS.register(modEventBus);
+        modEventBus.addListener(this::commonSetup);
+    }
+
+    public void commonSetup(final FMLCommonSetupEvent event) {
+        RunicItemsNetwork.init();
     }
 }
