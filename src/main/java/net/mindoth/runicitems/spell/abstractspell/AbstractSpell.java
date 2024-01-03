@@ -2,7 +2,9 @@ package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
+import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -14,6 +16,7 @@ public abstract class AbstractSpell {
 
     public static void routeSpell(PlayerEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
         if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot);
+        if ( spell instanceof TornadoSpell) TornadoSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot);
         if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot);
     }
 

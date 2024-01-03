@@ -1,8 +1,7 @@
 package net.mindoth.runicitems.spell.abstractspell;
 
-import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.runicitems.client.particle.EmberParticleData;
-import net.mindoth.runicitems.registries.RunicItemsEntities;
+import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
@@ -23,27 +22,25 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
 
-public class AbstractProjectileEntity extends ThrowableEntity {
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class AbstractSpellEntity extends ThrowableEntity {
 
     @Override
     protected float getGravity() {
         return 0.01F;
     }
 
-    public AbstractProjectileEntity(EntityType<? extends AbstractProjectileEntity> entityType, World level) {
+    public AbstractSpellEntity(EntityType<? extends AbstractSpellEntity> entityType, World level) {
         super(entityType, level);
     }
 
-    public AbstractProjectileEntity(FMLPlayMessages.SpawnEntity spawnEntity, World level) {
-        this(RunicItemsEntities.PROJECTILE.get(), level);
-    }
-
-    public AbstractProjectileEntity(World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, String element, float scale) {
-        super(RunicItemsEntities.PROJECTILE.get(), owner, pLevel);
+    public AbstractSpellEntity(EntityType<? extends AbstractSpellEntity> entityType, World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, String element, float scale) {
+        super(entityType, owner, pLevel);
 
         this.owner = owner;
         this.caster = caster;
@@ -68,51 +65,60 @@ public class AbstractProjectileEntity extends ThrowableEntity {
     protected float life;
 
     protected void doMobEffects(RayTraceResult result) {
-        LivingEntity target = (LivingEntity)((EntityRayTraceResult)result).getEntity();
-        if ( power > 0 ) {
-            target.hurt(DamageSource.indirectMagic(this, owner), power);
-        }
     }
 
     protected void doBlockEffects(RayTraceResult result) {
-        BlockRayTraceResult traceResult = (BlockRayTraceResult)result;
-        BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
-        level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundCategory.PLAYERS, 0.2f, 2);
+    }
+
+    public static double inRange(double min, double max){
+        return ThreadLocalRandom.current().nextDouble(min, max);
     }
 
     @Override
     protected void onHit(RayTraceResult result) {
-        if ( level.isClientSide ) return;
-        if ( result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult)result).getEntity() instanceof LivingEntity ) {
-            doMobEffects(result);
-            this.remove();
+        if ( !level.isClientSide ) {
+            if ( result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult)result).getEntity() instanceof LivingEntity ) {
+                doMobEffects(result);
+            }
+            if ( result.getType() == RayTraceResult.Type.BLOCK ) {
+                doBlockEffects(result);
+                BlockRayTraceResult traceResult = (BlockRayTraceResult)result;
+                BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
+                level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundCategory.PLAYERS, 0.2F, 2);
+                this.remove();
+            }
+            playHitSound();
         }
-        if ( result.getType() == RayTraceResult.Type.BLOCK ) {
-            doBlockEffects(result);
-            this.remove();
-        }
-        playHitSound();
     }
 
     @Override
     public void tick() {
         super.tick();
         if ( level.isClientSide ) {
-            ClientWorld world = (ClientWorld)this.level;
-            Vector3d center = CommonEvents.getEntityCenter(this);
             Vector3d vec3 = this.getDeltaMovement();
             double d5 = vec3.x;
             double d6 = vec3.y;
             double d1 = vec3.z;
+
+            Vector3d center = CommonEvents.getEntityCenter(this);
+            ClientWorld world = (ClientWorld)this.level;
             for ( int i = 0; i < 4; ++i ) {
                 world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
             }
         }
         if ( !level.isClientSide ) {
+            spawnParticles();
+            doTickEffects();
             if ( this.tickCount > this.life ) {
                 this.remove();
             }
         }
+    }
+
+    protected void doTickEffects() {
+    }
+
+    protected void spawnParticles() {
     }
 
     protected static ParticleColor.IntWrapper getSpellColor(String element) {
@@ -135,10 +141,10 @@ public class AbstractProjectileEntity extends ThrowableEntity {
         }
     }
 
-    public static final DataParameter<Integer> RED = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
-    public static final DataParameter<Integer> GREEN = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
-    public static final DataParameter<Integer> BLUE = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.INT);
-    public static final DataParameter<Float> SIZE = EntityDataManager.defineId(AbstractProjectileEntity.class, DataSerializers.FLOAT);
+    public static final DataParameter<Integer> RED = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.INT);
+    public static final DataParameter<Integer> GREEN = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.INT);
+    public static final DataParameter<Integer> BLUE = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.INT);
+    public static final DataParameter<Float> SIZE = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.FLOAT);
 
     public ParticleColor getParticleColor() {
         return new ParticleColor(entityData.get(RED), entityData.get(GREEN), entityData.get(BLUE));

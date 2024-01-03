@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.spell.abstractspell;
+package net.mindoth.runicitems.spell.tornado;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.mindoth.runicitems.RunicItems;
@@ -9,19 +9,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
-public class AbstractSpellRenderer extends EntityRenderer<AbstractProjectileEntity> {
+public class TornadoRenderer extends EntityRenderer<TornadoEntity> {
 
-    public AbstractSpellRenderer(EntityRendererManager renderManager) {
+    public TornadoRenderer(EntityRendererManager renderManager) {
         super(renderManager);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(AbstractProjectileEntity entity) {
+    public ResourceLocation getTextureLocation(TornadoEntity entity) {
         return new ResourceLocation(RunicItems.MOD_ID, "textures/spells/clear.png");
     }
 
     @Override
-    public void render(AbstractProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(TornadoEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)));

@@ -1,14 +1,13 @@
 package net.mindoth.runicitems.spell.blizzard;
 
-import net.mindoth.runicitems.spell.abstractspell.AbstractProjectileEntity;
+import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
+import net.mindoth.runicitems.spell.abstractspell.SpellProjectileEntity;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.IItemHandler;
 
 public class BlizzardSpell extends AbstractSpell {
@@ -17,7 +16,7 @@ public class BlizzardSpell extends AbstractSpell {
                                   Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractProjectileEntity projectile = new AbstractProjectileEntity(level, owner, caster, itemHandler, spell, "frost", 0.3F);
+        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, itemHandler, spell, "frost", 0.3F);
         projectile.setNoGravity(!spell.getGravity());
 
         setPos(level, caster, projectile);
@@ -25,8 +24,10 @@ public class BlizzardSpell extends AbstractSpell {
         level.addFreshEntity(projectile);
     }
 
-    protected static void setPos(World level, Entity caster, AbstractProjectileEntity projectile) {
-        float radius = 2.0F;
+    protected static void setPos(World level, Entity caster, AbstractSpellEntity projectile) {
+        float radius;
+        if ( caster.tickCount % 20 == 0 ) radius = 0.0F;
+        else radius = 2.0F;
         float range = 8.0F;
         float error = 0.5F;
         float randX = (float)((Math.random() * (radius - (-radius))) + (-radius));

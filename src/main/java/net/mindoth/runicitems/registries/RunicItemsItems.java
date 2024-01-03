@@ -3,12 +3,14 @@ package net.mindoth.runicitems.registries;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.armor.*;
 import net.mindoth.runicitems.item.itemgroup.RunicItemsItemGroup;
+import net.mindoth.runicitems.item.rune.RuneItem;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookType;
 import net.mindoth.runicitems.item.weapon.MalletItem;
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
+import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -55,8 +57,20 @@ public class RunicItemsItems {
 
     //Runes
     public static final RegistryObject<Item> FROST_RUNE = ITEMS.register("frost_rune",
-            () -> new SpellRuneItem(new Item.Properties(), new BlizzardSpell()));
+            () -> new RuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> STORM_RUNE = ITEMS.register("storm_rune",
+            () -> new RuneItem(new Item.Properties()));
 
     public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
+            () -> new RuneItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> BLIZZARD_RUNE = ITEMS.register("blizzard_rune",
+            () -> new SpellRuneItem(new Item.Properties(), new BlizzardSpell()));
+
+    public static final RegistryObject<Item> TORNADO_RUNE = ITEMS.register("tornado_rune",
+            () -> new SpellRuneItem(new Item.Properties(), new TornadoSpell()));
+
+    public static final RegistryObject<Item> FIREBALL_RUNE = ITEMS.register("fireball_rune",
             () -> new SpellRuneItem(new Item.Properties(), new FireballSpell()));
 }

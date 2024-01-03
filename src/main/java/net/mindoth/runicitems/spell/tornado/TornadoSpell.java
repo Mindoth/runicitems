@@ -1,29 +1,32 @@
-package net.mindoth.runicitems.spell.fireball;
+package net.mindoth.runicitems.spell.tornado;
 
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.runicitems.spell.abstractspell.SpellProjectileEntity;
+import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
-public class FireballSpell extends AbstractSpell {
+public class TornadoSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, itemHandler, spell, "fire", 1.2F);
+        AbstractSpellEntity projectile = new TornadoEntity(level, owner, caster, itemHandler, spell, "storm", 0.0F);
         projectile.setNoGravity(!spell.getGravity());
         playSound(level, center);
 
         int adjuster;
         if ( caster != owner ) adjuster = -1;
         else adjuster = 1;
-        projectile.setPos(center.x, center.y - 0.5F, center.z);
-        projectile.shootFromRotation(caster, xRot * adjuster, yRot * adjuster, 0F, spell.getSpeed(), 1.0F);
+        Vector3d pos = CommonEvents.getPoint(caster, spell.getDistance(), 0.0F, true);
+        projectile.setPos(pos.x, pos.y, pos.z);
+        projectile.shootFromRotation(caster, xRot * adjuster, yRot * adjuster, 0F, spell.getSpeed(), 0.0F);
+        projectile.setDeltaMovement(projectile.getDeltaMovement().x, 0.0F, projectile.getDeltaMovement().z);
         level.addFreshEntity(projectile);
     }
 
@@ -34,22 +37,22 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public float getPower() {
-        return 12.0F;
+        return 1.0F;
     }
 
     @Override
     public float getSpeed() {
-        return 0.8F;
+        return 0.25F;
     }
 
     @Override
     public int getDistance() {
-        return 0;
+        return 4;
     }
 
     @Override
     public boolean getGravity() {
-        return true;
+        return false;
     }
 
     @Override
@@ -63,6 +66,6 @@ public class FireballSpell extends AbstractSpell {
     }
 
     protected static void playSound(World level, Vector3d center) {
-        playFireSound(level, center);
+        playWindSound(level, center);
     }
 }
