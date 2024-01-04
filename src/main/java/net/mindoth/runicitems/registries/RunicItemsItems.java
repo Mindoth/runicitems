@@ -8,6 +8,7 @@ import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookType;
 import net.mindoth.runicitems.item.weapon.MalletItem;
+import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.runicitems.spell.tornado.TornadoSpell;
@@ -50,9 +51,14 @@ public class RunicItemsItems {
             () -> new SorcererBoots(BootsItem.MaterialBoots.BOOTS2, EquipmentSlotType.FEET, new Item.Properties()));
 
 
-    //Magic
+    //Spellbooks
     public static final RegistryObject<Item> SPELLBOOK = ITEMS.register("spellbook",
             () -> new SpellbookItem(SpellbookType.SPELLBOOK));
+
+
+    //Wands
+    public static final RegistryObject<Item> WAND = ITEMS.register("wand",
+            () -> new WandItem(new Item.Properties()));
 
 
     //Runes

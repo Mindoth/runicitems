@@ -1,7 +1,9 @@
 package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.registries.RunicItemsEntities;
+import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
+import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -29,37 +31,33 @@ public class SpellProjectileEntity extends AbstractSpellEntity {
         super(entityType, level);
     }
 
-    public SpellProjectileEntity(World level, LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, String element, float scale) {
-        super(RunicItemsEntities.TORNADO.get(), level, owner, caster, itemHandler, spell, element, scale);
+    public SpellProjectileEntity(World level, LivingEntity owner, Entity caster, AbstractSpell spell, String element, float scale) {
+        super(RunicItemsEntities.TORNADO.get(), level, owner, caster, spell, element, scale);
     }
 
     @Override
     protected void doMobEffects(RayTraceResult result) {
-        //LivingEntity target = (LivingEntity)((EntityRayTraceResult)result).getEntity();
-        if ( power > 0 ) {
-            doSplashDamage();
+        LivingEntity target = (LivingEntity)((EntityRayTraceResult)result).getEntity();
+        doSplashDamage();
+        if ( this.power > 0 ) {
+            if ( this.spell instanceof BlizzardSpell ) dealDamage(target);
+            if ( this.spell instanceof FireballSpell ) doSplashDamage();
         }
         this.remove();
     }
 
     @Override
     protected void doBlockEffects(RayTraceResult result) {
-        if ( power > 0 ) {
-            if ( this.spell instanceof FireballSpell ) {
-                doSplashDamage();
-            }
+        if ( this.power > 0 ) {
+            if ( this.spell instanceof FireballSpell ) doSplashDamage();
         }
     }
 
     protected void doSplashDamage() {
         ArrayList<LivingEntity> list = CommonEvents.getEntitiesAround(this, this.level, this.scale);
         for ( LivingEntity target : list ) {
-            damageTarget(target);
+            dealDamage(target);
+            target.setSecondsOnFire(8);
         }
-    }
-
-    protected void damageTarget(LivingEntity target) {
-        target.hurt(DamageSource.indirectMagic(this, this.owner), this.power);
-        target.setSecondsOnFire(8);
     }
 }

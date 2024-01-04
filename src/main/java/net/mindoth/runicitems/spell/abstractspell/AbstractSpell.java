@@ -14,10 +14,10 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class AbstractSpell {
 
-    public static void routeSpell(PlayerEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
-        if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot);
-        if ( spell instanceof TornadoSpell) TornadoSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot);
-        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, itemHandler, spell, center, xRot, yRot);
+    public static void routeSpell(PlayerEntity owner, Entity caster, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
+        if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
+        if ( spell instanceof TornadoSpell) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
+        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
     }
 
     public int getLife() {

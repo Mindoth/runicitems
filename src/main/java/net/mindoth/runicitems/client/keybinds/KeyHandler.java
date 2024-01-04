@@ -3,10 +3,10 @@ package net.mindoth.runicitems.client.keybinds;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.client.gui.GuiSpellSelector;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
+import net.mindoth.runicitems.item.weapon.WandItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,21 +19,25 @@ public class KeyHandler {
 
     private static final Minecraft MINECRAFT = Minecraft.getInstance();
 
-    public static @Nonnull ItemStack getHeldSpellbook(PlayerEntity playerEntity) {
-        ItemStack spellbook = playerEntity.getMainHandItem().getItem() instanceof SpellbookItem ? playerEntity.getMainHandItem() : null;
-        return spellbook == null ? (playerEntity.getOffhandItem().getItem() instanceof SpellbookItem ? playerEntity.getOffhandItem() : ItemStack.EMPTY) : spellbook;
+    public static @Nonnull ItemStack getHeldWand(PlayerEntity playerEntity) {
+        ItemStack wand = playerEntity.getMainHandItem().getItem() instanceof WandItem ? playerEntity.getMainHandItem() : null;
+        return wand == null ? (playerEntity.getOffhandItem().getItem() instanceof WandItem ? playerEntity.getOffhandItem() : ItemStack.EMPTY) : wand;
     }
 
     public static void checkKeysPressed(int key) {
-        ItemStack stack = getHeldSpellbook(MINECRAFT.player);
+        PlayerEntity player = MINECRAFT.player;
+        if ( WandItem.bookSlot(player.inventory) >= 0 ) {
+            ItemStack spellbook = WandItem.getSpellBook(player);
+            ItemStack wand = getHeldWand(player);
 
-        if ( key == RunicItemsKeyBinds.spellSelector.getKey().getValue() ) {
-            if ( MINECRAFT.screen instanceof GuiSpellSelector ) {
-                MINECRAFT.player.closeContainer();
-                return;
-            }
-            if ( stack.getItem() instanceof SpellbookItem && stack.hasTag() && MINECRAFT.screen == null ) {
-                MINECRAFT.setScreen(new GuiSpellSelector(SpellbookItem.getSpellData(stack), stack.getTag()));
+            if ( key == RunicItemsKeyBinds.spellSelector.getKey().getValue() ) {
+                if ( MINECRAFT.screen instanceof GuiSpellSelector ) {
+                    player.closeContainer();
+                    return;
+                }
+                if ( wand.getItem() instanceof WandItem && spellbook.hasTag() && MINECRAFT.screen == null ) {
+                    MINECRAFT.setScreen(new GuiSpellSelector(SpellbookItem.getSpellData(spellbook), spellbook.getTag()));
+                }
             }
         }
     }

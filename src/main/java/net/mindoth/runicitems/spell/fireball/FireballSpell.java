@@ -11,11 +11,11 @@ import net.minecraftforge.items.IItemHandler;
 
 public class FireballSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell,
+    public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, itemHandler, spell, "fire", 1.2F);
+        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, spell, "fire", 1.2F);
         projectile.setNoGravity(!spell.getGravity());
         playSound(level, center);
 
@@ -54,7 +54,7 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public int getCooldown() {
-        return 20;
+        return 100;
     }
 
     @Override

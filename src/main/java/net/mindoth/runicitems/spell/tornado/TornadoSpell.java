@@ -12,11 +12,11 @@ import net.minecraftforge.items.IItemHandler;
 
 public class TornadoSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell,
+    public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new TornadoEntity(level, owner, caster, itemHandler, spell, "storm", 0.0F);
+        AbstractSpellEntity projectile = new TornadoEntity(level, owner, caster, spell, "storm", 0.0F);
         projectile.setNoGravity(!spell.getGravity());
         playSound(level, center);
 
@@ -57,7 +57,7 @@ public class TornadoSpell extends AbstractSpell {
 
     @Override
     public int getCooldown() {
-        return 20;
+        return 160;
     }
 
     @Override

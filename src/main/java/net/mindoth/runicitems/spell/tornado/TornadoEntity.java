@@ -34,8 +34,8 @@ public class TornadoEntity extends AbstractSpellEntity {
         super(entityType, level);
     }
 
-    public TornadoEntity(World level, LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, String element, float scale) {
-        super(RunicItemsEntities.TORNADO.get(), level, owner, caster, itemHandler, spell, element, scale);
+    public TornadoEntity(World level, LivingEntity owner, Entity caster, AbstractSpell spell, String element, float scale) {
+        super(RunicItemsEntities.TORNADO.get(), level, owner, caster, spell, element, scale);
     }
 
     final int range = 3;
@@ -45,9 +45,9 @@ public class TornadoEntity extends AbstractSpellEntity {
         Vector3d center = CommonEvents.getEntityCenter(this);
         int tickCount = this.tickCount;
         if ( tickCount % 5 == 0 ) {
-            level.playSound(null, center.x, center.y, center.z,
+            this.level.playSound(null, center.x, center.y, center.z,
                     SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.02F);
-            level.playSound(null, center.x, center.y, center.z,
+            this.level.playSound(null, center.x, center.y, center.z,
                     SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.03F);
         }
         List<LivingEntity> targets = CommonEvents.getEntitiesAround(this, this.level, this.range);

@@ -12,11 +12,11 @@ import net.minecraftforge.items.IItemHandler;
 
 public class BlizzardSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell,
+    public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, itemHandler, spell, "frost", 0.3F);
+        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, spell, "frost", 0.3F);
         projectile.setNoGravity(!spell.getGravity());
 
         setPos(level, caster, projectile);
@@ -78,7 +78,7 @@ public class BlizzardSpell extends AbstractSpell {
 
     @Override
     public int getCooldown() {
-        return 20;
+        return 10;
     }
 
     @Override

@@ -23,10 +23,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.IItemHandler;
-
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class AbstractSpellEntity extends ThrowableEntity {
 
@@ -39,12 +35,11 @@ public class AbstractSpellEntity extends ThrowableEntity {
         super(entityType, level);
     }
 
-    public AbstractSpellEntity(EntityType<? extends AbstractSpellEntity> entityType, World pLevel, LivingEntity owner, Entity caster, IItemHandler itemHandler, AbstractSpell spell, String element, float scale) {
+    public AbstractSpellEntity(EntityType<? extends AbstractSpellEntity> entityType, World pLevel, LivingEntity owner, Entity caster, AbstractSpell spell, String element, float scale) {
         super(entityType, owner, pLevel);
 
         this.owner = owner;
         this.caster = caster;
-        this.itemHandler = itemHandler;
         this.spell = spell;
 
         this.element = element;
@@ -56,7 +51,6 @@ public class AbstractSpellEntity extends ThrowableEntity {
 
     protected LivingEntity owner;
     protected Entity caster;
-    protected IItemHandler itemHandler;
     protected AbstractSpell spell;
 
     protected String element;
@@ -70,8 +64,8 @@ public class AbstractSpellEntity extends ThrowableEntity {
     protected void doBlockEffects(RayTraceResult result) {
     }
 
-    public static double inRange(double min, double max){
-        return ThreadLocalRandom.current().nextDouble(min, max);
+    protected void dealDamage(LivingEntity target) {
+        target.hurt(DamageSource.indirectMagic(this, this.owner), this.power);
     }
 
     @Override
