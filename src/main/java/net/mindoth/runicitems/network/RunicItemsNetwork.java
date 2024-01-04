@@ -15,5 +15,7 @@ public class RunicItemsNetwork {
 
     public static void init() {
         CHANNEL.registerMessage(0, PacketSelectSpellbookSlot.class, PacketSelectSpellbookSlot::encode, PacketSelectSpellbookSlot::new, PacketSelectSpellbookSlot::handle);
+        CHANNEL.registerMessage(1, PacketUpdateSpellbook.class, PacketUpdateSpellbook::encode, PacketUpdateSpellbook::new, PacketUpdateSpellbook::handle);
+        CHANNEL.registerMessage(2, PacketSendSpellbookData.class, PacketSendSpellbookData::encode, PacketSendSpellbookData::new, PacketSendSpellbookData::handle);
     }
 }

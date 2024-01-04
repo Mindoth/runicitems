@@ -4,6 +4,8 @@ import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.client.gui.GuiSpellSelector;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.weapon.WandItem;
+import net.mindoth.runicitems.network.PacketUpdateSpellbook;
+import net.mindoth.runicitems.network.RunicItemsNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -27,16 +29,16 @@ public class KeyHandler {
     public static void checkKeysPressed(int key) {
         PlayerEntity player = MINECRAFT.player;
         if ( WandItem.bookSlot(player.inventory) >= 0 ) {
+            //RunicItemsNetwork.CHANNEL.sendToServer(new PacketUpdateSpellbook(spellbook.getTag()));
             ItemStack spellbook = WandItem.getSpellBook(player);
             ItemStack wand = getHeldWand(player);
-
             if ( key == RunicItemsKeyBinds.spellSelector.getKey().getValue() ) {
                 if ( MINECRAFT.screen instanceof GuiSpellSelector ) {
                     player.closeContainer();
                     return;
                 }
                 if ( wand.getItem() instanceof WandItem && spellbook.hasTag() && MINECRAFT.screen == null ) {
-                    MINECRAFT.setScreen(new GuiSpellSelector(SpellbookItem.getSpellData(spellbook), spellbook.getTag()));
+                    MINECRAFT.setScreen(new GuiSpellSelector(SpellbookItem.getSpellbookHandler(spellbook), spellbook.getTag()));
                 }
             }
         }

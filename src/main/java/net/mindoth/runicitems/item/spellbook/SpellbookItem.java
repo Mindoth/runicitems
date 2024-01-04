@@ -48,7 +48,7 @@ public class SpellbookItem extends Item {
             if ( data.getUuid() != null ) {
                 UUID uuid = data.getUuid();
                 data.updateAccessRecords(player.getName().getString(), System.currentTimeMillis());
-                NetworkHooks.openGui(((ServerPlayerEntity) player), new SimpleNamedContainerProvider(
+                NetworkHooks.openGui(((ServerPlayerEntity)player), new SimpleNamedContainerProvider(
                         (windowId, playerInventory, playerEntity) -> new SpellbookContainer(windowId, playerInventory, uuid, data.getTier(), data.getHandler()),
                         spellbook.getHoverName()), (buffer -> buffer.writeUUID(uuid).writeInt(data.getTier().ordinal())));
             }
@@ -64,7 +64,7 @@ public class SpellbookItem extends Item {
         return spellbook.getTag().getInt(SpellbookItem.SLOT_TAG);
     }
 
-    public static IItemHandler getSpellData(ItemStack ogStack) {
+    public static IItemHandler getSpellbookHandler(ItemStack ogStack) {
         SpellbookData ogData = getData(ogStack);
         final IItemHandler handler = ogData.getHandler();
         return handler;
@@ -75,7 +75,7 @@ public class SpellbookItem extends Item {
     }
 
     public static AbstractSpell getSpell(ItemStack spellbook) {
-        return ((SpellRuneItem)getRune(getSpellData(spellbook), spellbook.getTag().getInt(SLOT_TAG))).spell;
+        return ((SpellRuneItem)getRune(getSpellbookHandler(spellbook), spellbook.getTag().getInt(SLOT_TAG))).spell;
     }
 
     public static SpellbookData getData(ItemStack stack) {
@@ -119,8 +119,8 @@ public class SpellbookItem extends Item {
         @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-            if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-                if(!optional.isPresent())
+            if ( cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
+                if ( !optional.isPresent() )
                     optional = SpellbookManager.get().getCapability(stack);
                 return optional.cast();
             }

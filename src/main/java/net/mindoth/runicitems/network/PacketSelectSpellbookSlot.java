@@ -22,8 +22,8 @@ public class PacketSelectSpellbookSlot {
         buf.writeNbt(nbt);
     }
 
-    public PacketSelectSpellbookSlot(CompoundNBT tag) {
-        this.nbt = tag;
+    public PacketSelectSpellbookSlot(CompoundNBT nbt) {
+        this.nbt = nbt;
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {

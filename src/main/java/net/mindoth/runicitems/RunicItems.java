@@ -2,9 +2,13 @@ package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
+import net.mindoth.runicitems.network.proxy.ClientProxy;
+import net.mindoth.runicitems.network.proxy.IProxy;
+import net.mindoth.runicitems.network.proxy.ServerProxy;
 import net.mindoth.runicitems.registries.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -15,6 +19,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 @Mod(RunicItems.MOD_ID)
 public class RunicItems {
     public static final String MOD_ID = "runicitems";
+    public static IProxy proxy = DistExecutor.runForDist(()-> () -> new ClientProxy(), () -> ()-> new ServerProxy());
 
     public RunicItems() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

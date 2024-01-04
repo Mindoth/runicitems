@@ -32,14 +32,14 @@ public class SpellbookManager extends WorldSavedData {
     public HashMap<UUID, SpellbookData> getMap() { return data; }
 
     public static SpellbookManager get() {
-        if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
+        if ( Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER )
             return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getDataStorage().computeIfAbsent(SpellbookManager::new, NAME);
         else
             return blankClient;
     }
 
     public Optional<SpellbookData> getSpellbook(UUID uuid) {
-        if (data.containsKey(uuid))
+        if ( data.containsKey(uuid) )
             return Optional.of(data.get(uuid));
         return Optional.empty();
     }
@@ -60,16 +60,16 @@ public class SpellbookManager extends WorldSavedData {
     }
 
     public LazyOptional<IItemHandler> getCapability(UUID uuid) {
-        if (data.containsKey(uuid))
+        if ( data.containsKey(uuid) )
             return data.get(uuid).getOptional();
 
         return LazyOptional.empty();
     }
 
     public LazyOptional<IItemHandler> getCapability(ItemStack stack) {
-        if (stack.getOrCreateTag().contains("UUID")) {
+        if ( stack.getOrCreateTag().contains("UUID") ) {
             UUID uuid = stack.getTag().getUUID("UUID");
-            if (data.containsKey(uuid))
+            if ( data.containsKey(uuid) )
                 return data.get(uuid).getOptional();
         }
 
@@ -78,7 +78,7 @@ public class SpellbookManager extends WorldSavedData {
 
     @Override
     public void load(CompoundNBT nbt) {
-        if (nbt.contains("Spellbooks")) {
+        if ( nbt.contains("Spellbooks") ) {
             ListNBT list = nbt.getList("Spellbooks", Constants.NBT.TAG_COMPOUND);
             list.forEach((spellbookNBT) -> SpellbookData.fromNBT((CompoundNBT) spellbookNBT).ifPresent((spellbook) -> data.put(spellbook.getUuid(), spellbook)));
         }

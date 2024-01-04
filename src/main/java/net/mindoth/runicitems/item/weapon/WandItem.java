@@ -35,7 +35,7 @@ public class WandItem extends Item {
             if ( bookSlot(player.inventory) >= 0 ) {
                 ItemStack spellbook = player.inventory.getItem(bookSlot(player.inventory));
                 final AbstractSpell spell = SpellbookItem.getSpell(spellbook);
-                if ( player.tickCount % 5 == 0 ) cast(player, spell);
+                if ( player.tickCount % 5 == 0 ) doSpell(player, player, spell);
             }
         }
     }
@@ -47,9 +47,9 @@ public class WandItem extends Item {
             PlayerEntity player = (PlayerEntity)living;
             if ( bookSlot(player.inventory) >= 0 ) {
                 ItemStack spellbook = player.inventory.getItem(bookSlot(player.inventory));
-                Item slotItem = SpellbookItem.getRune(SpellbookItem.getSpellData(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
+                Item slotItem = SpellbookItem.getRune(SpellbookItem.getSpellbookHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
                 final AbstractSpell spell = SpellbookItem.getSpell(spellbook);
-                if ( spell.isChannel() ) addCooldown(player, slotItem, spell);
+                if ( spell.isChannel() ) addCooldown(player, slotItem);
             }
         }
     }
@@ -66,21 +66,41 @@ public class WandItem extends Item {
             if ( !level.isClientSide && player instanceof ServerPlayerEntity && wand.getItem() instanceof WandItem ) {
                 SpellbookData data = SpellbookItem.getData(spellbook);
                 if ( data.getUuid() != null ) {
-                    Item slotItem = SpellbookItem.getRune(SpellbookItem.getSpellData(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
+                    Item slotItem = SpellbookItem.getRune(SpellbookItem.getSpellbookHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
                     if ( slotItem instanceof SpellRuneItem && !player.getCooldowns().isOnCooldown(slotItem) ) {
                         final AbstractSpell spell = SpellbookItem.getSpell(spellbook);
                         if ( spell.isChannel() ) {
                             player.startUsingItem(handIn);
                         }
                         else {
-                            cast(player, spell);
-                            addCooldown(player, slotItem, spell);
+                            doSpell(player, player, spell);
+                            addCooldown(player, slotItem);
                         }
                     }
                 }
             }
         }
         return ActionResult.pass(player.getItemInHand(handIn));
+    }
+
+    public static void doSpell(PlayerEntity owner, Entity caster, final AbstractSpell spell) {
+        float xRot = caster.xRot;
+        float yRot = caster.yRot;
+        Vector3d center;
+        int distance = spell.getDistance();
+        if ( distance > 0 ) {
+            int adjuster = 1;
+            if ( caster != owner ) adjuster = -1;
+            Vector3d direction = CommonEvents.calculateViewVector(xRot * adjuster, yRot * adjuster).normalize();
+            direction = direction.multiply(distance, distance, distance);
+            center = caster.getEyePosition(0).add(direction);
+        }
+        else center = new Vector3d(CommonEvents.getEntityCenter(caster).x, CommonEvents.getEntityCenter(caster).y + 0.5F, CommonEvents.getEntityCenter(caster).z);
+        AbstractSpell.routeSpell(owner, caster, spell, center, xRot, yRot);
+    }
+
+    public static void addCooldown(PlayerEntity player, Item item) {
+        player.getCooldowns().addCooldown(item, ((SpellRuneItem)item).spell.getCooldown());
     }
 
     public static int bookSlot(PlayerInventory playerInventory) {
@@ -96,28 +116,6 @@ public class WandItem extends Item {
 
     public static ItemStack getSpellBook(PlayerEntity player) {
         return player.inventory.getItem(bookSlot(player.inventory));
-    }
-
-    public static void cast(PlayerEntity player, AbstractSpell spell) {
-        doSpell(player, player, spell, player.xRot, player.yRot);
-    }
-
-    public static void doSpell(PlayerEntity owner, Entity caster, final AbstractSpell spell, float xRot, float yRot) {
-        Vector3d center;
-        int distance = spell.getDistance();
-        if ( distance > 0 ) {
-            int adjuster = 1;
-            if ( caster != owner ) adjuster = -1;
-            Vector3d direction = CommonEvents.calculateViewVector(xRot * adjuster, yRot * adjuster).normalize();
-            direction = direction.multiply(distance, distance, distance);
-            center = caster.getEyePosition(0).add(direction);
-        }
-        else center = new Vector3d(CommonEvents.getEntityCenter(caster).x, CommonEvents.getEntityCenter(caster).y + 0.5F, CommonEvents.getEntityCenter(caster).z);
-        AbstractSpell.routeSpell(owner, caster, spell, center, xRot, yRot);
-    }
-
-    public static void addCooldown(PlayerEntity player, Item item, AbstractSpell spell) {
-        player.getCooldowns().addCooldown(item, spell.getCooldown());
     }
 
     @Override

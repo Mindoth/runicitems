@@ -47,6 +47,7 @@ public class GuiSpellSelector extends Screen {
     private int selectedItem;
     private final List<Item> itemList = Lists.newArrayList();
 
+    //TODO Look into toolbelt itemhandler in gui class
     public GuiSpellSelector(IItemHandler itemHandler, CompoundNBT nbt) {
         super(new StringTextComponent(""));
         this.itemHandler = itemHandler;
@@ -73,7 +74,7 @@ public class GuiSpellSelector extends Screen {
     @Override
     public void render(MatrixStack ms, int mouseX, int mouseY, float partialTicks) {
         super.render(ms, mouseX, mouseY, partialTicks);
-        if ( itemHandler == null ) return;
+        if ( this.itemHandler == null ) return;
         float openAnimation = closing ? 1.0F - totalTime / OPEN_ANIMATION_LENGTH : totalTime / OPEN_ANIMATION_LENGTH;
         float currTick = minecraft.getFrameTime();
         totalTime += (currTick + extraTick - prevTick) / 20F;
@@ -198,7 +199,7 @@ public class GuiSpellSelector extends Screen {
     public boolean keyPressed(int key, int scanCode, int modifiers) {
         int adjustedKey = key - 48;
         if ( adjustedKey >= 0 && adjustedKey < 10 ) {
-            selectedItem = adjustedKey == 0 ? 10 : adjustedKey;
+            this.selectedItem = adjustedKey == 0 ? 10 : adjustedKey;
             mouseClicked(0,0,0);
             return true;
         }
@@ -216,7 +217,7 @@ public class GuiSpellSelector extends Screen {
 
     @Override
     public void tick() {
-        if ( itemHandler == null ) {
+        if ( this.itemHandler == null ) {
             Minecraft.getInstance().setScreen(null);
             return;
         }

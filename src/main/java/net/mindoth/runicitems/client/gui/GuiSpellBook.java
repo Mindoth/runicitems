@@ -11,8 +11,8 @@ import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
 
-public class GuiSpellBook extends ContainerScreen<SpellbookContainer> {
-    public GuiSpellBook(SpellbookContainer container, PlayerInventory playerInventory, ITextComponent name) {
+public class GuiSpellbook extends ContainerScreen<SpellbookContainer> {
+    public GuiSpellbook(SpellbookContainer container, PlayerInventory playerInventory, ITextComponent name) {
         super(container, playerInventory, name);
 
         SpellbookType tier = container.getTier();

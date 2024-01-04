@@ -1,5 +1,6 @@
 package net.mindoth.runicitems.item.spellbook.gui;
 
+import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -24,6 +25,6 @@ public class SpellBookContainerSlot extends SlotItemHandler {
 
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack) {
-        return super.mayPlace(stack);
+        return super.mayPlace(stack) && stack.getItem() instanceof SpellRuneItem;
     }
 }
