@@ -6,7 +6,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
+import net.mindoth.runicitems.item.spellbook.SpellbookType;
+import net.mindoth.runicitems.item.spellbook.inventory.SpellbookManager;
+import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.network.PacketSelectSpellbookSlot;
+import net.mindoth.runicitems.network.PacketSendSpellbookData;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
@@ -16,7 +20,10 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
@@ -37,36 +44,61 @@ import java.util.List;
 public class GuiSpellSelector extends Screen {
 
     private static final float PRECISION = 5.0F;
-    private final boolean closing;
+    private boolean closing;
     final float OPEN_ANIMATION_LENGTH = 0.5F;
     private float totalTime;
     private float prevTick;
     private float extraTick;
-    private final IItemHandler itemHandler;
-    private final CompoundNBT nbt;
+    public CompoundNBT nbt;
     private int selectedItem;
-    private final List<Item> itemList = Lists.newArrayList();
+    private final List<ItemStack> itemList;
+    private List<Item> newItemList = Lists.newArrayList();
 
-    //TODO Look into toolbelt itemhandler in gui class
-    public GuiSpellSelector(IItemHandler itemHandler, CompoundNBT nbt) {
+    public GuiSpellSelector(CompoundNBT nbt, List<ItemStack> itemList) {
         super(new StringTextComponent(""));
-        this.itemHandler = itemHandler;
         this.nbt = nbt;
+        this.itemList = itemList;
         this.closing = false;
         this.minecraft = Minecraft.getInstance();
         this.selectedItem = -1;
 
-        for ( int i = 0; i < this.itemHandler.getSlots(); i++ ) {
-            if ( !this.itemHandler.getStackInSlot(i).isEmpty() ) this.itemList.add(this.itemHandler.getStackInSlot(i).getItem());
+        for ( int i = 0; i < this.itemList.size(); i++ ) {
+            if ( this.itemList.get(i).getItem() != Items.AIR ) this.newItemList.add(this.itemList.get(i).getItem() );
+        }
+    }
+
+    public static void open(List<ItemStack> itemList) {
+        Minecraft MINECRAFT = Minecraft.getInstance();
+        PlayerEntity player = MINECRAFT.player;
+        if ( SpellbookItem.bookSlot(player.inventory) >= 0 ) {
+            ItemStack spellbook = SpellbookItem.getSpellBook(player);
+            if ( MINECRAFT.screen instanceof GuiSpellSelector ) {
+                player.closeContainer();
+                return;
+            }
+            if ( WandItem.getHeldWand(player).getItem() instanceof WandItem && spellbook.hasTag() && MINECRAFT.screen == null ) {
+                Minecraft.getInstance().setScreen(new GuiSpellSelector(spellbook.getTag(), itemList));
+            }
+        }
+    }
+
+    @Override
+    public void tick() {
+        if ( this.itemList == null ) {
+            Minecraft.getInstance().setScreen(null);
+            return;
+        }
+        if ( this.totalTime != this.OPEN_ANIMATION_LENGTH ) {
+            this.extraTick++;
         }
     }
 
     @Override
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
         if ( this.selectedItem != -1 ) {
-            SpellbookItem.setSlot(nbt, this.selectedItem);
-            RunicItemsNetwork.CHANNEL.sendToServer(new PacketSelectSpellbookSlot(nbt));
-            minecraft.player.closeContainer();
+            SpellbookItem.setSlot(this.nbt, this.selectedItem);
+            RunicItemsNetwork.sendToServer(new PacketSelectSpellbookSlot(this.nbt));
+            this.minecraft.player.closeContainer();
         }
         return true;
     }
@@ -74,7 +106,7 @@ public class GuiSpellSelector extends Screen {
     @Override
     public void render(MatrixStack ms, int mouseX, int mouseY, float partialTicks) {
         super.render(ms, mouseX, mouseY, partialTicks);
-        if ( this.itemHandler == null ) return;
+        if ( this.itemList == null ) return;
         float openAnimation = closing ? 1.0F - totalTime / OPEN_ANIMATION_LENGTH : totalTime / OPEN_ANIMATION_LENGTH;
         float currTick = minecraft.getFrameTime();
         totalTime += (currTick + extraTick - prevTick) / 20F;
@@ -152,7 +184,7 @@ public class GuiSpellSelector extends Screen {
             float posY = y - ((float)magnifier / 2) + itemRadius * (float)Math.sin(middle);
 
             String resourceIcon;
-            if ( !this.itemList.isEmpty() && this.itemList.get(i) instanceof SpellRuneItem ) resourceIcon = this.itemList.get(i).getRegistryName().getPath();
+            if ( !this.newItemList.isEmpty() && this.newItemList.get(i) instanceof SpellRuneItem ) resourceIcon = this.newItemList.get(i).getRegistryName().getPath();
             else resourceIcon = "";
 
             RenderSystem.disableRescaleNormal();
@@ -169,7 +201,7 @@ public class GuiSpellSelector extends Screen {
     private void drawSlice(BufferBuilder buffer, float x, float y, float z, float radiusIn, float radiusOut, float startAngle, float endAngle,
                            int r, int g, int b, int a) {
         float angle = endAngle - startAngle;
-        int sections = Math.max(1, MathHelper.ceil(angle / PRECISION));
+        int sections = Math.max(1, MathHelper.ceil(angle / this.PRECISION));
 
         startAngle = (float)Math.toRadians(startAngle);
         endAngle = (float)Math.toRadians(endAngle);
@@ -212,17 +244,6 @@ public class GuiSpellSelector extends Screen {
             if ( event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS ) {
                 event.setCanceled(true);
             }
-        }
-    }
-
-    @Override
-    public void tick() {
-        if ( this.itemHandler == null ) {
-            Minecraft.getInstance().setScreen(null);
-            return;
-        }
-        if ( totalTime != OPEN_ANIMATION_LENGTH ) {
-            extraTick++;
         }
     }
 

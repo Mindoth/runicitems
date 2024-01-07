@@ -19,6 +19,6 @@ public class SpellbookItemHandler extends ItemStackHandler {
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return ( stack.getItem() instanceof SpellRuneItem || stack.getItem() instanceof ModifierRuneItem);
+        return ( stack.getItem() instanceof SpellRuneItem || stack.getItem() instanceof ModifierRuneItem );
     }
 }

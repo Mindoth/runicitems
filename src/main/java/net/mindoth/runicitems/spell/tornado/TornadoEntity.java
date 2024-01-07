@@ -59,7 +59,7 @@ public class TornadoEntity extends AbstractSpellEntity {
             if ( this.owner != null ) target.hurt(DamageSource.indirectMagic(this, this.owner), damage);
 
             double lift = 0.01D;
-            if ( !(target instanceof ServerPlayerEntity) && velY < 0.5D ) target.push(dx, velY + lift, dz);
+            if ( !(target instanceof ServerPlayerEntity ) && velY < 0.5D ) target.push(dx, velY + lift, dz);
         }
     }
 

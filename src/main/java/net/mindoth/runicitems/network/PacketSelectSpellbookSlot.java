@@ -15,11 +15,11 @@ public class PacketSelectSpellbookSlot {
     public CompoundNBT nbt;
 
     public PacketSelectSpellbookSlot(PacketBuffer buf) {
-        nbt = buf.readNbt();
+        this.nbt = buf.readNbt();
     }
 
     public void encode(PacketBuffer buf) {
-        buf.writeNbt(nbt);
+        buf.writeNbt(this.nbt);
     }
 
     public PacketSelectSpellbookSlot(CompoundNBT nbt) {
@@ -30,8 +30,8 @@ public class PacketSelectSpellbookSlot {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             ServerPlayerEntity player = context.getSender();
-            ItemStack spellbook = WandItem.getSpellBook(player);
-            if ( spellbook.getItem() instanceof SpellbookItem ) spellbook.setTag(nbt);
+            ItemStack spellbook = SpellbookItem.getSpellBook(player);
+            if ( spellbook.getItem() instanceof SpellbookItem ) spellbook.setTag(this.nbt);
         });
         context.setPacketHandled(true);
     }

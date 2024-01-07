@@ -32,10 +32,9 @@ public class WandItem extends Item {
         if ( level.isClientSide ) return;
         if ( living instanceof PlayerEntity ) {
             PlayerEntity player = (PlayerEntity)living;
-            if ( bookSlot(player.inventory) >= 0 ) {
-                ItemStack spellbook = player.inventory.getItem(bookSlot(player.inventory));
-                final AbstractSpell spell = SpellbookItem.getSpell(spellbook);
-                if ( player.tickCount % 5 == 0 ) doSpell(player, player, spell);
+            if ( SpellbookItem.bookSlot(player.inventory) >= 0 ) {
+                ItemStack spellbook = SpellbookItem.getSpellBook(player);
+                if ( player.tickCount % 5 == 0 ) doSpell(player, player, SpellbookItem.getSpell(spellbook));
             }
         }
     }
@@ -45,11 +44,10 @@ public class WandItem extends Item {
         if ( level.isClientSide ) return;
         if ( living instanceof PlayerEntity ) {
             PlayerEntity player = (PlayerEntity)living;
-            if ( bookSlot(player.inventory) >= 0 ) {
-                ItemStack spellbook = player.inventory.getItem(bookSlot(player.inventory));
-                Item slotItem = SpellbookItem.getRune(SpellbookItem.getSpellbookHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
-                final AbstractSpell spell = SpellbookItem.getSpell(spellbook);
-                if ( spell.isChannel() ) addCooldown(player, slotItem);
+            if ( SpellbookItem.bookSlot(player.inventory) >= 0 ) {
+                ItemStack spellbook = player.inventory.getItem(SpellbookItem.bookSlot(player.inventory));
+                Item slotItem = SpellbookItem.getRune(SpellbookItem.getHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
+                if ( SpellbookItem.getSpell(spellbook).isChannel() ) addCooldown(player, slotItem);
             }
         }
     }
@@ -57,16 +55,16 @@ public class WandItem extends Item {
     @Override
     @Nonnull
     public ActionResult<ItemStack> use(World level, PlayerEntity player, @Nonnull Hand handIn) {
-        if ( bookSlot(player.inventory) >= 0
+        if ( SpellbookItem.bookSlot(player.inventory) >= 0
                 && !(player.getMainHandItem().getItem() instanceof SpellbookItem)
                 && !(player.getOffhandItem().getItem() instanceof SpellbookItem) ) {
-            ItemStack spellbook = player.inventory.getItem(bookSlot(player.inventory));
+            ItemStack spellbook = player.inventory.getItem(SpellbookItem.bookSlot(player.inventory));
             ItemStack wand = player.getItemInHand(handIn);
             if ( !spellbook.hasTag() ) SpellbookItem.setSlot(spellbook.getOrCreateTag(), 0);
             if ( !level.isClientSide && player instanceof ServerPlayerEntity && wand.getItem() instanceof WandItem ) {
                 SpellbookData data = SpellbookItem.getData(spellbook);
                 if ( data.getUuid() != null ) {
-                    Item slotItem = SpellbookItem.getRune(SpellbookItem.getSpellbookHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
+                    Item slotItem = SpellbookItem.getRune(SpellbookItem.getHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
                     if ( slotItem instanceof SpellRuneItem && !player.getCooldowns().isOnCooldown(slotItem) ) {
                         final AbstractSpell spell = SpellbookItem.getSpell(spellbook);
                         if ( spell.isChannel() ) {
@@ -103,21 +101,6 @@ public class WandItem extends Item {
         player.getCooldowns().addCooldown(item, ((SpellRuneItem)item).spell.getCooldown());
     }
 
-    public static int bookSlot(PlayerInventory playerInventory) {
-        int bookSlot = -1;
-        for ( int i = 0; i < playerInventory.getContainerSize(); i++ ) {
-            if ( playerInventory.getItem(i).getItem() instanceof SpellbookItem ) {
-                bookSlot = i;
-                break;
-            }
-        }
-        return bookSlot;
-    }
-
-    public static ItemStack getSpellBook(PlayerEntity player) {
-        return player.inventory.getItem(bookSlot(player.inventory));
-    }
-
     @Override
     public int getUseDuration(ItemStack pStack) {
         return 72000;
@@ -126,5 +109,10 @@ public class WandItem extends Item {
     @Override
     public UseAction getUseAnimation(ItemStack pStack) {
         return UseAction.BOW;
+    }
+
+    public static @Nonnull ItemStack getHeldWand(PlayerEntity playerEntity) {
+        ItemStack wand = playerEntity.getMainHandItem().getItem() instanceof WandItem ? playerEntity.getMainHandItem() : null;
+        return wand == null ? (playerEntity.getOffhandItem().getItem() instanceof WandItem ? playerEntity.getOffhandItem() : ItemStack.EMPTY) : wand;
     }
 }

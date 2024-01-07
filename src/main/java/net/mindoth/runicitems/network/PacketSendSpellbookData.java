@@ -1,42 +1,48 @@
 package net.mindoth.runicitems.network;
 
-import net.mindoth.runicitems.RunicItems;
-import net.mindoth.runicitems.client.gui.GuiSpellSelector;
+import com.google.common.collect.Lists;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
+import net.mindoth.runicitems.item.weapon.WandItem;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.items.IItemHandler;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class PacketSendSpellbookData {
 
-    ItemStack spellbook;
-    //CompoundNBT nbt;
+    List<ItemStack> itemList = Lists.newArrayList();
 
-    public PacketSendSpellbookData(ItemStack spellbook) {
-        this.spellbook = spellbook;
-        //this.nbt = nbt;
+    public PacketSendSpellbookData() {
     }
 
     public PacketSendSpellbookData(PacketBuffer buf) {
-        this.spellbook = buf.readItem();
-        //this.nbt = buf.readNbt();
     }
 
     public void encode(PacketBuffer buf) {
-        buf.writeItem(this.spellbook);
-        //buf.writeNbt(this.nbt);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+    public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
+        contextSupplier.get().getSender().refreshContainer(contextSupplier.get().getSender().containerMenu);
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
-            if ( RunicItems.proxy.getMinecraft().screen instanceof GuiSpellSelector ) {
-                //((GuiSpellSelector)RunicItems.proxy.getMinecraft().screen).itemHandler = SpellbookItem.getSpellbookHandler(this.spellbook);
+            if ( context.getSender() != null ) {
+                ServerPlayerEntity player = context.getSender();
+                if ( SpellbookItem.bookSlot(player.inventory) >= 0 ) {
+                    ItemStack spellbook = SpellbookItem.getSpellBook(player);
+                    IItemHandler itemHandler = SpellbookItem.getHandler(spellbook);
+                    for ( int i = 0; i < itemHandler.getSlots(); i++ ) {
+                        this.itemList.add(itemHandler.getStackInSlot(i));
+                    }
+                    RunicItemsNetwork.sendToPlayer(new PacketReceiveSpellbookData(this.itemList), player);
+                }
             }
         });
-        context.setPacketHandled(true);
+        return true;
     }
 }

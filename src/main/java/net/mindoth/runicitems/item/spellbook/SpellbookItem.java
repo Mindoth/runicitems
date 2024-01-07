@@ -7,6 +7,7 @@ import net.mindoth.runicitems.item.spellbook.inventory.SpellbookData;
 import net.mindoth.runicitems.item.spellbook.inventory.SpellbookManager;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
@@ -30,7 +31,7 @@ import java.util.UUID;
 
 public class SpellbookItem extends Item {
 
-    final SpellbookType tier;
+    public SpellbookType tier;
     public static final String SLOT_TAG = "slot";
 
     public SpellbookItem(SpellbookType tier) {
@@ -64,18 +65,33 @@ public class SpellbookItem extends Item {
         return spellbook.getTag().getInt(SpellbookItem.SLOT_TAG);
     }
 
-    public static IItemHandler getSpellbookHandler(ItemStack ogStack) {
-        SpellbookData ogData = getData(ogStack);
-        final IItemHandler handler = ogData.getHandler();
-        return handler;
-    }
-
     public static Item getRune(IItemHandler itemHandler, int slot) {
         return itemHandler.getStackInSlot(slot).getItem();
     }
 
     public static AbstractSpell getSpell(ItemStack spellbook) {
-        return ((SpellRuneItem)getRune(getSpellbookHandler(spellbook), spellbook.getTag().getInt(SLOT_TAG))).spell;
+        return ((SpellRuneItem)getRune(getHandler(spellbook), spellbook.getTag().getInt(SLOT_TAG))).spell;
+    }
+
+    public static IItemHandler getHandler(ItemStack ogStack) {
+        SpellbookData ogData = getData(ogStack);
+        final IItemHandler handler = ogData.getHandler();
+        return handler;
+    }
+
+    public static ItemStack getSpellBook(PlayerEntity player) {
+        return player.inventory.getItem(SpellbookItem.bookSlot(player.inventory));
+    }
+
+    public static int bookSlot(PlayerInventory playerInventory) {
+        int bookSlot = -1;
+        for ( int i = 0; i < playerInventory.getContainerSize(); i++ ) {
+            if ( playerInventory.getItem(i).getItem() instanceof SpellbookItem ) {
+                bookSlot = i;
+                break;
+            }
+        }
+        return bookSlot;
     }
 
     public static SpellbookData getData(ItemStack stack) {
@@ -88,6 +104,16 @@ public class SpellbookItem extends Item {
         }
         else uuid = tag.getUUID("UUID");
         return SpellbookManager.get().getOrCreateSpellbook(uuid, ((SpellbookItem)stack.getItem()).tier);
+    }
+
+    public static SpellbookData getDataFromNBT(CompoundNBT tag, SpellbookType tier) {
+        UUID uuid;
+        if ( !tag.contains("UUID") ) {
+            uuid = UUID.randomUUID();
+            tag.putUUID("UUID", uuid);
+        }
+        else uuid = tag.getUUID("UUID");
+        return SpellbookManager.get().getOrCreateSpellbook(uuid, tier);
     }
 
     @Override
