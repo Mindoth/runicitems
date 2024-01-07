@@ -6,11 +6,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
-import net.mindoth.runicitems.item.spellbook.SpellbookType;
-import net.mindoth.runicitems.item.spellbook.inventory.SpellbookManager;
 import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.network.PacketSelectSpellbookSlot;
-import net.mindoth.runicitems.network.PacketSendSpellbookData;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
@@ -35,7 +32,6 @@ import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -51,19 +47,19 @@ public class GuiSpellSelector extends Screen {
     private float extraTick;
     public CompoundNBT nbt;
     private int selectedItem;
-    private final List<ItemStack> itemList;
-    private List<Item> newItemList = Lists.newArrayList();
+    private final List<ItemStack> stackList;
+    private final List<Item> itemList = Lists.newArrayList();
 
-    public GuiSpellSelector(CompoundNBT nbt, List<ItemStack> itemList) {
+    public GuiSpellSelector(CompoundNBT nbt, List<ItemStack> stackList) {
         super(new StringTextComponent(""));
         this.nbt = nbt;
-        this.itemList = itemList;
+        this.stackList = stackList;
         this.closing = false;
         this.minecraft = Minecraft.getInstance();
         this.selectedItem = -1;
 
-        for ( int i = 0; i < this.itemList.size(); i++ ) {
-            if ( this.itemList.get(i).getItem() != Items.AIR ) this.newItemList.add(this.itemList.get(i).getItem() );
+        for ( ItemStack stack : stackList ) {
+            if (stack.getItem() != Items.AIR) this.itemList.add(stack.getItem());
         }
     }
 
@@ -84,10 +80,6 @@ public class GuiSpellSelector extends Screen {
 
     @Override
     public void tick() {
-        if ( this.itemList == null ) {
-            Minecraft.getInstance().setScreen(null);
-            return;
-        }
         if ( this.totalTime != this.OPEN_ANIMATION_LENGTH ) {
             this.extraTick++;
         }
@@ -106,7 +98,6 @@ public class GuiSpellSelector extends Screen {
     @Override
     public void render(MatrixStack ms, int mouseX, int mouseY, float partialTicks) {
         super.render(ms, mouseX, mouseY, partialTicks);
-        if ( this.itemList == null ) return;
         float openAnimation = closing ? 1.0F - totalTime / OPEN_ANIMATION_LENGTH : totalTime / OPEN_ANIMATION_LENGTH;
         float currTick = minecraft.getFrameTime();
         totalTime += (currTick + extraTick - prevTick) / 20F;
@@ -121,7 +112,8 @@ public class GuiSpellSelector extends Screen {
         int x = width / 2;
         int y = height / 2;
 
-        int numberOfSlices = Math.max(1, this.itemList.size());
+        int numberOfSlices = 1;
+        if ( !this.itemList.isEmpty() ) numberOfSlices = this.itemList.size();
 
         double a = Math.toDegrees(Math.atan2(mouseY - y, mouseX - x));
         double d = Math.sqrt(Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2));
@@ -184,7 +176,7 @@ public class GuiSpellSelector extends Screen {
             float posY = y - ((float)magnifier / 2) + itemRadius * (float)Math.sin(middle);
 
             String resourceIcon;
-            if ( !this.newItemList.isEmpty() && this.newItemList.get(i) instanceof SpellRuneItem ) resourceIcon = this.newItemList.get(i).getRegistryName().getPath();
+            if ( !this.itemList.isEmpty() && (this.itemList.get(i) instanceof SpellRuneItem) ) resourceIcon = this.itemList.get(i).getRegistryName().getPath();
             else resourceIcon = "";
 
             RenderSystem.disableRescaleNormal();

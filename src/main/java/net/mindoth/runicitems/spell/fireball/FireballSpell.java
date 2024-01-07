@@ -2,12 +2,10 @@ package net.mindoth.runicitems.spell.fireball;
 
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
-import net.mindoth.runicitems.spell.abstractspell.SpellProjectileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 public class FireballSpell extends AbstractSpell {
 
@@ -15,7 +13,7 @@ public class FireballSpell extends AbstractSpell {
                                   Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, spell, "fire", 1.2F);
+        AbstractSpellEntity projectile = new FireballEntity(level, owner, caster, spell, "fire", 1.2F);
         projectile.setNoGravity(!spell.getGravity());
         playSound(level, center);
 

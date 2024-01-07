@@ -2,13 +2,11 @@ package net.mindoth.runicitems.spell.blizzard;
 
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
-import net.mindoth.runicitems.spell.abstractspell.SpellProjectileEntity;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 public class BlizzardSpell extends AbstractSpell {
 
@@ -16,7 +14,7 @@ public class BlizzardSpell extends AbstractSpell {
                                   Vector3d center, float xRot, float yRot) {
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new SpellProjectileEntity(level, owner, caster, spell, "frost", 0.3F);
+        AbstractSpellEntity projectile = new BlizzardEntity(level, owner, caster, spell, "frost", 0.3F);
         projectile.setNoGravity(!spell.getGravity());
 
         setPos(level, caster, projectile);

@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.spell.abstractspell;
+package net.mindoth.runicitems.spell.blizzard;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.mindoth.runicitems.RunicItems;
@@ -9,19 +9,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
-public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntity> {
+public class BlizzardRenderer extends EntityRenderer<BlizzardEntity> {
 
-    public SpellProjectileRenderer(EntityRendererManager renderManager) {
+    public BlizzardRenderer(EntityRendererManager renderManager) {
         super(renderManager);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpellProjectileEntity entity) {
+    public ResourceLocation getTextureLocation(BlizzardEntity entity) {
         return new ResourceLocation(RunicItems.MOD_ID, "textures/spells/clear.png");
     }
 
     @Override
-    public void render(SpellProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(BlizzardEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)));

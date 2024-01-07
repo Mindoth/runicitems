@@ -1,8 +1,8 @@
 package net.mindoth.runicitems.registries;
 
 import net.mindoth.runicitems.RunicItems;
-import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
-import net.mindoth.runicitems.spell.abstractspell.SpellProjectileEntity;
+import net.mindoth.runicitems.spell.blizzard.BlizzardEntity;
+import net.mindoth.runicitems.spell.fireball.FireballEntity;
 import net.mindoth.runicitems.spell.tornado.TornadoEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -14,9 +14,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class RunicItemsEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, RunicItems.MOD_ID);
 
-    public static final RegistryObject<EntityType<SpellProjectileEntity>> SPELL_PROJECTILE
-            = registerEntity(EntityType.Builder.<SpellProjectileEntity>of(SpellProjectileEntity::new,
-            EntityClassification.MISC).sized(0.75F, 0.75F).setCustomClientFactory(SpellProjectileEntity::new), "projectile");
+    public static final RegistryObject<EntityType<BlizzardEntity>> BLIZZARD
+            = registerEntity(EntityType.Builder.<BlizzardEntity>of(BlizzardEntity::new,
+            EntityClassification.MISC).sized(0.75F, 0.75F).setCustomClientFactory(BlizzardEntity::new), "blizzard");
+
+    public static final RegistryObject<EntityType<FireballEntity>> FIREBALL
+            = registerEntity(EntityType.Builder.<FireballEntity>of(FireballEntity::new,
+            EntityClassification.MISC).sized(0.75F, 0.75F).setCustomClientFactory(FireballEntity::new), "fireball");
 
     public static final RegistryObject<EntityType<TornadoEntity>> TORNADO
             = registerEntity(EntityType.Builder.<TornadoEntity>of(TornadoEntity::new,
