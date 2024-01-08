@@ -5,6 +5,7 @@ import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.spellbook.inventory.SpellbookData;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
+import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -28,19 +29,19 @@ public class WandItem extends Item {
     }
 
     @Override
-    public void onUseTick(World level, LivingEntity living, ItemStack wand, int pCount) {
+    public void onUseTick(World level, LivingEntity living, ItemStack wand, int timeLeft) {
         if ( level.isClientSide ) return;
         if ( living instanceof PlayerEntity ) {
             PlayerEntity player = (PlayerEntity)living;
             if ( SpellbookItem.bookSlot(player.inventory) >= 0 ) {
                 ItemStack spellbook = SpellbookItem.getSpellBook(player);
-                if ( player.tickCount % 5 == 0 ) doSpell(player, player, SpellbookItem.getSpell(spellbook));
+                doSpell(player, player, SpellbookItem.getSpell(spellbook), getUseDuration(wand) - timeLeft);
             }
         }
     }
 
     @Override
-    public void releaseUsing(ItemStack wand, World level, LivingEntity living, int pTimeLeft) {
+    public void releaseUsing(ItemStack wand, World level, LivingEntity living, int timeLeft) {
         if ( level.isClientSide ) return;
         if ( living instanceof PlayerEntity ) {
             PlayerEntity player = (PlayerEntity)living;
@@ -71,7 +72,7 @@ public class WandItem extends Item {
                             player.startUsingItem(handIn);
                         }
                         else {
-                            doSpell(player, player, spell);
+                            doSpell(player, player, spell, 0);
                             addCooldown(player, slotItem);
                         }
                     }
@@ -81,7 +82,7 @@ public class WandItem extends Item {
         return ActionResult.pass(player.getItemInHand(handIn));
     }
 
-    public static void doSpell(PlayerEntity owner, Entity caster, final AbstractSpell spell) {
+    public static void doSpell(PlayerEntity owner, Entity caster, final AbstractSpell spell, int useTime) {
         float xRot = caster.xRot;
         float yRot = caster.yRot;
         Vector3d center;
@@ -94,7 +95,7 @@ public class WandItem extends Item {
             center = caster.getEyePosition(0).add(direction);
         }
         else center = new Vector3d(CommonEvents.getEntityCenter(caster).x, CommonEvents.getEntityCenter(caster).y + 0.5F, CommonEvents.getEntityCenter(caster).z);
-        AbstractSpell.routeSpell(owner, caster, spell, center, xRot, yRot);
+        AbstractSpell.routeSpell(owner, caster, spell, center, xRot, yRot, useTime);
     }
 
     public static void addCooldown(PlayerEntity player, Item item) {

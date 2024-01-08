@@ -59,7 +59,7 @@ public class GuiSpellSelector extends Screen {
         this.selectedItem = -1;
 
         for ( ItemStack stack : stackList ) {
-            if (stack.getItem() != Items.AIR) this.itemList.add(stack.getItem());
+            if ( stack.getItem() != Items.AIR ) this.itemList.add(stack.getItem());
         }
     }
 

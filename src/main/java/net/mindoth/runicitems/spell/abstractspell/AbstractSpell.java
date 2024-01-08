@@ -14,9 +14,9 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class AbstractSpell {
 
-    public static void routeSpell(PlayerEntity owner, Entity caster, AbstractSpell spell, Vector3d center, float xRot, float yRot) {
-        if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
-        if ( spell instanceof TornadoSpell) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
+    public static void routeSpell(PlayerEntity owner, Entity caster, AbstractSpell spell, Vector3d center, float xRot, float yRot, int useTime) {
+        if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
+        if ( spell instanceof TornadoSpell ) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
         if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
     }
 
@@ -47,8 +47,6 @@ public abstract class AbstractSpell {
     public boolean isChannel() {
         return false;
     }
-
-
 
     protected static void playMagicSound(World level, Vector3d center) {
         level.playSound(null, center.x, center.y, center.z,

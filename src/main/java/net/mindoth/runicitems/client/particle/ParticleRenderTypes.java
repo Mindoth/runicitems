@@ -13,7 +13,9 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import org.lwjgl.opengl.GL11;
 
 public class ParticleRenderTypes {
+
     static final IParticleRenderType RUNIC_RENDER = new IParticleRenderType() {
+
         @Override
         public void begin(BufferBuilder buffer, TextureManager textureManager) {
             RenderSystem.disableAlphaTest();
@@ -38,6 +40,7 @@ public class ParticleRenderTypes {
     };
 
     static final IParticleRenderType EMBER_RENDER = new IParticleRenderType() {
+
         @Override
         public void begin(BufferBuilder buffer, TextureManager textureManager) {
             Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
@@ -62,6 +65,7 @@ public class ParticleRenderTypes {
     };
 
     static final IParticleRenderType EMBER_RENDER_NO_MASK = new IParticleRenderType() {
+
         @Override
         public void begin(BufferBuilder buffer, TextureManager textureManager) {
             RenderSystem.disableAlphaTest();

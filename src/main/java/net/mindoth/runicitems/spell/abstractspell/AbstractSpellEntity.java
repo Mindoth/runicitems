@@ -2,12 +2,15 @@ package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.client.particle.EmberParticleData;
 import net.mindoth.runicitems.client.particle.ParticleColor;
+import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
+import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -58,6 +61,10 @@ public class AbstractSpellEntity extends ThrowableEntity {
     protected float power;
     protected float life;
 
+    protected boolean isAlly(LivingEntity target) {
+        return !(target == this.owner || target.isAlliedTo(this.owner) || (target instanceof TameableEntity && ((TameableEntity)target).isOwnedBy(this.owner)));
+    }
+
     protected void doMobEffects(RayTraceResult result) {
     }
 
@@ -65,11 +72,16 @@ public class AbstractSpellEntity extends ThrowableEntity {
     }
 
     protected void dealDamage(LivingEntity target) {
-        target.hurt(DamageSource.indirectMagic(this, this.owner), this.power);
+        if ( isAlly(target) ) {
+            target.hurt(DamageSource.indirectMagic(this, this.owner), this.power);
+        }
     }
 
     @Override
     protected void onHit(RayTraceResult result) {
+        if ( level.isClientSide ) {
+            doClientEffects();
+        }
         if ( !level.isClientSide ) {
             if ( result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult)result).getEntity() instanceof LivingEntity ) {
                 doMobEffects(result);
@@ -97,7 +109,8 @@ public class AbstractSpellEntity extends ThrowableEntity {
             Vector3d center = CommonEvents.getEntityCenter(this);
             ClientWorld world = (ClientWorld)this.level;
             for ( int i = 0; i < 4; ++i ) {
-                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
+                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10),
+                        center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
             }
         }
         if ( !level.isClientSide ) {
@@ -109,13 +122,16 @@ public class AbstractSpellEntity extends ThrowableEntity {
         }
     }
 
+    protected void doClientEffects() {
+    }
+
     protected void doTickEffects() {
     }
 
     protected void spawnParticles() {
     }
 
-    protected static ParticleColor.IntWrapper getSpellColor(String element) {
+    public static ParticleColor.IntWrapper getSpellColor(String element) {
         ParticleColor.IntWrapper returnColor = null;
         if ( element.equals("frost") ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
         if ( element.equals("storm") ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);

@@ -7,6 +7,7 @@ import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
@@ -25,6 +26,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -36,10 +38,17 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
 public class MiscEvents {
+
+    public static ArrayList<LivingEntity> getEnemiesAround(Entity caster, World pLevel, double size) {
+        ArrayList<LivingEntity> targets = (ArrayList)pLevel.getEntitiesOfClass(LivingEntity.class, caster.getBoundingBox().inflate(size));
+        targets.removeIf( (entry) -> entry == caster || !entry.isAttackable() || !entry.isAlive() || (entry instanceof PlayerEntity && ((PlayerEntity)entry).abilities.instabuild) );
+        return targets;
+    }
 
     @SubscribeEvent
     public static void weaponsOnMobs(EntityJoinWorldEvent event) {

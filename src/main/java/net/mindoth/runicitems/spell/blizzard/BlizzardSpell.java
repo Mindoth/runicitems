@@ -11,20 +11,21 @@ import net.minecraft.world.World;
 public class BlizzardSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot) {
+                                  Vector3d center, float xRot, float yRot, int useTime) {
+        if ( useTime % 5 != 0 ) return;
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new BlizzardEntity(level, owner, caster, spell, "frost", 0.3F);
+        AbstractSpellEntity projectile = new BlizzardEntity(level, owner, caster, spell, "frost", 0.5F);
         projectile.setNoGravity(!spell.getGravity());
 
-        setPos(level, caster, projectile);
+        setPos(level, caster, projectile, useTime);
         projectile.setDeltaMovement(0F, -0.6F, 0F);
         level.addFreshEntity(projectile);
     }
 
-    protected static void setPos(World level, Entity caster, AbstractSpellEntity projectile) {
+    protected static void setPos(World level, Entity caster, AbstractSpellEntity projectile, int time) {
         float radius;
-        if ( caster.tickCount % 20 == 0 ) radius = 0.0F;
+        if ( time % 20 == 0 ) radius = 0.0F;
         else radius = 2.0F;
         float range = 8.0F;
         float error = 0.5F;
@@ -40,13 +41,13 @@ public class BlizzardSpell extends AbstractSpell {
             posZ = CommonEvents.getPointedEntity(level, caster, range, error, true).getZ() + randZ;
         }
         else {
-            posX = CommonEvents.getPoint(caster, range, error, true).x + randX;
-            posY = CommonEvents.blockHeight(level, caster, range, error, 7) + randY;
-            posZ = CommonEvents.getPoint(caster, range, error, true).z + randZ;
+            posX = CommonEvents.getPoint(caster, range, 0.0F, true).x + randX;
+            posY = CommonEvents.blockHeight(level, caster, range, 0.0F, 7) + randY;
+            posZ = CommonEvents.getPoint(caster, range, 0.0F, true).z + randZ;
         }
         Vector3d spawnPos = new Vector3d(posX, posY, posZ);
         projectile.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
-        if ( caster.tickCount % 5 == 0 ) playSound(level, new Vector3d(spawnPos.x, spawnPos.y, spawnPos.z));
+        if ( time % 5 == 0 ) playSound(level, new Vector3d(spawnPos.x, spawnPos.y, spawnPos.z));
     }
 
     @Override

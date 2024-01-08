@@ -20,8 +20,8 @@ public class ParticleEmber extends SpriteTexturedParticle {
     public float destY;
     public float destZ;
 
-    protected ParticleEmber(ClientWorld level, double x, double y, double z, double vx, double vy, double vz, float r, float g, float b, float scale, int lifetime, IAnimatedSprite sprite) {
-        super(level, x, y, z, 0, 0, 0);
+    protected ParticleEmber(ClientWorld level, double x, double y, double z, double xd, double yd, double zd, float r, float g, float b, float scale, int lifetime, IAnimatedSprite sprite) {
+        super(level, x, y, z, xd, yd, zd);
         this.colorR = r;
         this.colorG = g;
         this.colorB = b;
@@ -38,15 +38,15 @@ public class ParticleEmber extends SpriteTexturedParticle {
         this.lifetime = lifetime;
         this.quadSize = scale;
         this.initScale = scale;
-        this.xd = 0;
-        this.yd = 0;
-        this.zd = 0;
-        this.initX = (float) x;
-        this.initY = (float) y;
-        this.initZ = (float) z;
-        this.destX = (float) vx;
-        this.destY = (float) vy;
-        this.destZ = (float) vz;
+        this.xd = xd;
+        this.yd = yd;
+        this.zd = zd;
+        this.initX = (float)x;
+        this.initY = (float)y;
+        this.initZ = (float)z;
+        this.destX = (float)xd;
+        this.destY = (float)yd;
+        this.destZ = (float)zd;
         this.roll = 2.0f * (float)Math.PI;
         this.pickSprite(sprite);
     }

@@ -2,6 +2,7 @@ package net.mindoth.runicitems.spell.fireball;
 
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
+import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -32,7 +33,7 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public float getPower() {
-        return 12.0F;
+        return 16.0F;
     }
 
     @Override

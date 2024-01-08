@@ -1,5 +1,6 @@
 package net.mindoth.runicitems.spell.tornado;
 
+import net.mindoth.runicitems.event.MiscEvents;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
@@ -20,7 +21,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
 
@@ -50,13 +50,12 @@ public class TornadoEntity extends AbstractSpellEntity {
             this.level.playSound(null, center.x, center.y, center.z,
                     SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.03F);
         }
-        List<LivingEntity> targets = CommonEvents.getEntitiesAround(this, this.level, this.range);
+        List<LivingEntity> targets = MiscEvents.getEnemiesAround(this, this.level, this.range);
         for ( LivingEntity target : targets ) {
             double velY = target.getDeltaMovement().y;
             double dx = (center.x - target.position().x > 0 ? 0.5 : -0.5) - (center.x - target.position().x) * 0.125;
             double dz = (center.z - target.position().z > 0 ? 0.5 : -0.5) - (center.z - target.position().z) * 0.125;
-            float damage = this.power;
-            if ( this.owner != null ) target.hurt(DamageSource.indirectMagic(this, this.owner), damage);
+            dealDamage(target);
 
             double lift = 0.01D;
             if ( !(target instanceof ServerPlayerEntity ) && velY < 0.5D ) target.push(dx, velY + lift, dz);

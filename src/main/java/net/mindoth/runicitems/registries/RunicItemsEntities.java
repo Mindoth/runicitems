@@ -18,13 +18,13 @@ public class RunicItemsEntities {
             = registerEntity(EntityType.Builder.<BlizzardEntity>of(BlizzardEntity::new,
             EntityClassification.MISC).sized(0.75F, 0.75F).setCustomClientFactory(BlizzardEntity::new), "blizzard");
 
-    public static final RegistryObject<EntityType<FireballEntity>> FIREBALL
-            = registerEntity(EntityType.Builder.<FireballEntity>of(FireballEntity::new,
-            EntityClassification.MISC).sized(0.75F, 0.75F).setCustomClientFactory(FireballEntity::new), "fireball");
-
     public static final RegistryObject<EntityType<TornadoEntity>> TORNADO
             = registerEntity(EntityType.Builder.<TornadoEntity>of(TornadoEntity::new,
             EntityClassification.MISC).sized(1.0F, 1.0F).setCustomClientFactory(TornadoEntity::new), "tornado");
+
+    public static final RegistryObject<EntityType<FireballEntity>> FIREBALL
+            = registerEntity(EntityType.Builder.<FireballEntity>of(FireballEntity::new,
+            EntityClassification.MISC).sized(1.0F, 1.0F).setCustomClientFactory(FireballEntity::new), "fireball");
 
     private static final <T extends Entity> RegistryObject<EntityType<T>> registerEntity(EntityType.Builder<T> builder, String entityName) {
         return ENTITIES.register(entityName, () -> builder.build(entityName));
