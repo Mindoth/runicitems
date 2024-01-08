@@ -80,20 +80,28 @@ public class GuiSpellSelector extends Screen {
     }
 
     @Override
-    public void tick() {
-        if ( this.totalTime != this.OPEN_ANIMATION_LENGTH ) {
-            this.extraTick++;
-        }
-    }
-
-    @Override
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
         if ( this.selectedItem != -1 ) {
-            SpellbookItem.setSlot(this.nbt, this.selectedItem);
+            SpellbookItem.setSlot(this.nbt, slotCoordinator());
             RunicItemsNetwork.sendToServer(new PacketSelectSpellbookSlot(this.nbt));
             this.minecraft.player.closeContainer();
         }
         return true;
+    }
+
+    private int slotCoordinator() {
+        int slot = 0;
+        if ( !this.itemList.isEmpty() ) {
+            int passedItems = -1;
+            for ( int i = 0; i < this.stackList.size(); i++ ) {
+                if ( !this.stackList.get(i).isEmpty() ) passedItems++;
+                if ( passedItems == this.selectedItem ) {
+                    slot = i;
+                    break;
+                }
+            }
+        }
+        return slot;
     }
 
     @Override
@@ -194,6 +202,13 @@ public class GuiSpellSelector extends Screen {
                 int number = 100 - (int)(player.getCooldowns().getCooldownPercent(this.itemList.get(i), 0) * 100);
                 this.itemRenderer.renderGuiItemDecorations(font, stack, (int)posX + 8, (int)posY + 9, number + "%");
             }
+        }
+    }
+
+    @Override
+    public void tick() {
+        if ( this.totalTime != this.OPEN_ANIMATION_LENGTH ) {
+            this.extraTick++;
         }
     }
 
