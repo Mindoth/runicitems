@@ -9,6 +9,7 @@ import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.network.PacketSelectSpellbookSlot;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -186,6 +187,12 @@ public class GuiSpellSelector extends Screen {
             if ( !resourceIcon.isEmpty() ) {
                 drawItemTexture(new ResourceLocation(RunicItems.MOD_ID, "textures/items/" + resourceIcon + ".png"),
                         (int)posX, (int)posY, 0, 0, magnifier, magnifier, magnifier, magnifier, ms);
+
+                Minecraft MINECRAFT = Minecraft.getInstance();
+                PlayerEntity player = MINECRAFT.player;
+                ItemStack stack = new ItemStack(Blocks.DIRT);
+                int number = 100 - (int)(player.getCooldowns().getCooldownPercent(this.itemList.get(i), 0) * 100);
+                this.itemRenderer.renderGuiItemDecorations(font, stack, (int)posX + 8, (int)posY + 9, number + "%");
             }
         }
     }

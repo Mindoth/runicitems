@@ -74,6 +74,7 @@ public class WandItem extends Item {
                         else {
                             doSpell(player, player, spell, 0);
                             addCooldown(player, slotItem);
+                            return ActionResult.success(player.getItemInHand(handIn));
                         }
                     }
                 }
