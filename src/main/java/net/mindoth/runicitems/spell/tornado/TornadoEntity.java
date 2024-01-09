@@ -2,24 +2,23 @@ package net.mindoth.runicitems.spell.tornado;
 
 import net.mindoth.runicitems.event.MiscEvents;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
-import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
+import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 
 import java.util.List;
@@ -63,7 +62,7 @@ public class TornadoEntity extends AbstractSpellEntity {
     }
 
     @Override
-    protected void spawnParticles() {
+    protected void doClientTickEffects() {
         Vector3d center = CommonEvents.getEntityCenter(this);
         double posX = center.x;
         double posY = center.y - 2;
@@ -79,9 +78,9 @@ public class TornadoEntity extends AbstractSpellEntity {
                 double radius = y * radiusIncreasement + heightIncreasement;
                 double x = (Math.cos(Math.toRadians((double)360 / lines * l + y * 25 - angle)) * radius);
                 double z = (Math.sin(Math.toRadians((double)360 / lines * l + y * 25 - angle)) * radius);
-                ServerWorld level = (ServerWorld)this.level;
-                level.sendParticles(new BlockParticleData(ParticleTypes.BLOCK, blockUnder(this)), posX + x, posY + y, posZ + z,
-                        0, 0, 1, 0, 1.0D);
+                ClientWorld world = (ClientWorld)this.level;
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, blockUnder(this)), true,
+                        posX + x, posY + y, posZ + z, 1, 0, 1.0D);
             }
         }
     }

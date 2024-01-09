@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FireballEntity extends AbstractSpellEntity {
 
@@ -60,9 +61,23 @@ public class FireballEntity extends AbstractSpellEntity {
         Vector3d pos = CommonEvents.getEntityCenter(this);
         for ( int i = 0; i < 360; i++ ) {
             if ( i % 5 == 0 ) {
-                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE) / 2, (int)(10 * entityData.get(SIZE))),
+                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE) / 2, (int)(10 * entityData.get(SIZE))), true,
                         pos.x, this.getY(), pos.z, Math.cos(i) * 0.5F, 0, Math.sin(i) * 0.5F);
             }
+        }
+    }
+
+    @Override
+    protected void doClientTickEffects() {
+        ClientWorld world = (ClientWorld)this.level;
+        Vector3d pos = CommonEvents.getEntityCenter(this);
+        float size = entityData.get(SIZE) / 2;
+        float randX = (float)((Math.random() * (size - (-size))) + (-size));
+        float randY = (float)((Math.random() * (size - (-size))) + (-size));
+        float randZ = (float)((Math.random() * (size - (-size))) + (-size));
+        for ( int j = 0; j < 3; j++ ) {
+            world.addParticle(EmberParticleData.createData(getParticleColor(), size, 40), true,
+                    pos.x + randX, pos.y + randY, pos.z + randZ, 0, 0, 0);
         }
     }
 }

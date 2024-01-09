@@ -38,7 +38,7 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public float getSpeed() {
-        return 0.8F;
+        return 1.4F;
     }
 
     @Override

@@ -2,8 +2,6 @@ package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.client.particle.EmberParticleData;
 import net.mindoth.runicitems.client.particle.ParticleColor;
-import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
-import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.shadowizardlib.event.CommonEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
@@ -65,12 +63,6 @@ public class AbstractSpellEntity extends ThrowableEntity {
         return !(target == this.owner || target.isAlliedTo(this.owner) || (target instanceof TameableEntity && ((TameableEntity)target).isOwnedBy(this.owner)));
     }
 
-    protected void doMobEffects(RayTraceResult result) {
-    }
-
-    protected void doBlockEffects(RayTraceResult result) {
-    }
-
     protected void dealDamage(LivingEntity target) {
         if ( isAlly(target) ) {
             target.hurt(DamageSource.indirectMagic(this, this.owner), this.power);
@@ -97,10 +89,20 @@ public class AbstractSpellEntity extends ThrowableEntity {
         }
     }
 
+    protected void doClientEffects() {
+    }
+
+    protected void doMobEffects(RayTraceResult result) {
+    }
+
+    protected void doBlockEffects(RayTraceResult result) {
+    }
+
     @Override
     public void tick() {
         super.tick();
         if ( level.isClientSide ) {
+            doClientTickEffects();
             Vector3d vec3 = this.getDeltaMovement();
             double d5 = vec3.x;
             double d6 = vec3.y;
@@ -109,12 +111,11 @@ public class AbstractSpellEntity extends ThrowableEntity {
             Vector3d center = CommonEvents.getEntityCenter(this);
             ClientWorld world = (ClientWorld)this.level;
             for ( int i = 0; i < 4; ++i ) {
-                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10),
+                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), true,
                         center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
             }
         }
         if ( !level.isClientSide ) {
-            spawnParticles();
             doTickEffects();
             if ( this.tickCount > this.life ) {
                 this.remove();
@@ -122,13 +123,10 @@ public class AbstractSpellEntity extends ThrowableEntity {
         }
     }
 
-    protected void doClientEffects() {
+    protected void doClientTickEffects() {
     }
 
     protected void doTickEffects() {
-    }
-
-    protected void spawnParticles() {
     }
 
     public static ParticleColor.IntWrapper getSpellColor(String element) {
