@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -24,6 +25,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+
+import java.util.ArrayList;
 
 public class AbstractSpellEntity extends ThrowableEntity {
 
@@ -129,12 +132,10 @@ public class AbstractSpellEntity extends ThrowableEntity {
     protected void doTickEffects() {
     }
 
-    public static ParticleColor.IntWrapper getSpellColor(String element) {
-        ParticleColor.IntWrapper returnColor = null;
-        if ( element.equals("frost") ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
-        if ( element.equals("storm") ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);
-        if ( element.equals("fire") ) returnColor = new ParticleColor.IntWrapper(177, 63, 0);
-        return returnColor;
+    public static ArrayList<LivingEntity> getEnemiesAround(Entity caster, World pLevel, double size) {
+        ArrayList<LivingEntity> targets = (ArrayList)pLevel.getEntitiesOfClass(LivingEntity.class, caster.getBoundingBox().inflate(size));
+        targets.removeIf( (entry) -> entry == caster || !entry.isAttackable() || !entry.isAlive() || (entry instanceof PlayerEntity && ((PlayerEntity)entry).abilities.instabuild) );
+        return targets;
     }
 
     protected void playHitSound() {
@@ -147,6 +148,14 @@ public class AbstractSpellEntity extends ThrowableEntity {
             level.playSound(null, center.x, center.y, center.z,
                     SoundEvents.BLAZE_SHOOT, SoundCategory.PLAYERS, 0.25F, 0.75F);
         }
+    }
+
+    public static ParticleColor.IntWrapper getSpellColor(String element) {
+        ParticleColor.IntWrapper returnColor = null;
+        if ( element.equals("frost") ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
+        if ( element.equals("storm") ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);
+        if ( element.equals("fire") ) returnColor = new ParticleColor.IntWrapper(177, 63, 0);
+        return returnColor;
     }
 
     public static final DataParameter<Integer> RED = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.INT);

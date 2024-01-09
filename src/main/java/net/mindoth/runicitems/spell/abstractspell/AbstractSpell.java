@@ -2,6 +2,7 @@ package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
+import net.mindoth.runicitems.spell.ghostwalk.GhostWalkSpell;
 import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -18,6 +19,7 @@ public abstract class AbstractSpell {
         if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
         if ( spell instanceof TornadoSpell ) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
         if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
+        if ( spell instanceof GhostWalkSpell ) GhostWalkSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
     }
 
     public int getLife() {

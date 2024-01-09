@@ -2,10 +2,7 @@ package net.mindoth.runicitems;
 
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
-import net.mindoth.runicitems.registries.RunicItemsContainers;
-import net.mindoth.runicitems.registries.RunicItemsEnchantments;
-import net.mindoth.runicitems.registries.RunicItemsEntities;
-import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.runicitems.registries.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,6 +30,7 @@ public class RunicItems {
         RunicItemsEntities.ENTITIES.register(modEventBus);
         RunicItemsEnchantments.ENCHANTMENTS.register(modEventBus);
         RunicItemsContainers.CONTAINERS.register(modEventBus);
+        RunicItemsEffects.EFFECTS.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
     }
 

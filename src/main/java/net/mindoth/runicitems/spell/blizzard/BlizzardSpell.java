@@ -19,7 +19,7 @@ public class BlizzardSpell extends AbstractSpell {
         projectile.setNoGravity(!spell.getGravity());
 
         setPos(level, caster, projectile, useTime);
-        projectile.setDeltaMovement(0F, -0.6F, 0F);
+        projectile.setDeltaMovement(0.0F, -spell.getSpeed(), 0.0F);
         level.addFreshEntity(projectile);
     }
 
@@ -62,7 +62,7 @@ public class BlizzardSpell extends AbstractSpell {
 
     @Override
     public float getSpeed() {
-        return 0.0F;
+        return 0.4F;
     }
 
     @Override

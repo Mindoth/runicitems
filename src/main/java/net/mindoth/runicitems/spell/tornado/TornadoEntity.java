@@ -49,7 +49,7 @@ public class TornadoEntity extends AbstractSpellEntity {
             this.level.playSound(null, center.x, center.y, center.z,
                     SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.03F);
         }
-        List<LivingEntity> targets = MiscEvents.getEnemiesAround(this, this.level, this.range);
+        List<LivingEntity> targets = getEnemiesAround(this, this.level, this.range);
         for ( LivingEntity target : targets ) {
             double velY = target.getDeltaMovement().y;
             double dx = (center.x - target.position().x > 0 ? 0.5 : -0.5) - (center.x - target.position().x) * 0.125;

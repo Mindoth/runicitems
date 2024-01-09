@@ -27,9 +27,13 @@
   "item.runicitems.blizzard_rune": "Blizzard Rune",
   "item.runicitems.tornado_rune": "Tornado Rune",
   "item.runicitems.fireball_rune": "Fireball Rune",
+  "item.runicitems.ghost_walk_rune": "Ghost Walk Rune",
 
 
   "enchantment.runicitems.target_cracker": "Target Cracker",
+
+
+  "effect.runicitems.ghost_walk": "Ghost Walk",
 
 
   "tooltip.runicitems.empty": "Empty",

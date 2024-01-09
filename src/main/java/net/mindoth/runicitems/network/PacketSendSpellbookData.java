@@ -39,6 +39,7 @@ public class PacketSendSpellbookData {
                     for ( int i = 0; i < itemHandler.getSlots(); i++ ) {
                         this.itemList.add(itemHandler.getStackInSlot(i));
                     }
+                    player.stopUsingItem();
                     RunicItemsNetwork.sendToPlayer(new PacketReceiveSpellbookData(this.itemList), player);
                 }
             }

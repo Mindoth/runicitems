@@ -48,7 +48,7 @@ public class FireballEntity extends AbstractSpellEntity {
     }
 
     protected void doSplashDamage() {
-        ArrayList<LivingEntity> list = MiscEvents.getEnemiesAround(this, this.level, this.scale * 2);
+        ArrayList<LivingEntity> list = getEnemiesAround(this, this.level, this.scale * 2);
         for ( LivingEntity target : list ) {
             dealDamage(target);
             if ( isAlly(target) ) target.setSecondsOnFire(8);
