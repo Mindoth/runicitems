@@ -1,11 +1,10 @@
 package net.mindoth.runicitems.spell.fireball;
 
 import net.mindoth.runicitems.client.particle.EmberParticleData;
-import net.mindoth.runicitems.event.MiscEvents;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -16,7 +15,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class FireballEntity extends AbstractSpellEntity {
 
@@ -58,7 +56,7 @@ public class FireballEntity extends AbstractSpellEntity {
     @Override
     protected void doClientEffects() {
         ClientWorld world = (ClientWorld)this.level;
-        Vector3d pos = CommonEvents.getEntityCenter(this);
+        Vector3d pos = ShadowEvents.getEntityCenter(this);
         for ( int i = 0; i < 360; i++ ) {
             if ( i % 5 == 0 ) {
                 world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE) / 2, (int)(10 * entityData.get(SIZE))), true,
@@ -70,7 +68,7 @@ public class FireballEntity extends AbstractSpellEntity {
     @Override
     protected void doClientTickEffects() {
         ClientWorld world = (ClientWorld)this.level;
-        Vector3d pos = CommonEvents.getEntityCenter(this);
+        Vector3d pos = ShadowEvents.getEntityCenter(this);
         float size = entityData.get(SIZE) / 2;
         float randX = (float)((Math.random() * (size - (-size))) + (-size));
         float randY = (float)((Math.random() * (size - (-size))) + (-size));

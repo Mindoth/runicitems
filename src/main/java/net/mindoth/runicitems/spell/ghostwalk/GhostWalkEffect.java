@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.effect;
+package net.mindoth.runicitems.spell.ghostwalk;
 
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.registries.RunicItemsEffects;

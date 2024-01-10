@@ -44,9 +44,9 @@ authors="Code, textures and models by Mindoth" #optional
 description='''
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.shadowizardlib]]
+[[dependencies.runicitems]]
     modId="shadowizardlib"
     mandatory=true
-    versionRange="[1.16.5-1.1.0,)"
+    versionRange="[1.16.5-1.1.1,)"
     ordering="NONE"
     side="BOTH"

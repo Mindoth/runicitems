@@ -8,6 +8,7 @@ import net.mindoth.runicitems.spell.blizzard.BlizzardRenderer;
 import net.mindoth.runicitems.spell.fireball.FireballRenderer;
 import net.mindoth.runicitems.spell.tornado.TornadoRenderer;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -26,5 +27,6 @@ public class RunicItemsClient {
         RenderingRegistry.registerEntityRenderingHandler(RunicItemsEntities.BLIZZARD.get(), BlizzardRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(RunicItemsEntities.FIREBALL.get(), FireballRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(RunicItemsEntities.TORNADO.get(), TornadoRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(RunicItemsEntities.SKELETON_MINION.get(), SkeletonRenderer::new);
     }
 }

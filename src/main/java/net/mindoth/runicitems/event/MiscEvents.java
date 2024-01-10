@@ -5,6 +5,7 @@ import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
+import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.LivingEntity;
@@ -168,7 +169,7 @@ public class MiscEvents {
                     else {
                         itemStack = player.getMainHandItem();
                     }
-                    Vector3d center = net.mindoth.shadowizardlib.event.CommonEvents.getEntityCenter(player);
+                    Vector3d center = ShadowEvents.getEntityCenter(player);
                     level.playSound(null, center.x, center.y, center.z,
                             SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 1, 0.5f);
                     level.playSound(null, center.x, center.y, center.z,
@@ -238,7 +239,7 @@ public class MiscEvents {
             CompoundNBT data = playerData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
             if ( event.getItem().getItem().equals(Items.GOLDEN_APPLE) && player.hasEffect(Effects.WEAKNESS) ) {
                 data.remove(TAG_UNDEAD);
-                Vector3d center = net.mindoth.shadowizardlib.event.CommonEvents.getEntityCenter(player);
+                Vector3d center = ShadowEvents.getEntityCenter(player);
                 player.level.playSound(null, center.x, center.y, center.z,
                         SoundEvents.ZOMBIE_VILLAGER_CURE, SoundCategory.PLAYERS, 1, 1);
             }

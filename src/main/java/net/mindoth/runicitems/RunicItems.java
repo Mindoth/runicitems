@@ -3,8 +3,12 @@ package net.mindoth.runicitems;
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
 import net.mindoth.runicitems.registries.*;
+import net.mindoth.runicitems.spell.raisedead.SkeletonMinionEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -32,6 +36,15 @@ public class RunicItems {
         RunicItemsContainers.CONTAINERS.register(modEventBus);
         RunicItemsEffects.EFFECTS.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
+    }
+
+    @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class EventBusEvents {
+
+        @SubscribeEvent
+        public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
+            event.put(RunicItemsEntities.SKELETON_MINION.get(), SkeletonMinionEntity.setAttributes());
+        }
     }
 
     public void commonSetup(final FMLCommonSetupEvent event) {

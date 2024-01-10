@@ -1,10 +1,9 @@
 package net.mindoth.runicitems.spell.tornado;
 
-import net.mindoth.runicitems.event.MiscEvents;
 import net.mindoth.runicitems.registries.RunicItemsEntities;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
@@ -41,7 +40,7 @@ public class TornadoEntity extends AbstractSpellEntity {
 
     @Override
     protected void doTickEffects() {
-        Vector3d center = CommonEvents.getEntityCenter(this);
+        Vector3d center = ShadowEvents.getEntityCenter(this);
         int tickCount = this.tickCount;
         if ( tickCount % 5 == 0 ) {
             this.level.playSound(null, center.x, center.y, center.z,
@@ -63,7 +62,7 @@ public class TornadoEntity extends AbstractSpellEntity {
 
     @Override
     protected void doClientTickEffects() {
-        Vector3d center = CommonEvents.getEntityCenter(this);
+        Vector3d center = ShadowEvents.getEntityCenter(this);
         double posX = center.x;
         double posY = center.y - 2;
         double posZ = center.z;

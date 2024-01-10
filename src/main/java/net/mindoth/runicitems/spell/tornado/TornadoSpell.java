@@ -1,8 +1,8 @@
 package net.mindoth.runicitems.spell.tornado;
 
-import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
+import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -21,7 +21,7 @@ public class TornadoSpell extends AbstractSpell {
         int adjuster;
         if ( caster != owner ) adjuster = -1;
         else adjuster = 1;
-        Vector3d pos = CommonEvents.getPoint(caster, spell.getDistance(), 0.0F, true);
+        Vector3d pos = ShadowEvents.getPoint(caster, spell.getDistance(), 0.0F, true);
         projectile.setPos(pos.x, pos.y, pos.z);
         projectile.shootFromRotation(caster, xRot * adjuster, yRot * adjuster, 0F, spell.getSpeed(), 0.0F);
         projectile.setDeltaMovement(projectile.getDeltaMovement().x, 0.0F, projectile.getDeltaMovement().z);

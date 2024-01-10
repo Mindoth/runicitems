@@ -12,6 +12,7 @@ import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.runicitems.spell.ghostwalk.GhostWalkSpell;
+import net.mindoth.runicitems.spell.raisedead.RaiseDeadSpell;
 import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -84,4 +85,7 @@ public class RunicItemsItems {
 
     public static final RegistryObject<Item> GHOST_WALK_RUNE = ITEMS.register("ghost_walk_rune",
             () -> new SpellRuneItem(new Item.Properties(), new GhostWalkSpell()));
+
+    public static final RegistryObject<Item> RAISE_DEAD_RUNE = ITEMS.register("raise_dead_rune",
+            () -> new SpellRuneItem(new Item.Properties(), new RaiseDeadSpell()));
 }

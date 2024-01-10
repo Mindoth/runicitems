@@ -1,8 +1,7 @@
 package net.mindoth.runicitems.spell.fireball;
 
-import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Vector3d;

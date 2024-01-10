@@ -28,6 +28,10 @@
   "item.runicitems.tornado_rune": "Tornado Rune",
   "item.runicitems.fireball_rune": "Fireball Rune",
   "item.runicitems.ghost_walk_rune": "Ghost Walk Rune",
+  "item.runicitems.raise_dead_rune": "Raise Dead Rune",
+
+
+  "entity.runicitems.skeleton_minion": "Skeleton Minion",
 
 
   "enchantment.runicitems.target_cracker": "Target Cracker",

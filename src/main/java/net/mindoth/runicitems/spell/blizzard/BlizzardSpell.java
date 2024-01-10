@@ -2,7 +2,7 @@ package net.mindoth.runicitems.spell.blizzard;
 
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -35,15 +35,15 @@ public class BlizzardSpell extends AbstractSpell {
         double posX;
         double posY;
         double posZ;
-        if ( CommonEvents.getPointedEntity(level, caster, range, error, true) != caster ) {
-            posX = CommonEvents.getPointedEntity(level, caster, range, error, true).getX() + randX;
-            posY = CommonEvents.blockHeight(level, caster, range, error, 7) + randY;
-            posZ = CommonEvents.getPointedEntity(level, caster, range, error, true).getZ() + randZ;
+        if ( ShadowEvents.getPointedEntity(level, caster, range, error, true) != caster ) {
+            posX = ShadowEvents.getPointedEntity(level, caster, range, error, true).getX() + randX;
+            posY = ShadowEvents.blockHeight(level, caster, range, error, 7) + randY;
+            posZ = ShadowEvents.getPointedEntity(level, caster, range, error, true).getZ() + randZ;
         }
         else {
-            posX = CommonEvents.getPoint(caster, range, 0.0F, true).x + randX;
-            posY = CommonEvents.blockHeight(level, caster, range, 0.0F, 7) + randY;
-            posZ = CommonEvents.getPoint(caster, range, 0.0F, true).z + randZ;
+            posX = ShadowEvents.getPoint(caster, range, 0.0F, true).x + randX;
+            posY = ShadowEvents.blockHeight(level, caster, range, 0.0F, 7) + randY;
+            posZ = ShadowEvents.getPoint(caster, range, 0.0F, true).z + randZ;
         }
         Vector3d spawnPos = new Vector3d(posX, posY, posZ);
         projectile.setPos(spawnPos.x, spawnPos.y, spawnPos.z);

@@ -2,7 +2,7 @@ package net.mindoth.runicitems.spell.abstractspell;
 
 import net.mindoth.runicitems.client.particle.EmberParticleData;
 import net.mindoth.runicitems.client.particle.ParticleColor;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -111,7 +111,7 @@ public class AbstractSpellEntity extends ThrowableEntity {
             double d6 = vec3.y;
             double d1 = vec3.z;
 
-            Vector3d center = CommonEvents.getEntityCenter(this);
+            Vector3d center = ShadowEvents.getEntityCenter(this);
             ClientWorld world = (ClientWorld)this.level;
             for ( int i = 0; i < 4; ++i ) {
                 world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), true,
@@ -139,7 +139,7 @@ public class AbstractSpellEntity extends ThrowableEntity {
     }
 
     protected void playHitSound() {
-        Vector3d center = CommonEvents.getEntityCenter(this);
+        Vector3d center = ShadowEvents.getEntityCenter(this);
         if ( this.element.equals("frost") ) {
             level.playSound(null, center.x, center.y, center.z,
                     SoundEvents.GLASS_BREAK, SoundCategory.PLAYERS, 0.25F, 0.75F);

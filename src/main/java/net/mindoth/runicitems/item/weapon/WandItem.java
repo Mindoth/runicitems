@@ -5,12 +5,10 @@ import net.mindoth.runicitems.item.rune.SpellRuneItem;
 import net.mindoth.runicitems.item.spellbook.SpellbookItem;
 import net.mindoth.runicitems.item.spellbook.inventory.SpellbookData;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
-import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
-import net.mindoth.shadowizardlib.event.CommonEvents;
+import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -91,11 +89,11 @@ public class WandItem extends Item {
         if ( distance > 0 ) {
             int adjuster = 1;
             if ( caster != owner ) adjuster = -1;
-            Vector3d direction = CommonEvents.calculateViewVector(xRot * adjuster, yRot * adjuster).normalize();
+            Vector3d direction = ShadowEvents.calculateViewVector(xRot * adjuster, yRot * adjuster).normalize();
             direction = direction.multiply(distance, distance, distance);
             center = caster.getEyePosition(0).add(direction);
         }
-        else center = new Vector3d(CommonEvents.getEntityCenter(caster).x, CommonEvents.getEntityCenter(caster).y + 0.5F, CommonEvents.getEntityCenter(caster).z);
+        else center = new Vector3d(ShadowEvents.getEntityCenter(caster).x, ShadowEvents.getEntityCenter(caster).y + 0.5F, ShadowEvents.getEntityCenter(caster).z);
         AbstractSpell.routeSpell(owner, caster, spell, center, xRot, yRot, useTime);
     }
 
