@@ -11,12 +11,11 @@ import net.minecraft.world.World;
 public class TornadoSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot) {
+                                  Vector3d center, float xRot, float yRot, int useTime) {
         World level = caster.level;
 
         AbstractSpellEntity projectile = new TornadoEntity(level, owner, caster, spell, "storm", 0.0F);
         projectile.setNoGravity(!spell.getGravity());
-        playSound(level, center);
 
         int adjuster;
         if ( caster != owner ) adjuster = -1;
@@ -63,7 +62,13 @@ public class TornadoSpell extends AbstractSpell {
         return false;
     }
 
-    protected static void playSound(World level, Vector3d center) {
-        playWindSound(level, center);
+    @Override
+    public int getPierce() {
+        return 0;
+    }
+
+    @Override
+    public int getBounce() {
+        return 0;
     }
 }

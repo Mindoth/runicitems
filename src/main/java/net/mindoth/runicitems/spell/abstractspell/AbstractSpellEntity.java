@@ -4,6 +4,7 @@ import net.mindoth.runicitems.client.particle.EmberParticleData;
 import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -17,8 +18,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -48,9 +49,12 @@ public class AbstractSpellEntity extends ThrowableEntity {
 
         this.element = element;
         this.scale = scale;
-        this.power = this.spell.getPower();
-        this.life = this.spell.getLife();
         setColor(getSpellColor(this.element), this.scale);
+        this.power = this.spell.getPower();
+        this.speed = this.spell.getSpeed();
+        this.life = this.spell.getLife();
+        this.bounce = this.spell.getBounce();
+        this.pierce = this.spell.getPierce();
     }
 
     protected LivingEntity owner;
@@ -60,7 +64,10 @@ public class AbstractSpellEntity extends ThrowableEntity {
     protected String element;
     protected float scale;
     protected float power;
+    protected float speed;
     protected float life;
+    protected int bounce;
+    protected int pierce;
 
     protected boolean isAlly(LivingEntity target) {
         return !(target == this.owner || target.isAlliedTo(this.owner) || (target instanceof TameableEntity && ((TameableEntity)target).isOwnedBy(this.owner)));
@@ -75,24 +82,62 @@ public class AbstractSpellEntity extends ThrowableEntity {
     @Override
     protected void onHit(RayTraceResult result) {
         if ( level.isClientSide ) {
-            doClientEffects();
+            doClientHitEffects();
         }
         if ( !level.isClientSide ) {
             if ( result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult)result).getEntity() instanceof LivingEntity ) {
                 doMobEffects(result);
+                if ( this.pierce > 0 ) {
+                    this.pierce--;
+                }
+                else {
+                    this.remove();
+                }
             }
             if ( result.getType() == RayTraceResult.Type.BLOCK ) {
                 doBlockEffects(result);
                 BlockRayTraceResult traceResult = (BlockRayTraceResult)result;
                 BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
-                level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundCategory.PLAYERS, 0.2F, 2);
-                this.remove();
+                level.playSound(null, this.getX(), this.getY(), this.getZ(), blockstate.getSoundType().getBreakSound(), SoundCategory.PLAYERS, 0.3F, 2);
+
+                if ( this.bounce > 0 ) {
+                    this.bounce--;
+                    Direction face = traceResult.getDirection();
+                    blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
+                    Vector3d motion = this.getDeltaMovement();
+                    double motionX = motion.x();
+                    double motionY = motion.y();
+                    double motionZ = motion.z();
+                    if (face == Direction.EAST) {
+                        motionX = -motionX;
+                    }
+                    else if (face == Direction.SOUTH) {
+                        motionZ = -motionZ;
+                    }
+                    else if (face == Direction.WEST) {
+                        motionX = -motionX;
+                    }
+                    else if (face == Direction.NORTH) {
+                        motionZ = -motionZ;
+                    }
+                    else if (face == Direction.UP) {
+                        motionY = -motionY;
+                    }
+                    else if (face == Direction.DOWN) {
+                        motionY = -motionY;
+                    }
+                    //this.setDeltaMovement(motionX, motionY, motionZ);
+
+                    //This seems to work better with low velocity projectiles
+                    shoot(motionX, motionY, motionZ, this.speed, 0);
+                }
+                else this.remove();
             }
             playHitSound();
         }
     }
 
-    protected void doClientEffects() {
+    protected void doClientHitEffects() {
     }
 
     protected void doMobEffects(RayTraceResult result) {
@@ -101,22 +146,14 @@ public class AbstractSpellEntity extends ThrowableEntity {
     protected void doBlockEffects(RayTraceResult result) {
     }
 
+    protected void playHitSound() {
+    }
+
     @Override
     public void tick() {
         super.tick();
         if ( level.isClientSide ) {
             doClientTickEffects();
-            Vector3d vec3 = this.getDeltaMovement();
-            double d5 = vec3.x;
-            double d6 = vec3.y;
-            double d1 = vec3.z;
-
-            Vector3d center = ShadowEvents.getEntityCenter(this);
-            ClientWorld world = (ClientWorld)this.level;
-            for ( int i = 0; i < 4; ++i ) {
-                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), true,
-                        center.x + d5 * (double)i / 4.0D, center.y + d6 * (double)i / 4.0D, center.z + d1 * (double)i / 4.0D, 0, 0, 0);
-            }
         }
         if ( !level.isClientSide ) {
             doTickEffects();
@@ -127,6 +164,25 @@ public class AbstractSpellEntity extends ThrowableEntity {
     }
 
     protected void doClientTickEffects() {
+        ClientWorld world = (ClientWorld)this.level;
+        Vector3d pos = ShadowEvents.getEntityCenter(this);
+        Vector3d vec3 = this.getDeltaMovement();
+
+        for ( int i = 0; i < 4; i++ ) {
+            double deltaX = pos.x - xOld;
+            double deltaY = pos.y - yOld;
+            double deltaZ = pos.z - zOld;
+            double dist = Math.ceil(Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 8);
+            for ( double j = 0; j < dist; j++ ) {
+                float size = entityData.get(SIZE) / 4;
+                float randX = (float)((Math.random() * (size - (-size))) + (-size));
+                float randY = (float)((Math.random() * (size - (-size))) + (-size));
+                float randZ = (float)((Math.random() * (size - (-size))) + (-size));
+                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), true,
+                        (pos.x + randX) + vec3.x * i / 4, (pos.y + randY) + vec3.y * i / 4, (pos.z + randZ) + vec3.z * i / 4,
+                        0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f));
+            }
+        }
     }
 
     protected void doTickEffects() {
@@ -138,23 +194,12 @@ public class AbstractSpellEntity extends ThrowableEntity {
         return targets;
     }
 
-    protected void playHitSound() {
-        Vector3d center = ShadowEvents.getEntityCenter(this);
-        if ( this.element.equals("frost") ) {
-            level.playSound(null, center.x, center.y, center.z,
-                    SoundEvents.GLASS_BREAK, SoundCategory.PLAYERS, 0.25F, 0.75F);
-        }
-        if ( this.element.equals("fire") ) {
-            level.playSound(null, center.x, center.y, center.z,
-                    SoundEvents.BLAZE_SHOOT, SoundCategory.PLAYERS, 0.25F, 0.75F);
-        }
-    }
-
     public static ParticleColor.IntWrapper getSpellColor(String element) {
         ParticleColor.IntWrapper returnColor = null;
         if ( element.equals("frost") ) returnColor = new ParticleColor.IntWrapper(49, 119, 249);
         if ( element.equals("storm") ) returnColor = new ParticleColor.IntWrapper(206, 0, 206);
         if ( element.equals("fire") ) returnColor = new ParticleColor.IntWrapper(177, 63, 0);
+        if ( element.equals("water") ) returnColor = new ParticleColor.IntWrapper(0, 38, 255);
         return returnColor;
     }
 

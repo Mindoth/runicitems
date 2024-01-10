@@ -1,4 +1,4 @@
-package net.mindoth.runicitems.spell.fireball;
+package net.mindoth.runicitems.spell.waterbolt;
 
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
@@ -7,15 +7,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-public class FireballSpell extends AbstractSpell {
+public class WaterBoltSpell extends AbstractSpell {
 
     public static void shootMagic(PlayerEntity owner, Entity caster, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot, int useTime) {
         World level = caster.level;
 
-        AbstractSpellEntity projectile = new FireballEntity(level, owner, caster, spell, "fire", 1.2F);
+        AbstractSpellEntity projectile = new WaterBoltEntity(level, owner, caster, spell, "water", 0.4F);
         projectile.setNoGravity(!spell.getGravity());
-        playFireShootSound(level, center);
+        playWaterShootSound(level, center);
 
         int adjuster;
         if ( caster != owner ) adjuster = -1;
@@ -32,12 +32,12 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public float getPower() {
-        return 16.0F;
+        return 4.0F;
     }
 
     @Override
     public float getSpeed() {
-        return 1.4F;
+        return 0.6F;
     }
 
     @Override
@@ -47,12 +47,12 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public boolean getGravity() {
-        return true;
+        return false;
     }
 
     @Override
     public int getCooldown() {
-        return 100;
+        return 20;
     }
 
     @Override
@@ -62,11 +62,11 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public int getPierce() {
-        return 0;
+        return 1;
     }
 
     @Override
     public int getBounce() {
-        return 0;
+        return 2;
     }
 }

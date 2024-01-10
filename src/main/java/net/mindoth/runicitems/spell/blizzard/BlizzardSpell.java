@@ -1,7 +1,7 @@
 package net.mindoth.runicitems.spell.blizzard;
 
-import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
+import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -47,7 +47,7 @@ public class BlizzardSpell extends AbstractSpell {
         }
         Vector3d spawnPos = new Vector3d(posX, posY, posZ);
         projectile.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
-        if ( time % 5 == 0 ) playSound(level, new Vector3d(spawnPos.x, spawnPos.y, spawnPos.z));
+        if ( time % 5 == 0 ) playWindSound(level, new Vector3d(spawnPos.x, spawnPos.y, spawnPos.z));
     }
 
     @Override
@@ -85,7 +85,13 @@ public class BlizzardSpell extends AbstractSpell {
         return true;
     }
 
-    protected static void playSound(World level, Vector3d center) {
-        playWindSound(level, center);
+    @Override
+    public int getPierce() {
+        return 0;
+    }
+
+    @Override
+    public int getBounce() {
+        return 0;
     }
 }

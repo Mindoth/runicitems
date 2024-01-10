@@ -54,6 +54,14 @@ public class ParticleEmber extends SpriteTexturedParticle {
     @Override
     public void tick() {
         super.tick();
+        /*if (level.random.nextInt(2) == 0) {
+            this.age++;
+        }
+        float lifeCoeff = (float)this.age / (float)this.lifetime;
+        this.quadSize = initScale - initScale * lifeCoeff;
+        this.alpha = 1.0f - lifeCoeff;*/
+        this.oRoll = roll;
+
         this.alpha = (-(1 / (float)lifetime) * age + 1);
     }
 

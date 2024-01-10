@@ -5,6 +5,7 @@ import net.mindoth.runicitems.spell.blizzard.BlizzardEntity;
 import net.mindoth.runicitems.spell.fireball.FireballEntity;
 import net.mindoth.runicitems.spell.raisedead.SkeletonMinionEntity;
 import net.mindoth.runicitems.spell.tornado.TornadoEntity;
+import net.mindoth.runicitems.spell.waterbolt.WaterBoltEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -27,6 +28,10 @@ public class RunicItemsEntities {
     public static final RegistryObject<EntityType<FireballEntity>> FIREBALL
             = registerEntity(EntityType.Builder.<FireballEntity>of(FireballEntity::new,
             EntityClassification.MISC).sized(1.0F, 1.0F).setCustomClientFactory(FireballEntity::new), "fireball");
+
+    public static final RegistryObject<EntityType<WaterBoltEntity>> WATERBOLT
+            = registerEntity(EntityType.Builder.<WaterBoltEntity>of(WaterBoltEntity::new,
+            EntityClassification.MISC).sized(0.5F, 0.5F).setCustomClientFactory(WaterBoltEntity::new), "waterbolt");
 
 
     public static final RegistryObject<EntityType<SkeletonMinionEntity>> SKELETON_MINION =

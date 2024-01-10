@@ -16,9 +16,9 @@ import net.minecraft.world.server.ServerWorld;
 public class RaiseDeadSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot) {
+                                  Vector3d center, float xRot, float yRot, int useTime) {
         World level = caster.level;
-        playSound(level, center);
+        playMagicSummonSound(level, center);
 
         MobEntity minion = new SkeletonMinionEntity(level, owner);
 
@@ -69,7 +69,13 @@ public class RaiseDeadSpell extends AbstractSpell {
         return false;
     }
 
-    protected static void playSound(World level, Vector3d center) {
-        playMagicSummonSound(level, center);
+    @Override
+    public int getPierce() {
+        return 0;
+    }
+
+    @Override
+    public int getBounce() {
+        return 0;
     }
 }

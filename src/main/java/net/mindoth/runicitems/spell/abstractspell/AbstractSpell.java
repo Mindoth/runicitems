@@ -5,23 +5,23 @@ import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.runicitems.spell.ghostwalk.GhostWalkSpell;
 import net.mindoth.runicitems.spell.raisedead.RaiseDeadSpell;
 import net.mindoth.runicitems.spell.tornado.TornadoSpell;
+import net.mindoth.runicitems.spell.waterbolt.WaterBoltSpell;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 public abstract class AbstractSpell {
 
     public static void routeSpell(PlayerEntity owner, Entity caster, AbstractSpell spell, Vector3d center, float xRot, float yRot, int useTime) {
         if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
-        if ( spell instanceof TornadoSpell ) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
-        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
-        if ( spell instanceof GhostWalkSpell ) GhostWalkSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
-        if ( spell instanceof RaiseDeadSpell ) RaiseDeadSpell.shootMagic(owner, caster, spell, center, xRot, yRot);
+        if ( spell instanceof TornadoSpell ) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
+        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
+        if ( spell instanceof GhostWalkSpell ) GhostWalkSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
+        if ( spell instanceof RaiseDeadSpell ) RaiseDeadSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
+        if ( spell instanceof WaterBoltSpell ) WaterBoltSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
     }
 
     public int getLife() {
@@ -37,11 +37,11 @@ public abstract class AbstractSpell {
     }
 
     public int getDistance() {
-        return 0;
+        return 1;
     }
 
     public boolean getGravity() {
-        return true;
+        return false;
     }
 
     public int getCooldown() {
@@ -52,48 +52,58 @@ public abstract class AbstractSpell {
         return false;
     }
 
-    protected static void playMagicSound(World level, Vector3d center) {
+    public int getPierce() {
+        return 0;
+    }
+
+    public int getBounce() {
+        return 0;
+    }
+
+    protected static void playMagicShootSound(World level, Vector3d center) {
         level.playSound(null, center.x, center.y, center.z,
                 SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 0.5F, 1);
         level.playSound(null, center.x, center.y, center.z,
                 SoundEvents.ENCHANTMENT_TABLE_USE, SoundCategory.PLAYERS, 0.5F, 2);
+    }
+
+    protected static void playWaterShootSound(World level, Vector3d center) {
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 0.5F, 1);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.DOLPHIN_SPLASH, SoundCategory.PLAYERS, 0.25F, 0.85F);
+    }
+
+    protected static void playStormShootSound(World level, Vector3d center) {
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 0.5F, 1);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 0.35F, 2.0F);
+    }
+
+    protected static void playFireShootSound(World level, Vector3d center) {
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 0.5F, 1);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.BLAZE_SHOOT, SoundCategory.PLAYERS, 0.5F, 1.0F);
+    }
+
+    protected static void playEvilShootSound(World level, Vector3d center) {
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.WITHER_SHOOT, SoundCategory.PLAYERS, 0.5F, 1.0F);
     }
 
     protected static void playWindSound(World level, Vector3d center) {
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.02F);
+                SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2.0F, 0.02F);
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2, 0.03F);
-    }
-
-    protected static void playStormSound(World level, Vector3d center) {
-        level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 0.5F, 1);
-        level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 0.35F, 2);
-    }
-
-    protected static void playFireSound(World level, Vector3d center) {
-        level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.ENDER_PEARL_THROW, SoundCategory.PLAYERS, 0.4F, 1);
-        level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.BLAZE_SHOOT, SoundCategory.PLAYERS, 0.5F, 1);
-    }
-
-    protected static void playEvilSound(World level, Vector3d center) {
-        level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.WITHER_SHOOT, SoundCategory.PLAYERS, 0.5F, 1);
+                SoundEvents.HORSE_BREATHE, SoundCategory.PLAYERS, 2.0F, 0.03F);
     }
 
     protected static void playMagicSummonSound(World level, Vector3d center) {
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 0.25F, 2);
+                SoundEvents.LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 0.25F, 2.0F);
         level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.ENCHANTMENT_TABLE_USE, SoundCategory.PLAYERS, 0.5F, 2);
-    }
-
-    protected static void playFireSummonSound(World level, Vector3d center) {
-        level.playSound(null, center.x, center.y, center.z,
-                SoundEvents.BLAZE_SHOOT, SoundCategory.PLAYERS, 0.5F, 1);
+                SoundEvents.ENCHANTMENT_TABLE_USE, SoundCategory.PLAYERS, 0.5F, 2.0F);
     }
 }

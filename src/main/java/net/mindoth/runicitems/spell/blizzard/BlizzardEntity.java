@@ -9,6 +9,8 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
@@ -35,15 +37,10 @@ public class BlizzardEntity extends AbstractSpellEntity {
         if ( this.power > 0 ) {
             dealDamage(target);
         }
-        this.remove();
     }
 
     @Override
-    protected void doBlockEffects(RayTraceResult result) {
-    }
-
-    @Override
-    protected void doClientEffects() {
+    protected void doClientHitEffects() {
         ClientWorld world = (ClientWorld)this.level;
         Vector3d pos = ShadowEvents.getEntityCenter(this);
         for ( int i = 0; i < 360; i++ ) {
@@ -55,17 +52,9 @@ public class BlizzardEntity extends AbstractSpellEntity {
     }
 
     @Override
-    protected void doClientTickEffects() {
-        ClientWorld world = (ClientWorld)this.level;
-        if ( this.random.nextBoolean() ) return;
-        Vector3d pos = ShadowEvents.getEntityCenter(this);
-        float size = entityData.get(SIZE) / 2;
-        float randX = (float)((Math.random() * (size - (-size))) + (-size));
-        float randY = (float)((Math.random() * (size - (-size))) + (-size));
-        float randZ = (float)((Math.random() * (size - (-size))) + (-size));
-        for ( int j = 0; j < 3; j++ ) {
-            world.addParticle(EmberParticleData.createData(getParticleColor(), size, 10), true,
-                    pos.x + randX, pos.y + randY, pos.z + randZ, 0, 0, 0);
-        }
+    protected void playHitSound() {
+        Vector3d center = ShadowEvents.getEntityCenter(this);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.GLASS_BREAK, SoundCategory.PLAYERS, 0.25F, 0.75F);
     }
 }

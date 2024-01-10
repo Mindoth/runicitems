@@ -9,6 +9,8 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -35,7 +37,6 @@ public class FireballEntity extends AbstractSpellEntity {
         if ( this.power > 0 ) {
             doSplashDamage();
         }
-        this.remove();
     }
 
     @Override
@@ -54,7 +55,7 @@ public class FireballEntity extends AbstractSpellEntity {
     }
 
     @Override
-    protected void doClientEffects() {
+    protected void doClientHitEffects() {
         ClientWorld world = (ClientWorld)this.level;
         Vector3d pos = ShadowEvents.getEntityCenter(this);
         for ( int i = 0; i < 360; i++ ) {
@@ -69,13 +70,31 @@ public class FireballEntity extends AbstractSpellEntity {
     protected void doClientTickEffects() {
         ClientWorld world = (ClientWorld)this.level;
         Vector3d pos = ShadowEvents.getEntityCenter(this);
-        float size = entityData.get(SIZE) / 2;
-        float randX = (float)((Math.random() * (size - (-size))) + (-size));
-        float randY = (float)((Math.random() * (size - (-size))) + (-size));
-        float randZ = (float)((Math.random() * (size - (-size))) + (-size));
-        for ( int j = 0; j < 3; j++ ) {
-            world.addParticle(EmberParticleData.createData(getParticleColor(), size, 40), true,
-                    pos.x + randX, pos.y + randY, pos.z + randZ, 0, 0, 0);
+        Vector3d vec3 = this.getDeltaMovement();
+
+        for ( int i = 0; i < 4; i++ ) {
+            double deltaX = pos.x - xOld;
+            double deltaY = pos.y - yOld;
+            double deltaZ = pos.z - zOld;
+            double dist = Math.ceil(Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 8);
+            for ( double j = 0; j < dist; j++ ) {
+                float size = entityData.get(SIZE) / 4;
+                float randX = (float)((Math.random() * (size - (-size))) + (-size));
+                float randY = (float)((Math.random() * (size - (-size))) + (-size));
+                float randZ = (float)((Math.random() * (size - (-size))) + (-size));
+                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 5 + level.random.nextInt(10)), true,
+                        (pos.x + randX) + vec3.x * i / 4, (pos.y + randY) + vec3.y * i / 4, (pos.z + randZ) + vec3.z * i / 4,
+                        0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f));
+            }
         }
+    }
+
+    @Override
+    protected void playHitSound() {
+        Vector3d center = ShadowEvents.getEntityCenter(this);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.BLAZE_SHOOT, SoundCategory.PLAYERS, 0.5F, 0.75F);
+        level.playSound(null, center.x, center.y, center.z,
+                SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 1.0F, 0.75F);
     }
 }

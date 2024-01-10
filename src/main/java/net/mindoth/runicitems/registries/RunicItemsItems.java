@@ -14,6 +14,7 @@ import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.runicitems.spell.ghostwalk.GhostWalkSpell;
 import net.mindoth.runicitems.spell.raisedead.RaiseDeadSpell;
 import net.mindoth.runicitems.spell.tornado.TornadoSpell;
+import net.mindoth.runicitems.spell.waterbolt.WaterBoltSpell;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -88,4 +89,7 @@ public class RunicItemsItems {
 
     public static final RegistryObject<Item> RAISE_DEAD_RUNE = ITEMS.register("raise_dead_rune",
             () -> new SpellRuneItem(new Item.Properties(), new RaiseDeadSpell()));
+
+    public static final RegistryObject<Item> WATER_BOLT_RUNE = ITEMS.register("water_bolt_rune",
+            () -> new SpellRuneItem(new Item.Properties(), new WaterBoltSpell()));
 }
