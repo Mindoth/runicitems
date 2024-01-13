@@ -28,12 +28,16 @@ public class WandItem extends Item {
 
     @Override
     public void onUseTick(World level, LivingEntity living, ItemStack wand, int timeLeft) {
+        //TODO get rid of this side-checker so chargeUpEffects is visible
         if ( level.isClientSide ) return;
         if ( living instanceof PlayerEntity ) {
             PlayerEntity player = (PlayerEntity)living;
             if ( SpellbookItem.bookSlot(player.inventory) >= 0 ) {
                 ItemStack spellbook = SpellbookItem.getSpellBook(player);
-                doSpell(player, player, SpellbookItem.getSpell(spellbook), getUseDuration(wand) - timeLeft);
+                AbstractSpell spell = SpellbookItem.getSpell(spellbook);
+                Item slotItem = SpellbookItem.getRune(SpellbookItem.getHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
+                doSpell(player, player, spell, getUseDuration(wand) - timeLeft, slotItem);
+                spell.chargeUpEffects(level, (PlayerEntity)living, getUseDuration(wand) - timeLeft);
             }
         }
     }
@@ -70,7 +74,7 @@ public class WandItem extends Item {
                             player.startUsingItem(handIn);
                         }
                         else {
-                            doSpell(player, player, spell, 0);
+                            doSpell(player, player, spell, 0, slotItem);
                             addCooldown(player, slotItem);
                             return ActionResult.success(player.getItemInHand(handIn));
                         }
@@ -81,7 +85,7 @@ public class WandItem extends Item {
         return ActionResult.pass(player.getItemInHand(handIn));
     }
 
-    public static void doSpell(PlayerEntity owner, Entity caster, final AbstractSpell spell, int useTime) {
+    public static void doSpell(PlayerEntity owner, Entity caster, final AbstractSpell spell, int useTime, Item rune) {
         float xRot = caster.xRot;
         float yRot = caster.yRot;
         Vector3d center;
@@ -94,7 +98,7 @@ public class WandItem extends Item {
             center = caster.getEyePosition(0).add(direction);
         }
         else center = new Vector3d(ShadowEvents.getEntityCenter(caster).x, ShadowEvents.getEntityCenter(caster).y + 0.5F, ShadowEvents.getEntityCenter(caster).z);
-        AbstractSpell.routeSpell(owner, caster, spell, center, xRot, yRot, useTime);
+        AbstractSpell.routeSpell(owner, caster, spell, center, xRot, yRot, useTime, rune);
     }
 
     public static void addCooldown(PlayerEntity player, Item item) {

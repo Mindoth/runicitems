@@ -65,6 +65,9 @@ public class RunicItemsItems {
 
 
     //Runes
+    public static final RegistryObject<Item> EMPTY_RUNE = ITEMS.register("empty_rune",
+            () -> new RuneItem(new Item.Properties()));
+
     public static final RegistryObject<Item> FROST_RUNE = ITEMS.register("frost_rune",
             () -> new RuneItem(new Item.Properties()));
 

@@ -10,13 +10,13 @@ import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.ai.goal.PrioritizedGoal;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -40,13 +40,22 @@ public class GhostWalkEffect extends Effect {
         return true;
     }
 
+    /*@OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void invisibilityPre(final RenderLivingEvent.Pre event) {
         LivingEntity livingEntity = event.getEntity();
         if ( livingEntity.hasEffect(RunicItemsEffects.GHOST_WALK.get()) && livingEntity.isInvisible() ) {
             event.setCanceled(true);
         }
-    }
+    }*/
+
+    /*@SubscribeEvent
+    public static void noHat(final RenderPlayerEvent event) {
+        PlayerEntity player = event.getPlayer();
+        if ( player.hasEffect(RunicItemsEffects.GHOST_WALK.get()) && player.isInvisible() ) {
+            event.getRenderer().getModel().hat.visible = false;
+        }
+    }*/
 
     @SubscribeEvent
     public static void visibilityModifier(LivingEvent.LivingVisibilityEvent event) {

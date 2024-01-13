@@ -4,7 +4,6 @@ import net.mindoth.runicitems.config.RunicItemsCommonConfig;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
 import net.mindoth.runicitems.registries.*;
 import net.mindoth.runicitems.spell.raisedead.SkeletonMinionEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -22,7 +21,7 @@ public class RunicItems {
 
     public RunicItems() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if ( FMLEnvironment.dist == Dist.CLIENT ) {
             RunicItemsClient.registerHandlers();
         }
         addRegistries(modEventBus);

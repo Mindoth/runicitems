@@ -5,13 +5,14 @@ import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class TornadoSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot, int useTime) {
+                                  Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         World level = caster.level;
 
         AbstractSpellEntity projectile = new TornadoEntity(level, owner, caster, spell, "storm", 0.0F);

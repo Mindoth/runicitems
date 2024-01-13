@@ -4,13 +4,14 @@ import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class WaterBoltSpell extends AbstractSpell {
 
     public static void shootMagic(PlayerEntity owner, Entity caster, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot, int useTime) {
+                                  Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         World level = caster.level;
 
         AbstractSpellEntity projectile = new WaterBoltEntity(level, owner, caster, spell, "water", 0.4F);
@@ -37,7 +38,7 @@ public class WaterBoltSpell extends AbstractSpell {
 
     @Override
     public float getSpeed() {
-        return 0.6F;
+        return 0.4F;
     }
 
     @Override
@@ -62,11 +63,11 @@ public class WaterBoltSpell extends AbstractSpell {
 
     @Override
     public int getPierce() {
-        return 1;
+        return 8;
     }
 
     @Override
     public int getBounce() {
-        return 2;
+        return 3;
     }
 }

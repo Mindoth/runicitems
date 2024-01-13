@@ -8,6 +8,7 @@ import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.mindoth.runicitems.spell.waterbolt.WaterBoltSpell;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
@@ -15,13 +16,13 @@ import net.minecraft.world.World;
 
 public abstract class AbstractSpell {
 
-    public static void routeSpell(PlayerEntity owner, Entity caster, AbstractSpell spell, Vector3d center, float xRot, float yRot, int useTime) {
-        if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
-        if ( spell instanceof TornadoSpell ) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
-        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
-        if ( spell instanceof GhostWalkSpell ) GhostWalkSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
-        if ( spell instanceof RaiseDeadSpell ) RaiseDeadSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
-        if ( spell instanceof WaterBoltSpell ) WaterBoltSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime);
+    public static void routeSpell(PlayerEntity owner, Entity caster, AbstractSpell spell, Vector3d center, float xRot, float yRot, int useTime, Item rune) {
+        if ( spell instanceof BlizzardSpell ) BlizzardSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
+        if ( spell instanceof TornadoSpell ) TornadoSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
+        if ( spell instanceof FireballSpell ) FireballSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
+        if ( spell instanceof GhostWalkSpell ) GhostWalkSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
+        if ( spell instanceof RaiseDeadSpell ) RaiseDeadSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
+        if ( spell instanceof WaterBoltSpell ) WaterBoltSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
     }
 
     public int getLife() {
@@ -58,6 +59,13 @@ public abstract class AbstractSpell {
 
     public int getBounce() {
         return 0;
+    }
+
+    public static boolean isPlayer(PlayerEntity owner, Entity caster) {
+        return owner == caster;
+    }
+
+    public void chargeUpEffects(World level, PlayerEntity player, int useTime) {
     }
 
     protected static void playMagicShootSound(World level, Vector3d center) {

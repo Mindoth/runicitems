@@ -4,7 +4,6 @@ import net.mindoth.runicitems.client.particle.EmberParticleData;
 import net.mindoth.runicitems.client.particle.ParticleColor;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -168,20 +167,14 @@ public class AbstractSpellEntity extends ThrowableEntity {
         Vector3d pos = ShadowEvents.getEntityCenter(this);
         Vector3d vec3 = this.getDeltaMovement();
 
-        for ( int i = 0; i < 4; i++ ) {
-            double deltaX = pos.x - xOld;
-            double deltaY = pos.y - yOld;
-            double deltaZ = pos.z - zOld;
-            double dist = Math.ceil(Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 8);
-            for ( double j = 0; j < dist; j++ ) {
-                float size = entityData.get(SIZE) / 4;
-                float randX = (float)((Math.random() * (size - (-size))) + (-size));
-                float randY = (float)((Math.random() * (size - (-size))) + (-size));
-                float randZ = (float)((Math.random() * (size - (-size))) + (-size));
-                world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 10), true,
-                        (pos.x + randX) + vec3.x * i / 4, (pos.y + randY) + vec3.y * i / 4, (pos.z + randZ) + vec3.z * i / 4,
-                        0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f));
-            }
+        for ( int i = 0; i < 12; i++ ) {
+            float size = entityData.get(SIZE) / 4;
+            float randX = (float)((Math.random() * (size - (-size))) + (-size));
+            float randY = (float)((Math.random() * (size - (-size))) + (-size));
+            float randZ = (float)((Math.random() * (size - (-size))) + (-size));
+            world.addParticle(EmberParticleData.createData(getParticleColor(), entityData.get(SIZE), 5 + level.random.nextInt(10)), true,
+                    (pos.x + randX) + vec3.x * i / 4, (pos.y + randY) + vec3.y * i / 4, (pos.z + randZ) + vec3.z * i / 4,
+                    0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f), 0.0125f * (random.nextFloat() - 0.5f));
         }
     }
 

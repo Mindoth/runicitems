@@ -8,6 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.item.Item;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -16,7 +17,7 @@ import net.minecraft.world.server.ServerWorld;
 public class RaiseDeadSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot, int useTime) {
+                                  Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         World level = caster.level;
         playMagicSummonSound(level, center);
 

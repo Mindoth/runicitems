@@ -4,6 +4,7 @@ import net.mindoth.runicitems.registries.RunicItemsEffects;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -11,7 +12,7 @@ import net.minecraft.world.World;
 public class GhostWalkSpell extends AbstractSpell {
 
     public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
-                                  Vector3d center, float xRot, float yRot, int useTime) {
+                                  Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         World level = caster.level;
         playMagicShootSound(level, center);
 
