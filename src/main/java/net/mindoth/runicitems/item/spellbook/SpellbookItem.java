@@ -43,7 +43,7 @@ public class SpellbookItem extends Item {
     @Nonnull
     public ActionResult<ItemStack> use(World level, PlayerEntity player, @Nonnull Hand handIn) {
         ItemStack spellbook = player.getItemInHand(handIn);
-        if ( !spellbook.getOrCreateTag().contains(SLOT_TAG) ) setSlot(spellbook.getOrCreateTag(), 0);
+        if ( !spellbook.hasTag() ) setSlot(spellbook.getOrCreateTag(), 0);
         if ( !level.isClientSide && player instanceof ServerPlayerEntity && spellbook.getItem() instanceof SpellbookItem ) {
             SpellbookData data = getData(spellbook);
             if ( data.getUuid() != null ) {

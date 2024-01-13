@@ -8,11 +8,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 public enum SpellbookType {
-    SPELLBOOK("spell_book", Rarity.COMMON, 3, 61, 1, 3, "tier1_gui.png", 176, 132, 7, 49, RunicItemsItems.SPELLBOOK)/*,
-    SPELLBOOK("spell_book", Rarity.COMMON, 9, 7, 1, 9, "tier3_gui.png", 176, 132, 7, 49, RunicItemsItems.SPELLBOOK),
+    SPELLBOOK("spell_book", Rarity.COMMON, 9, 7, 1, 9, "tier3_gui.png", 176, 132, 7, 49, RunicItemsItems.SPELLBOOK)/*,
     SPELLBOOK("spell_book", Rarity.COMMON, 3, 61, 1, 3, "tier1_gui.png", 176, 132, 7, 49, RunicItemsItems.SPELLBOOK),
     SPELLBOOK("spell_book", Rarity.COMMON, 6, 34, 1, 6, "tier2_gui.png", 176, 132, 7, 49, RunicItemsItems.SPELLBOOK),
-    SPELLBOOK("spell_book", Rarity.COMMON, 9, 7, 1, 9, "tier3_gui.png", 176, 132, 7, 49, RunicItemsItems.SPELLBOOK),
+
     SPELLBOOK("spell_book", Rarity.COMMON, 14, 25, 2, 7, "tier4_gui.png", 176, 150, 7, 67, RunicItemsItems.SPELLBOOK),
     SPELLBOOK("spell_book", Rarity.COMMON, 18, 7, 2, 9, "tier5_gui.png", 176, 150, 7, 67, RunicItemsItems.SPELLBOOK),
     SPELLBOOK("spell_book", Rarity.COMMON, 24, 16, 3, 8, "tier6_gui.png", 176, 168, 7, 85, RunicItemsItems.SPELLBOOK),

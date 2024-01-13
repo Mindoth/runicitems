@@ -1,8 +1,13 @@
 package net.mindoth.runicitems.network;
 
 import net.mindoth.runicitems.RunicItems;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -43,6 +48,12 @@ public class RunicItemsNetwork {
                 .encoder(PacketReceiveSpellbookData::encode)
                 .consumer(PacketReceiveSpellbookData::handle)
                 .add();
+
+        net.messageBuilder(PacketClientChargeUpEffects.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketClientChargeUpEffects::new)
+                .encoder(PacketClientChargeUpEffects::encode)
+                .consumer(PacketClientChargeUpEffects::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {
@@ -51,6 +62,19 @@ public class RunicItemsNetwork {
 
     public static <MSG> void sendToPlayer(MSG message, ServerPlayerEntity player) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), message);
+    }
+
+    public static void sendToNearby(World world, BlockPos pos, Object msg){
+        if ( world instanceof ServerWorld ) {
+            ServerWorld serverWorld = (ServerWorld)world;
+            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)
+                    .filter(p -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 64 * 64)
+                    .forEach(p -> CHANNEL.send(PacketDistributor.PLAYER.with(() -> p), msg));
+        }
+    }
+
+    public static void sendToNearby(World world, Entity caster, Object msg) {
+        sendToNearby(world, caster.blockPosition(), msg);
     }
 
     /*public static final String NETWORK_VERSION = "0.1.0";

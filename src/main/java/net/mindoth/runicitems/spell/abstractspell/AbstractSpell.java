@@ -65,7 +65,7 @@ public abstract class AbstractSpell {
         return owner == caster;
     }
 
-    public void chargeUpEffects(World level, PlayerEntity player, int useTime) {
+    public void chargeUpEffects(World level, Entity caster, int useTime) {
     }
 
     protected static void playMagicShootSound(World level, Vector3d center) {

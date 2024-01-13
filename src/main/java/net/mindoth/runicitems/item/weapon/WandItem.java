@@ -28,7 +28,6 @@ public class WandItem extends Item {
 
     @Override
     public void onUseTick(World level, LivingEntity living, ItemStack wand, int timeLeft) {
-        //TODO get rid of this side-checker so chargeUpEffects is visible
         if ( level.isClientSide ) return;
         if ( living instanceof PlayerEntity ) {
             PlayerEntity player = (PlayerEntity)living;
@@ -37,7 +36,7 @@ public class WandItem extends Item {
                 AbstractSpell spell = SpellbookItem.getSpell(spellbook);
                 Item slotItem = SpellbookItem.getRune(SpellbookItem.getHandler(spellbook), SpellbookItem.getSlot(spellbook)).getItem();
                 doSpell(player, player, spell, getUseDuration(wand) - timeLeft, slotItem);
-                spell.chargeUpEffects(level, (PlayerEntity)living, getUseDuration(wand) - timeLeft);
+                spell.chargeUpEffects(level, living, getUseDuration(wand) - timeLeft);
             }
         }
     }
