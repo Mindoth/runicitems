@@ -60,7 +60,7 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public int getCooldown() {
-        return 20;
+        return 10;
     }
 
     @Override

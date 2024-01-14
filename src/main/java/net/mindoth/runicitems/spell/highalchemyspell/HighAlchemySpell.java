@@ -26,30 +26,30 @@ public class HighAlchemySpell extends AbstractSpell {
 
         if ( useTime > spell.getCooldown() * 3 ) {
             if ( caster == owner ) {
-                if ( owner.getMainHandItem().getItem() == Items.BONE || owner.getOffhandItem().getItem() == Items.BONE ) {
+                Vector3d ownerPos = ShadowEvents.getEntityCenter(owner);
+                ItemStack mainHandStack = owner.getMainHandItem();
+                ItemStack offHandStack = owner.getOffhandItem();
+                if ( mainHandStack.getItem() == Items.BONE || offHandStack.getItem() == Items.BONE ) {
                     ItemStack handItem;
-                    if ( owner.getMainHandItem().getItem() == Items.BONE ) handItem = owner.getMainHandItem();
-                    else handItem = owner.getOffhandItem();
+                    if ( mainHandStack.getItem() == Items.BONE ) handItem = mainHandStack;
+                    else handItem = offHandStack;
                     int amount = handItem.getCount();
-                    ItemEntity drop = new ItemEntity(level,
-                            owner.getBoundingBox().getCenter().x, owner.getBoundingBox().getCenter().y, owner.getBoundingBox().getCenter().z,
-                            new ItemStack(Items.APPLE, amount));
+                    ItemEntity drop = new ItemEntity(level, ownerPos.x, ownerPos.y, ownerPos.z, new ItemStack(Items.APPLE, amount));
                     drop.setDeltaMovement(0, 0, 0);
                     drop.setNoPickUpDelay();
                     level.addFreshEntity(drop);
                     handItem.shrink(amount);
                 }
-                else if ( (owner.getMainHandItem().getItem().canBeDepleted() && owner.getMainHandItem().isRepairable())
-                        || (owner.getOffhandItem().getItem().canBeDepleted() && owner.getOffhandItem().isRepairable()) ) {
+                else if ( (mainHandStack.getItem().canBeDepleted() && mainHandStack.isRepairable() && mainHandStack.getMaxDamage() > Items.GOLDEN_CHESTPLATE.getMaxDamage())
+                        || (offHandStack.getItem().canBeDepleted() && offHandStack.isRepairable() && mainHandStack.getMaxDamage() > Items.GOLDEN_CHESTPLATE.getMaxDamage()) ) {
                     ItemStack handItem;
-                    //TODO Find a way to exclude cheap items like wooden and stone tools
-                    if ( (owner.getMainHandItem().getItem().canBeDepleted() && owner.getMainHandItem().isRepairable()) ) handItem = owner.getMainHandItem();
-                    else handItem = owner.getOffhandItem();
-                    double quality = (1.0D - (handItem.getDamageValue() - handItem.getMaxDamage())) / 2;
-                    if ( level.random.nextDouble() < quality ) {
-                        ItemEntity drop = new ItemEntity(level,
-                                owner.getBoundingBox().getCenter().x, owner.getBoundingBox().getCenter().y, owner.getBoundingBox().getCenter().z,
-                                new ItemStack(Items.GOLD_INGOT, 1));
+                    if ( (mainHandStack.getItem().canBeDepleted() && mainHandStack.isRepairable()) ) handItem = mainHandStack;
+                    else handItem = offHandStack;
+                    double quality = (double)(handItem.getMaxDamage() - handItem.getDamageValue()) / handItem.getMaxDamage();
+                    System.out.println("RANDOM: " + level.random.nextDouble());
+                    System.out.println("QUALITY: " + quality);
+                    if ( level.random.nextDouble() <= quality ) {
+                        ItemEntity drop = new ItemEntity(level, ownerPos.x, ownerPos.y, ownerPos.z, new ItemStack(Items.GOLD_INGOT, (int)spell.getPower()));
                         drop.setDeltaMovement(0, 0, 0);
                         drop.setNoPickUpDelay();
                         level.addFreshEntity(drop);
@@ -67,13 +67,18 @@ public class HighAlchemySpell extends AbstractSpell {
     }
 
     @Override
+    public float getPower() {
+        return 1.0F;
+    }
+
+    @Override
     public float getDistance() {
         return 0.75F;
     }
 
     @Override
     public int getCooldown() {
-        return 20;
+        return 10;
     }
 
     @Override
