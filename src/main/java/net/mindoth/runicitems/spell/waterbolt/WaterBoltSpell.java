@@ -42,23 +42,8 @@ public class WaterBoltSpell extends AbstractSpell {
     }
 
     @Override
-    public int getDistance() {
-        return 0;
-    }
-
-    @Override
-    public boolean getGravity() {
-        return false;
-    }
-
-    @Override
     public int getCooldown() {
         return 20;
-    }
-
-    @Override
-    public boolean isChannel() {
-        return false;
     }
 
     @Override

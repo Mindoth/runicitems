@@ -19,7 +19,7 @@ public class FireballSpell extends AbstractSpell {
                                   Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         World level = caster.level;
 
-        if ( useTime > 60 ) {
+        if ( useTime > spell.getCooldown() * 3 ) {
             AbstractSpellEntity projectile = new FireballEntity(level, owner, caster, spell, "fire", 1.2F);
             projectile.setNoGravity(!spell.getGravity());
             playFireShootSound(level, center);
@@ -50,12 +50,12 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public float getSpeed() {
-        return 1.4F;
+        return 2.0F;
     }
 
     @Override
-    public int getDistance() {
-        return 1;
+    public float getDistance() {
+        return 0.5F;
     }
 
     @Override
@@ -71,17 +71,16 @@ public class FireballSpell extends AbstractSpell {
     @Override
     public void chargeUpEffects(World level, Entity caster, int useTime) {
         if ( level.isClientSide ) return;
-        AbstractSpell spell = this;
         for ( int i = 0; i < 12; i++ ) {
             float size = 0.02F * useTime / 4;
             float randX = (float) ((Math.random() * (size - (-size))) + (-size));
             float randY = (float) ((Math.random() * (size - (-size))) + (-size));
             float randZ = (float) ((Math.random() * (size - (-size))) + (-size));
-            Vector3d pos = ShadowEvents.getPoint(caster, spell.getDistance(), 0.0F, true);
+            Vector3d pos = ShadowEvents.getPoint(caster, this.getDistance(), 0.0F, true);
 
             ServerWorld world = (ServerWorld)level;
             RunicItemsNetwork.sendToNearby(level, caster, new PacketClientChargeUpEffects(177, 63, 0, size, 5 + world.random.nextInt(10),
-                    pos.x + randX, pos.y + randY, pos.z + randZ));
+                    pos.x + randX, pos.y - 0.25F + randY, pos.z + randZ));
         }
     }
 }

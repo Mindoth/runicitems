@@ -12,6 +12,7 @@ import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.runicitems.spell.ghostwalk.GhostWalkSpell;
+import net.mindoth.runicitems.spell.highalchemyspell.HighAlchemySpell;
 import net.mindoth.runicitems.spell.raisedead.RaiseDeadSpell;
 import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.mindoth.runicitems.spell.waterbolt.WaterBoltSpell;
@@ -77,6 +78,9 @@ public class RunicItemsItems {
     public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune",
             () -> new RuneItem(new Item.Properties()));
 
+    public static final RegistryObject<Item> NATURE_RUNE = ITEMS.register("nature_rune",
+            () -> new RuneItem(new Item.Properties()));
+
 
     public static final RegistryObject<Item> BLIZZARD_RUNE = ITEMS.register("blizzard_rune",
             () -> new SpellRuneItem(new Item.Properties(), new BlizzardSpell()));
@@ -95,4 +99,7 @@ public class RunicItemsItems {
 
     public static final RegistryObject<Item> WATER_BOLT_RUNE = ITEMS.register("water_bolt_rune",
             () -> new SpellRuneItem(new Item.Properties(), new WaterBoltSpell()));
+
+    public static final RegistryObject<Item> HIGH_ALCHEMY_RUNE = ITEMS.register("high_alchemy_rune",
+            () -> new SpellRuneItem(new Item.Properties(), new HighAlchemySpell()));
 }

@@ -4,10 +4,10 @@ import net.mindoth.runicitems.registries.RunicItemsEffects;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.vector.Vector3d;
@@ -16,7 +16,7 @@ import net.minecraft.world.server.ServerWorld;
 
 public class RaiseDeadSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
+    public static void shootMagic(PlayerEntity owner, Entity caster, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         World level = caster.level;
         playMagicSummonSound(level, center);
@@ -51,32 +51,12 @@ public class RaiseDeadSpell extends AbstractSpell {
     }
 
     @Override
-    public int getDistance() {
+    public float getDistance() {
         return 6;
-    }
-
-    @Override
-    public boolean getGravity() {
-        return false;
     }
 
     @Override
     public int getCooldown() {
         return 600;
-    }
-
-    @Override
-    public boolean isChannel() {
-        return false;
-    }
-
-    @Override
-    public int getPierce() {
-        return 0;
-    }
-
-    @Override
-    public int getBounce() {
-        return 0;
     }
 }

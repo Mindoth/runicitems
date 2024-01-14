@@ -3,6 +3,7 @@ package net.mindoth.runicitems.spell.abstractspell;
 import net.mindoth.runicitems.spell.blizzard.BlizzardSpell;
 import net.mindoth.runicitems.spell.fireball.FireballSpell;
 import net.mindoth.runicitems.spell.ghostwalk.GhostWalkSpell;
+import net.mindoth.runicitems.spell.highalchemyspell.HighAlchemySpell;
 import net.mindoth.runicitems.spell.raisedead.RaiseDeadSpell;
 import net.mindoth.runicitems.spell.tornado.TornadoSpell;
 import net.mindoth.runicitems.spell.waterbolt.WaterBoltSpell;
@@ -23,6 +24,7 @@ public abstract class AbstractSpell {
         if ( spell instanceof GhostWalkSpell ) GhostWalkSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
         if ( spell instanceof RaiseDeadSpell ) RaiseDeadSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
         if ( spell instanceof WaterBoltSpell ) WaterBoltSpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
+        if ( spell instanceof HighAlchemySpell ) HighAlchemySpell.shootMagic(owner, caster, spell, center, xRot, yRot, useTime, rune);
     }
 
     public int getLife() {
@@ -37,8 +39,8 @@ public abstract class AbstractSpell {
         return 0.0F;
     }
 
-    public int getDistance() {
-        return 1;
+    public float getDistance() {
+        return 0;
     }
 
     public boolean getGravity() {

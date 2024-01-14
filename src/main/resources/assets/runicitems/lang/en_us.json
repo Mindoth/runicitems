@@ -24,6 +24,7 @@
   "item.runicitems.frost_rune": "Frost Rune",
   "item.runicitems.storm_rune": "Storm Rune",
   "item.runicitems.fire_rune": "Fire Rune",
+  "item.runicitems.nature_rune": "Nature Rune",
 
   "item.runicitems.blizzard_rune": "Blizzard Rune",
   "item.runicitems.tornado_rune": "Tornado Rune",
@@ -31,6 +32,7 @@
   "item.runicitems.ghost_walk_rune": "Ghost Walk Rune",
   "item.runicitems.raise_dead_rune": "Raise Dead Rune",
   "item.runicitems.water_bolt_rune": "Water Bolt Rune",
+  "item.runicitems.high_alchemy_rune": "High Alchemy Rune",
 
 
   "entity.runicitems.skeleton_minion": "Skeleton Minion",

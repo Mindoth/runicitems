@@ -88,7 +88,7 @@ public class WandItem extends Item {
         float xRot = caster.xRot;
         float yRot = caster.yRot;
         Vector3d center;
-        int distance = spell.getDistance();
+        float distance = spell.getDistance();
         if ( distance > 0 ) {
             int adjuster = 1;
             if ( caster != owner ) adjuster = -1;

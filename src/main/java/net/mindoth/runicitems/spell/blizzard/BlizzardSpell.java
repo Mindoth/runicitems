@@ -4,14 +4,14 @@ import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class BlizzardSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
+    public static void shootMagic(PlayerEntity owner, Entity caster, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         if ( useTime % 5 != 0 ) return;
         World level = caster.level;
@@ -19,16 +19,16 @@ public class BlizzardSpell extends AbstractSpell {
         AbstractSpellEntity projectile = new BlizzardEntity(level, owner, caster, spell, "frost", 0.5F);
         projectile.setNoGravity(!spell.getGravity());
 
-        setPos(level, caster, projectile, useTime);
+        setPos(level, caster, projectile, useTime, spell);
         projectile.setDeltaMovement(0.0F, -spell.getSpeed(), 0.0F);
         level.addFreshEntity(projectile);
     }
 
-    protected static void setPos(World level, Entity caster, AbstractSpellEntity projectile, int time) {
+    protected static void setPos(World level, Entity caster, AbstractSpellEntity projectile, int time, AbstractSpell spell) {
         float radius;
         if ( time % 20 == 0 ) radius = 0.0F;
         else radius = 2.0F;
-        float range = 8.0F;
+        float range = spell.getDistance();
         float error = 0.5F;
         float randX = (float)((Math.random() * (radius - (-radius))) + (-radius));
         float randY = (float)((Math.random() * (radius - (-radius))) + (-radius));
@@ -67,8 +67,8 @@ public class BlizzardSpell extends AbstractSpell {
     }
 
     @Override
-    public int getDistance() {
-        return 0;
+    public float getDistance() {
+        return 8.0F;
     }
 
     @Override

@@ -4,14 +4,14 @@ import net.mindoth.runicitems.spell.abstractspell.AbstractSpell;
 import net.mindoth.runicitems.spell.abstractspell.AbstractSpellEntity;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class TornadoSpell extends AbstractSpell {
 
-    public static void shootMagic(LivingEntity owner, Entity caster, AbstractSpell spell,
+    public static void shootMagic(PlayerEntity owner, Entity caster, AbstractSpell spell,
                                   Vector3d center, float xRot, float yRot, int useTime, Item rune) {
         World level = caster.level;
 
@@ -44,32 +44,12 @@ public class TornadoSpell extends AbstractSpell {
     }
 
     @Override
-    public int getDistance() {
+    public float getDistance() {
         return 4;
-    }
-
-    @Override
-    public boolean getGravity() {
-        return false;
     }
 
     @Override
     public int getCooldown() {
         return 160;
-    }
-
-    @Override
-    public boolean isChannel() {
-        return false;
-    }
-
-    @Override
-    public int getPierce() {
-        return 0;
-    }
-
-    @Override
-    public int getBounce() {
-        return 0;
     }
 }
