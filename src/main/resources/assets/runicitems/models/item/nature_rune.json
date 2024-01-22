@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "runicitems:items/empty_rune"
+    "layer0": "runicitems:items/nature_rune"
   }
 }

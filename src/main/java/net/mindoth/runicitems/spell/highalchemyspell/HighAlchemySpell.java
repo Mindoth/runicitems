@@ -1,6 +1,5 @@
 package net.mindoth.runicitems.spell.highalchemyspell;
 
-import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.network.PacketClientChargeUpEffects;
 import net.mindoth.runicitems.network.RunicItemsNetwork;
@@ -15,9 +14,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
 public class HighAlchemySpell extends AbstractSpell {
 
     public static void shootMagic(PlayerEntity owner, Entity caster, AbstractSpell spell,
@@ -55,6 +52,7 @@ public class HighAlchemySpell extends AbstractSpell {
                         level.addFreshEntity(drop);
                     }
                     handItem.shrink(1);
+                    playMagicShootSound(level, center);
                 }
 
                 if ( AbstractSpell.isPlayer(owner, caster) ) {

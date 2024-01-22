@@ -3,6 +3,7 @@ package net.mindoth.runicitems.event;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.mindoth.runicitems.RunicItems;
 import net.mindoth.runicitems.config.RunicItemsCommonConfig;
+import net.mindoth.runicitems.item.weapon.WandItem;
 import net.mindoth.runicitems.registries.RunicItemsEnchantments;
 import net.mindoth.runicitems.registries.RunicItemsItems;
 import net.mindoth.shadowizardlib.event.ShadowEvents;
@@ -15,10 +16,7 @@ import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.entity.monster.WitherSkeletonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.MerchantOffer;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -33,6 +31,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -41,6 +40,16 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = RunicItems.MOD_ID)
 public class MiscEvents {
+
+    @SubscribeEvent
+    public static void cancelFastEquip(final PlayerInteractEvent.RightClickItem event) {
+        //if ( event.getWorld().isClientSide ) return;
+        PlayerEntity player = event.getPlayer();
+        if ( event.getItemStack().getItem() instanceof ArmorItem
+                && (player.getMainHandItem().getItem() instanceof WandItem || player.getOffhandItem().getItem() instanceof WandItem) ) {
+            event.setCanceled(true);
+        }
+    }
 
     @SubscribeEvent
     public static void weaponsOnMobs(EntityJoinWorldEvent event) {
