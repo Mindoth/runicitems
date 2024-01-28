@@ -164,10 +164,11 @@ public class AbstractSpellEntity extends ThrowableEntity {
 
     protected void doClientTickEffects() {
         ClientWorld world = (ClientWorld)this.level;
-        Vector3d pos = ShadowEvents.getEntityCenter(this);
+        Vector3d center = ShadowEvents.getEntityCenter(this);
+        Vector3d pos = new Vector3d(center.x, this.getY(), center.z);
         Vector3d vec3 = this.getDeltaMovement();
 
-        for ( int i = 0; i < 12; i++ ) {
+        for ( int i = -12; i < 0; i++ ) {
             float size = entityData.get(SIZE) / 4;
             float randX = (float)((Math.random() * (size - (-size))) + (-size));
             float randY = (float)((Math.random() * (size - (-size))) + (-size));

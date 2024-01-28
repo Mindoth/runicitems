@@ -4,9 +4,6 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class ParticleEmber extends SpriteTexturedParticle {
     public float colorR;
@@ -54,15 +51,10 @@ public class ParticleEmber extends SpriteTexturedParticle {
     @Override
     public void tick() {
         super.tick();
-        /*if (level.random.nextInt(2) == 0) {
-            this.age++;
-        }
+        this.oRoll = roll;
+        this.alpha = (-(1 / (float)lifetime) * age + 1);
         float lifeCoeff = (float)this.age / (float)this.lifetime;
         this.quadSize = initScale - initScale * lifeCoeff;
-        this.alpha = 1.0f - lifeCoeff;*/
-        this.oRoll = roll;
-
-        this.alpha = (-(1 / (float)lifetime) * age + 1);
     }
 
     @Override

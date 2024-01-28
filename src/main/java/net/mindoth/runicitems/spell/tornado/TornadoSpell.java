@@ -52,4 +52,9 @@ public class TornadoSpell extends AbstractSpell {
     public int getCooldown() {
         return 160;
     }
+
+    @Override
+    public int getPierce() {
+        return Integer.MAX_VALUE;
+    }
 }

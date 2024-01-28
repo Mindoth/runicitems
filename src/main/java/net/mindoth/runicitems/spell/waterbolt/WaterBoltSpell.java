@@ -21,7 +21,7 @@ public class WaterBoltSpell extends AbstractSpell {
         int adjuster;
         if ( caster != owner ) adjuster = -1;
         else adjuster = 1;
-        projectile.setPos(center.x, center.y - 0.25F, center.z);
+        projectile.setPos(center.x, center.y, center.z);
         projectile.shootFromRotation(caster, xRot * adjuster, yRot * adjuster, 0F, spell.getSpeed(), 1.0F);
         level.addFreshEntity(projectile);
     }

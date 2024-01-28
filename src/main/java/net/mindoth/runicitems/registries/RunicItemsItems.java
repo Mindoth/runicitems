@@ -61,7 +61,7 @@ public class RunicItemsItems {
 
 
     //Wands
-    public static final RegistryObject<Item> WAND = ITEMS.register("wand",
+    public static final RegistryObject<Item> ANCIENT_STAFF = ITEMS.register("ancient_staff",
             () -> new WandItem(new Item.Properties()));
 
 
